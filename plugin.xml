@@ -1,0 +1,36 @@
+<plugin>
+	<nom>Seenthis</nom>
+	<auteur>ARNO*</auteur>
+	<version>1.0</version>
+	<etat>stable</etat>
+	<description>
+		Configuration de Seenthis
+	</description>
+	<prefix>seenthis</prefix>
+	<options>seenthis_options.php</options>
+
+	<pipeline>
+		<nom>rechercher_liste_des_champs</nom>
+		<inclure>seenthis_options.php</inclure>
+	</pipeline>
+	<pipeline>
+		<nom>declarer_tables_interfaces</nom>
+		<inclure>seenthis_options.php</inclure>
+	</pipeline>
+	<pipeline>
+		<nom>declarer_tables_principales</nom>
+		<inclure>seenthis_options.php</inclure>
+	</pipeline>
+	<pipeline>
+		<nom>declarer_tables_auxiliaires</nom>
+		<inclure>seenthis_options.php</inclure>
+	</pipeline>
+	<pipeline>
+		<nom>declarer_tables_objets_surnoms</nom>
+		<inclure>seenthis_options.php</inclure>
+	</pipeline>
+
+
+	<necessite id="SPIP" version="[2.1.0;]" />
+</plugin>
+
