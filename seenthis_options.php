@@ -402,7 +402,7 @@ function recuperer_contenu_site ($id_syndic, $url) {
 	// D'abord tester le nom du (futur) fichier local
 	// ce qui permet de ne travailler que sur le HTML
 	$local = fichier_copie_locale($url);
-	
+
 	$recup = 0;
 	
 	if (!preg_match(",html$,", $local)) {
@@ -847,9 +847,9 @@ function notifier_me($id_me, $id_parent) {
 		$titre_mail = trim(extraire_titre($row["texte"]));
 
 		if ($id_parent == 0) {		
-			$url_me = "http://seenthis.net/messages/$id_me";
+			$url_me = "http://"._HOST."/messages/$id_me";
 		} else {
-			$url_me = "http://seenthis.net/messages/$id_parent#message$id_me";
+			$url_me = "http://"._HOST."/messages/$id_parent#message$id_me";
 		}
 		
 		
@@ -918,11 +918,11 @@ function notifier_me($id_me, $id_parent) {
 		
 		if (isset($id_dest)) { 
 		
-			$headers = "From: no-reply@seenthis.net\n";
+			$headers = "From: no-reply@"._HOST."\n";
 			$headers .= 'Content-Type: text/plain; charset="utf-8"'."\n"; 
 			$headers .= "Content-Transfer-Encoding: 8bit\n"; 
-			$headers .= "Message-Id:<$id_me@seenthis.net>\n"; 
-			if ($id_parent > 0) $headers .= "In-Reply-To:<$id_parent@seenthis.net>\n"; 
+			$headers .= "Message-Id:<$id_me@"._HOST.">\n"; 
+			if ($id_parent > 0) $headers .= "In-Reply-To:<$id_parent@"._HOST.">\n"; 
 
 			$texte = html_entity_decode($texte, null, 'UTF-8');	
 			$titre_mail = mb_encode_mimeheader(html_entity_decode($titre_mail, null, 'UTF-8'), 'UTF-8');
@@ -954,7 +954,7 @@ function notifier_me($id_me, $id_parent) {
 						}
 					}
 					
-					$lien = "\n\n---------\nPour ne plus recevoir d'alertes de Seenthis,\n vous pouvez régler vos préférences dans votre profil\nhttp://www.seenthis.net\n\n";
+					$lien = "\n\n---------\nPour ne plus recevoir d'alertes de Seenthis,\n vous pouvez régler vos préférences dans votre profil\nhttp://"._HOST."\n\n";
 					
 					$envoyer = "\n\n$annonce\n$url_me\n\n$texte$lien";
 					//echo "<hr /><pre>$envoyer</pre>";
