@@ -66,16 +66,20 @@ function seenthis_declarer_tables_principales($tables_principales){
 	);
 
 	// ajouts dans spip_auteurs
-	$auteurs = &$tables_principales['spip_auteurs']['field'];
-	$auteurs['couleur'] = "varchar(6) NOT NULL DEFAULT '24b8dd'";
-	$auteurs['troll'] = "bigint(21) DEFAULT NULL";
-	$auteurs['troll_forcer'] = "bigint(21) DEFAULT NULL";
-	$auteurs['copyright'] = "varchar(10) NOT NULL DEFAULT 'C'";
-	$auteurs['mail_nouv_billet'] = "tinyint(1) NOT NULL DEFAULT '1'";
-	$auteurs['mail_rep_moi'] = "tinyint(1) NOT NULL DEFAULT '1'";
-	$auteurs['mail_rep_billet'] = "tinyint(1) NOT NULL DEFAULT '0'";
-	$auteurs['mail_rep_conv'] = "tinyint(1) NOT NULL DEFAULT '0'";
+	$auteurs = &$tables_principales['spip_auteurs'];
+	$auteurs['field']['couleur'] = "varchar(6) NOT NULL DEFAULT '24b8dd'";
+	$auteurs['field']['troll'] = "bigint(21) DEFAULT NULL";
+	$auteurs['field']['troll_forcer'] = "bigint(21) DEFAULT NULL";
+	$auteurs['field']['copyright'] = "varchar(10) NOT NULL DEFAULT 'C'";
+	$auteurs['field']['mail_nouv_billet'] = "tinyint(1) NOT NULL DEFAULT '1'";
+	$auteurs['field']['mail_rep_moi'] = "tinyint(1) NOT NULL DEFAULT '1'";
+	$auteurs['field']['mail_rep_billet'] = "tinyint(1) NOT NULL DEFAULT '0'";
+	$auteurs['field']['mail_rep_conv'] = "tinyint(1) NOT NULL DEFAULT '0'";
 
+	// ajouts dans spip_mots
+	$mots = &$tables_principales['spip_mots'];
+	$mots['field']['id_parent'] = "bigint(21) NOT NULL default '0'";
+	$mots['key']['KEY id_parent'] = "id_parent";
 
 	return $tables_principales;
 }
