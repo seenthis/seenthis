@@ -180,6 +180,21 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 			include_spip('base/auxiliaires');
 			include_spip('base/create');
 			creer_base();
+
+			maj_tables(array(
+				'spip_auteurs',
+				'spip_me',
+				'spip_me_auteur',
+				'spip_me_follow',
+				'spip_me_follow_mot',
+				'spip_me_mot',
+				'spip_me_share',
+				'spip_me_syndic',
+				'spip_syndic_oc',
+				'spip_traductions',
+				'spip_mots'
+			));
+
 			ecrire_meta($nom_meta_base_version,$current_version=$version_cible,'non');
 		}
 	}
