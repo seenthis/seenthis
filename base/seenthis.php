@@ -156,6 +156,16 @@ function seenthis_declarer_tables_auxiliaires($tables_auxiliaires){
 "
 	);
 
+	# pour google
+	$tables_auxiliaires['spip_traductions'] = seenthis_lire_create_table(
+	"
+  `hash` varchar(32) NOT NULL,
+  `langue` varchar(5) NOT NULL,
+  `texte` text NOT NULL,
+  KEY `hash` (`hash`)
+"
+  );
+
 	return $tables_auxiliaires;
 
 }
@@ -165,7 +175,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	if ((!isset($GLOBALS['meta'][$nom_meta_base_version]) )
 	|| (($current_version = $GLOBALS['meta'][$nom_meta_base_version])!=$version_cible)){
 		include_spip('base/abstract_sql');
-		if (version_compare($current_version,"0.1.0",'<')){
+		if (version_compare($current_version,"0.2.0",'<')){
 			include_spip('base/serial');
 			include_spip('base/auxiliaires');
 			include_spip('base/create');
@@ -178,7 +188,14 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 function seenthis_vider_tables($nom_meta_base_version) {
 	effacer_meta($nom_meta_base_version);
 	sql_drop_table("spip_me");
+	sql_drop_table("spip_me_auteur");
 	sql_drop_table("spip_me_follow");
+	sql_drop_table("spip_me_follow_mot");
+	sql_drop_table("spip_me_mot");
+	sql_drop_table("spip_me_share");
+	sql_drop_table("spip_me_syndic");
+	sql_drop_table("spip_syndic_oc");
+	sql_drop_table("spip_traductions");
 }
 
 
