@@ -15,22 +15,28 @@
 	</pipeline>
 	<pipeline>
 		<nom>declarer_tables_interfaces</nom>
-		<inclure>seenthis_options.php</inclure>
+		<inclure>base/seenthis.php</inclure>
 	</pipeline>
 	<pipeline>
 		<nom>declarer_tables_principales</nom>
-		<inclure>seenthis_options.php</inclure>
+		<inclure>base/seenthis.php</inclure>
 	</pipeline>
 	<pipeline>
 		<nom>declarer_tables_auxiliaires</nom>
-		<inclure>seenthis_options.php</inclure>
+		<inclure>base/seenthis.php</inclure>
 	</pipeline>
 	<pipeline>
 		<nom>declarer_tables_objets_surnoms</nom>
-		<inclure>seenthis_options.php</inclure>
+		<inclure>base/seenthis.php</inclure>
 	</pipeline>
 
+	<version_base>0.1.0</version_base>
+	<install>base/seenthis.php</install>
 
 	<necessite id="SPIP" version="[2.1.0;]" />
+	<necessite id="microcache" />
+	<necessite id="queue" />
+	<necessite id="detecter_langue" />
+	<necessite id="lien_court" />
 </plugin>
 
