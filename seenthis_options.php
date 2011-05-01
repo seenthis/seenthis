@@ -164,6 +164,7 @@ function cache_me ($id_me, $id_parent = 0) {
 	
 	// Pas de noisettes pour id_parent 0.
 	if ($id_parent > 0) {
+		$id_share = $id_parent;
 		supprimer_microcache($id_parent, "noisettes/afficher_message");
 		supprimer_microcache($id_parent, "noisettes/afficher_un_message");
 		supprimer_microcache($id_parent, "noisettes/oc_message");
@@ -172,13 +173,15 @@ function cache_me ($id_me, $id_parent = 0) {
 		cache_auteur_fil($id_parent);
 
 	} else {
+		$id_share = $id_me;
 		cache_mot_fil ($id_me);
 		cache_auteur_fil($id_me);
 		supprimer_microcache($id_me, "noisettes/head_message");
 		supprimer_microcache($id_me, "noisettes/oc_message");
 	}
 	
-	$query_share = sql_select("id_auteur", "spip_me_share", "id_me = $id_me");
+
+	$query_share = sql_select("id_auteur", "spip_me_share", "id_me = $id_share");
 	while ($row_share = sql_fetch($query_share)) {
 		$id_auteur = $row_share["id_auteur"];
 		cache_auteur($id_auteur);
@@ -225,7 +228,6 @@ function cache_auteur($id_auteur) {
 		supprimer_microcache($id_follow, "noisettes/contenu_page_people");
 		supprimer_microcache($id_follow, "noisettes/contenu_accueil");
 	}
-	
 }
 
 function cache_mot ($id_mot) {
