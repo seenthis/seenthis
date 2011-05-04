@@ -81,6 +81,15 @@ function seenthis_declarer_tables_principales($tables_principales){
 	$mots['field']['id_parent'] = "bigint(21) NOT NULL default '0'";
 	$mots['key']['KEY id_parent'] = "id_parent";
 
+	// ajouts dans spip_syndic
+	$syndic = &$tables_principales['spip_syndic'];
+	$syndic['field']['recup'] = "int(11) NOT NULL DEFAULT '0'";
+	$syndic['field']['id_parent'] = "bigint(21) DEFAULT NULL";
+	$syndic['field']['titre'] = "text NOT NULL";
+	$syndic['field']['texte'] = "longtext NOT NULL";
+	$syndic['field']['lang'] = "varchar(10) NOT NULL";
+	$syndic['key']['KEY id_parent'] = "id_parent";
+
 	return $tables_principales;
 }
 
@@ -175,7 +184,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	if ((!isset($GLOBALS['meta'][$nom_meta_base_version]) )
 	|| (($current_version = $GLOBALS['meta'][$nom_meta_base_version])!=$version_cible)){
 		include_spip('base/abstract_sql');
-		if (version_compare($current_version,"0.2.0",'<')){
+		if (version_compare($current_version,"0.3.0",'<')){
 			include_spip('base/serial');
 			include_spip('base/auxiliaires');
 			include_spip('base/create');
@@ -190,6 +199,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 				'spip_me_mot',
 				'spip_me_share',
 				'spip_me_syndic',
+				'spip_syndic',
 				'spip_syndic_oc',
 				'spip_traductions',
 				'spip_mots'
