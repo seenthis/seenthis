@@ -62,6 +62,10 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
 		}
 	} else if (TRUE) {
+		if (preg_match(',/people/?$,', $i)) {
+			$g = array(array(), 'people');
+		}
+		else
 		if (preg_match(',/messages/(\d+)$,', $i, $r)) {
 			$g = array(
 				array('id_me' => $r[1]),
