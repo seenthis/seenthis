@@ -78,6 +78,25 @@ function inc_prepare_recherche_dist($recherche, $table='articles', $cond=false, 
 			$points = $p2;
 		}
 
+		# Pour les me, unifier par id_parent
+		if ($x == 'me' AND $points AND $plat != "true") {
+			$p2 = array();
+
+            $s = sql_select("id_parent as id_thread, id_me as id_forum", "spip_me", sql_in('id_me', array_keys($points)), '','','','', $serveur);
+            while ($t = sql_fetch($s, $serveur)){
+                   $id_thread = intval($t['id_thread']);
+                   $id_forum = intval($t['id_forum']);
+                   if ($id_thread){
+                                   $p2[$id_thread]['score']
+                                           += $points[$id_forum]['score'];
+                   }
+                   else{
+                           $p2[$id_forum]['score'] = $points[$id_forum]['score'];
+                   }
+            }			
+			$points = $p2;
+		}
+
 		// supprimer les anciens resultats de cette recherche
 		// et les resultats trop vieux avec une marge
 		sql_delete('spip_resultats','(maj<DATE_SUB(NOW(), INTERVAL '.($delai_fraicheur+100)." SECOND)) OR (recherche='$hash')",$serveur);
