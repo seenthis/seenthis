@@ -215,8 +215,8 @@ function cache_auteur_fil($id_me) {
 
 function cache_auteur($id_auteur) {
 	supprimer_microcache($id_auteur, "noisettes/contenu_accueil");
+	supprimer_microcache($id_auteur, "noisettes/atom_backend_auteur_follow");
 	supprimer_microcache($id_auteur, "noisettes/contenu_auteur");
-	supprimer_microcache($id_auteur, "noisettes/contenu_accueil");
 	supprimer_microcache($id_auteur, "noisettes/contenu_page_tags");
 	supprimer_microcache($id_auteur, "noisettes/contenu_page_people");
 	supprimer_microcache($id_auteur, "noisettes/atom_messages_auteur");
@@ -227,6 +227,7 @@ function cache_auteur($id_auteur) {
 		$id_follow = $row["id_follow"];
 		supprimer_microcache($id_follow, "noisettes/contenu_page_people");
 		supprimer_microcache($id_follow, "noisettes/contenu_accueil");
+		supprimer_microcache($id_auteur, "noisettes/atom_backend_auteur_follow");
 	}
 }
 
@@ -240,6 +241,7 @@ function cache_mot ($id_mot) {
 		$id_auteur = $row["id_follow"];
 		supprimer_microcache($id_auteur, "noisettes/contenu_page_tags");
 		supprimer_microcache($id_auteur, "noisettes/contenu_accueil");
+		supprimer_microcache($id_auteur, "noisettes/atom_backend_auteur_follow");
 	}
 	
 	$query = sql_select("id_parent", "spip_mots", "id_mot=$id_mot");
