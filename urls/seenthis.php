@@ -40,6 +40,10 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
 #	echo "<hr />";var_dump($i,$entite,$args,$ancre); echo "<br />\n";
 
+	// charger les URLs arbo, qui sont la base de notre systeme d'URLs
+	$arbo = charger_fonction('arbo', 'urls');
+
+
 	if (is_numeric($i)) {
 		# #URL_ME
 		if ($entite == 'me') {
@@ -62,8 +66,41 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
 		}
 	} else if (TRUE) {
+		# la page /people/
 		if (preg_match(',/people/?$,', $i)) {
 			$g = array(array(), 'people');
+		}
+		# la page people/xxx/follow/feed => ramener sur people/xxx
+		else if (
+			preg_match(',/people/.*(/follow/feed)$,', $i, $r)
+		OR
+			preg_match(',/people/.*(/feed)$,', $i, $r)
+		) {
+			# arbo est naze et ne se base pas sur $i !
+			$_SERVER['REDIRECT_url_propre'] = substr(
+				$_SERVER['REDIRECT_url_propre'], -0, -strlen($r[1])
+			);
+			$g = $arbo($i, $entite, $args, $ancre);
+
+			switch ($r[1]) {
+				case '/follow/feed':
+					$g[1] = "backend_auteur_follow";
+					break;
+				case '/feed':
+					$g[1] = "backend";
+					break;
+				default:
+					echo "ERREUR";
+			}
+		}
+		# la page people/xxx/feed => ramener sur people/xxx
+		else if (preg_match(',^(.*/people/.*)/feed$,', $i, $r)) {
+			# arbo est naze et ne se base pas sur $i !
+			$_SERVER['REDIRECT_url_propre'] = preg_replace(
+				',/feed$,', '',
+				$_SERVER['REDIRECT_url_propre']);
+			$g = $arbo($r[1], $entite, $args, $ancre);
+			$g[1] = "backend";
 		}
 		else
 		if (preg_match(',/messages/(\d+)$,', $i, $r)) {
@@ -78,8 +115,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
 	// Sinon on se base sur l'url arbo
 	if (!isset($g)) {
-		$f = charger_fonction('arbo', 'urls');
-		$g = $f($i, $entite, $args, $ancre);
+		$g = $arbo($i, $entite, $args, $ancre);
 	}
 
 	return $g;
