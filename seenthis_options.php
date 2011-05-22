@@ -448,6 +448,7 @@ function recuperer_contenu_site ($id_syndic, $url) {
 }
 
 
+/* cf sucrer_utm dans seenthis.js */
 function sucrer_utm ($url) {
 	if (is_array($url)) $url = $url[0];
 	
