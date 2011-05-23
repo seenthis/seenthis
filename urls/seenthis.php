@@ -72,17 +72,16 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 		# la page people/xxx/follow/feed => ramener sur people/xxx
 		else if (
-			preg_match(',/people/.*(/follow/feed)$,', $i, $r)
+			preg_match(',^(.*/people/.*)(/follow/feed)$,', $i, $r)
 		OR
-			preg_match(',/people/.*(/feed)$,', $i, $r)
+			preg_match(',^(.*/people/.*)(/feed)$,', $i, $r)
 		) {
 			# arbo est naze et ne se base pas sur $i !
-			$_SERVER['REDIRECT_url_propre'] = substr(
-				$_SERVER['REDIRECT_url_propre'], -0, -strlen($r[1])
-			);
-			$g = $arbo($i, $entite, $args, $ancre);
+			unset($_SERVER['REDIRECT_url_propre']);
+			unset($_ENV['url_propre']);
+			$g = $arbo($r[1], $entite, $args, $ancre);
 
-			switch ($r[1]) {
+			switch ($r[2]) {
 				case '/follow/feed':
 					$g[1] = "backend_auteur_follow";
 					break;
