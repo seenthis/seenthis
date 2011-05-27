@@ -13,13 +13,14 @@ function nofollow($texte){
 
 
 define (_REG_CHARS, "a-z0-9\-–\_àáäâāăåąæçćĉċčĎďđéèëêēĕėęěĝğġģĥħíìïîĩīĭįıĳĵķĸĺļľŀłðñńņňŉŋóòöôõōŏőœøŕŗřśŝşšţťŧúùüûũūŭůűųŵÿýŷźżžþß"
+	."\'’"
 	."אבגדהוזחטיךכלםמןנסעףפץצ֐ְֱֲֳִֵֶַָֹֺֻּֽ֑֖֛֢֣֥֦֧֪֚֭֮֒֓֔֕֗֘֙֜֝֞֟֠֡֨֩֫֬֯־ֿ׀ׁׂ׃ׄקרשתءآأؤإئابةتثجحخدذرزسشصضطظعغػؼؽؾؿـفقكلمنهوىيًٌٍَُِّْٕٖٝٓٔٗ٘ٙٚٛ"
 	."ՙ՚՛՜՝՞՟աբգդեզէըթժիլխծկհձղճմյնշոչպջռսվտրցւփքօֆև"
 	."ͰͱͲͳʹ͵Ͷͷͺͻͼͽ΄΅Ά·ΈΉΊΌΎΏΐάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώϐϑϒϓϔϕϖϗϙϛϝϟϡϰϱϲϳϴϵ϶ϸϹϺϻϼϽϾϿ"
 	."абвгдежзийклмнопрстуфхцчшщъыьэюяѐёђѓєѕіїјљњћќѝўџѡѣѥѧѩѫѭѯѱѳѵѷѹѻѽѿҁ҂҃҄҅҆҈҉ҋҍҏґғҕҗҙқҝҟҡңҥҧҩҫҭүұҳҷҹһҽҿӀӂӄӆӈӌӎӏӑӓӕӗәӛӝӟӡӣӥӧөӫӭӯӱӳӵӷӹӻӽӿԁԃԅԇԉԋԍԏԑԓԕԗԙԛԝԟԡԣ"
 	);
 define (_REG_HASH, "(\#["._REG_CHARS."\@\.\/]*["._REG_CHARS."])");
-define (_REG_URL, "((http|ftp)s?:\/\/["._REG_CHARS."\'\"#~!«»;:\|\.’\?+=&%@!\-\/\_\,\(\)]+["._REG_CHARS."#\/\=\(\)\$\*]+)");
+define (_REG_URL, "((http|ftp)s?:\/\/["._REG_CHARS."\"#~!«»;:\|\.’\?+=&%@!\-\/\_\,\(\)]+["._REG_CHARS."#\/\=\(\)\$\*]+)");
 //define(_REG_URL, "(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]\{\};:'\".,<>?«»“”‘’]))");
 define (_REG_PEOPLE, "\B@[a-zA-Z0-9\.\_\-]+[a-zA-Z0-9\_\-]");
 
@@ -1071,7 +1072,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 			
 			if (!$deja_vu["mot"][$hash]) {
 
-				$query = sql_query("SELECT id_mot FROM spip_mots WHERE titre='$hash' AND id_groupe=1");
+				$query = sql_query("SELECT id_mot FROM spip_mots WHERE titre='".addslashes($hash)."' AND id_groupe=1");
 				if ($row = sql_fetch($query)) {
 					$id_mot = $row["id_mot"];			
 				} else {
@@ -1094,7 +1095,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 				hierarchiser_mot($id_mot, $hash);
 				
 				// Voir s'il y a des mots a re-hierarchiser
-				$query = sql_query("SELECT id_mot, titre FROM spip_mots WHERE id_groupe=1 AND titre LIKE '$hash%'");
+				$query = sql_query("SELECT id_mot, titre FROM spip_mots WHERE id_groupe=1 AND titre LIKE '".addslashes($hash)."%'");
 				while ($row = sql_fetch($query)) {
 					$id_mot = $row["id_mot"];
 					$titre = $row["titre"];
@@ -1124,7 +1125,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 			if (!$deja_vu["url"][$url]) {
 
 
-				$query = sql_query("SELECT id_syndic FROM spip_syndic WHERE url_site='$url'");
+				$query = sql_query("SELECT id_syndic FROM spip_syndic WHERE url_site='".addslashes($url)."'");
 				if ($row = sql_fetch($query)) {
 					$id_syndic = $row["id_syndic"];			
 				} else {

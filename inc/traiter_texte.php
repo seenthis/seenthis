@@ -1,7 +1,7 @@
 <?php
 function _traiter_hash ($regs) {
 	$aff_tag = mb_substr($regs[0], 1, 1000);
-	$tag = mb_strtolower($aff_tag, "UTF-8");
+	$tag = addslashes(mb_strtolower($aff_tag, "UTF-8"));
 	
 	$url = "?page=test_hash&amp;tag=$tag";
 	
