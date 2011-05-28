@@ -815,7 +815,7 @@ function notifier_me($id_me, $id_parent) {
 					$id_auteur = $row_auteur["id_auteur"];
 	
 					if (tester_mail_auteur($id_auteur, "mail_rep_moi")) {
-						$id_dest[] = $id_follow;
+						$id_dest[] = $id_auteur;
 					}
 				}
 				
