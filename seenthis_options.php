@@ -159,6 +159,7 @@ function cache_me ($id_me, $id_parent = 0) {
 	}
 
 	supprimer_microcache($id_me, "noisettes/atom_me");
+	supprimer_microcache($id_me, "noisettes/atom_me_tw");
 
 	supprimer_microcache($id_me, "noisettes/afficher_message");
 	supprimer_microcache($id_me, "noisettes/afficher_un_message");
@@ -222,6 +223,7 @@ function cache_auteur($id_auteur) {
 	supprimer_microcache($id_auteur, "noisettes/contenu_page_people");
 	supprimer_microcache($id_auteur, "noisettes/atom_messages_auteur");
 	supprimer_microcache($id_auteur, "noisettes/atom_backend_auteur");
+	supprimer_microcache($id_auteur, "noisettes/atom_backend_auteur_tw");
 	
 	$query = sql_select("id_follow", "spip_me_follow", "id_auteur=$id_auteur");
 	while ($row = sql_fetch($query)) {
