@@ -912,7 +912,7 @@ function notifier_me($id_me, $id_parent) {
 }	
 
 
-function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0, $id_dest=0, $ze_mot=0){
+function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0, $id_dest=0, $ze_mot=0, $time="NOW()"){
 
 	if ($id_auteur < 1) return false;
 	if ($id_me > 0) cache_me($id_me);
@@ -926,7 +926,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 		// Creation
 		$id_me = sql_insertq("spip_me",
 			array(
-				"date" => "NOW()",
+				"date" => "$time",
 				"id_auteur" => $id_auteur,
 				"id_parent" => $id_parent,
 				"id_dest" => $id_dest,
