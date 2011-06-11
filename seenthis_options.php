@@ -701,20 +701,37 @@ function message_texte($texte) {
 
 function extraire_titre($texte) {
 
+	
+
 	$texte = preg_replace(",([\t\r\n\ ]+),", " ", $texte);
 	$texte = preg_replace(",\ +,", " ", $texte);
 	$texte = ereg_replace("(#|@)", "", $texte);
 
-	$texte = mb_substr($texte, 0, 60, "utf-8");
-	$pos = mb_strrpos($texte, " ", "utf-8");
-	
-	if ($pos > 5) {
-		$texte = mb_substr($texte, 0, $pos, "utf-8")."...";
+	if (preg_match("/"._REG_URL."/i", $texte, $regs, PREG_OFFSET_CAPTURE)) {
+		$premier_lien = $regs[0][1];
+		if ($premier_lien > 10) $texte = substr($texte, 0, $premier_lien);
+		else {
+				$texte_alt = preg_replace("/"._REG_URL."/i", " ", $texte);
+				$texte_alt = preg_replace(",\ +,", " ", $texte_alt);
+				 $texte = $texte_alt;
+		}
+	} 
+
+
+	if (mb_strlen($texte, "utf-8") > 110) {
+		$texte = mb_substr($texte, 0, 110, "utf-8");
+		$pos = mb_strrpos($texte, " ", "utf-8");
+		
+		if ($pos > 5) {
+			$texte = mb_substr($texte, 0, $pos, "utf-8")."...";
+		}
 	}
+	
+	
 	
 	include_spip("inc/filtres");
 	include_spip("inc/texte");
-	return textebrut(typo(couper($texte,160)));
+	return textebrut(typo(couper($texte,140)));
 }
 
 
