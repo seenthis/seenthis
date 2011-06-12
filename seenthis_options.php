@@ -1177,9 +1177,9 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 
 	inserer_themes($id_me);
 
-
-	// notifications
-	if ($maj == 0) {
+	// notifications 
+	// uniquement si nouveau message, et si ça n'est pas une «archive» (delicious notamment)
+	if ($maj == 0 && $time == "NOW()") {
 		job_queue_add(
 			'notifier_me', 
 			'notifier nouveau message '.$id_me, 
