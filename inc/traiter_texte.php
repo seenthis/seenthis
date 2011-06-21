@@ -77,7 +77,14 @@ function _creer_lien_riche($lien) {
 	}
 	
 	if ($id_syndic) {
-		$total = "<span class='lien_lien_total'><a href='sites/$id_syndic'>►</a></span>";
+		// Ne faire apparaître le lien_court
+		// que si plusieurs billets referencent le lien
+		$query_total = sql_query("SELECT spip_me.* FROM spip_me, spip_me_syndic 
+			WHERE spip_me_syndic.id_syndic=$id_syndic  AND spip_me_syndic.id_me=spip_me.id_me AND spip_me.statut='publi'
+			LIMIT 1,1");
+		while ($row = sql_fetch($query_total)) {
+			$total = "<span class='lien_lien_total'><a href='sites/$id_syndic'>►</a></span>";
+		}
 	} else {
 		$total = "";
 	}

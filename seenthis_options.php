@@ -1146,7 +1146,22 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 
 				$query = sql_query("SELECT id_syndic FROM spip_syndic WHERE url_site='".addslashes($url)."'");
 				if ($row = sql_fetch($query)) {
-					$id_syndic = $row["id_syndic"];			
+					$id_syndic = $row["id_syndic"];
+					
+					$query_total = sql_select("spip_me.id_me AS id_me_supp, spip_me.id_parent AS id_parent_supp, spip_me.id_auteur AS id_auteur_supp",
+						"spip_me, spip_me_syndic",
+						"spip_me_syndic.id_syndic=$id_syndic  AND spip_me_syndic.id_me=spip_me.id_me AND spip_me.statut='publi'");
+
+					$total_syndic = sql_count($query_total);
+					if ($total_syndic < 3) {
+						while ($row_total = sql_fetch($query_total)) {
+							$id_me_supp = $row_total["id_me_supp"];
+							$id_parent_supp = $row_total["id_parent_supp"];
+							$id_auteur_supp = $row_total["id_auteur_supp"];
+							cache_me($id_me_supp, $id_parent_supp);
+							cache_auteur($id_auteur_supp);
+						}
+					}
 				} else {
 					$id_syndic = sql_insertq ("spip_syndic", 
 						array(
@@ -1168,6 +1183,10 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 				hierarchier_url($id_syndic);
 				
 				$deja_vu["url"][$url] = true;
+				
+				
+				
+
 			}
 		}
 	}
