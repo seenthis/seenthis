@@ -48,21 +48,21 @@ function seenthis_declarer_tables_objets_surnoms($interface){
 
 function seenthis_declarer_tables_principales($tables_principales){
 	$tables_principales['spip_me'] = seenthis_lire_create_table("
-  `id_me` bigint(21) NOT NULL AUTO_INCREMENT,
-  `date` datetime NOT NULL,
-  `id_auteur` bigint(21) NOT NULL,
-  `id_parent` bigint(21) NOT NULL,
-  `texte` longtext NOT NULL,
-  `themes` text NOT NULL,
-  `statut` varchar(5) NOT NULL DEFAULT 'oui',
-  `ip` varchar(40) NOT NULL,
-  `id_dest` bigint(21) NOT NULL,
-  `id_mot` bigint(21) NOT NULL,
-  `troll` bigint(21) NOT NULL,
-  PRIMARY KEY (`id_me`),
-  KEY `id_auteur` (`id_auteur`),
-  KEY `id_parent` (`id_parent`)
-"
+		`id_me` bigint(21) NOT NULL AUTO_INCREMENT,
+		`date` datetime NOT NULL,
+		`id_auteur` bigint(21) NOT NULL,
+		`id_parent` bigint(21) NOT NULL,
+		`texte` longtext NOT NULL,
+		`themes` text NOT NULL,
+		`statut` varchar(5) NOT NULL DEFAULT 'oui',
+		`ip` varchar(40) NOT NULL,
+		`id_dest` bigint(21) NOT NULL,
+		`id_mot` bigint(21) NOT NULL,
+		`troll` bigint(21) NOT NULL,
+		PRIMARY KEY (`id_me`),
+		KEY `id_auteur` (`id_auteur`),
+		KEY `id_parent` (`id_parent`)
+	"
 	);
 
 	// ajouts dans spip_auteurs
@@ -75,6 +75,7 @@ function seenthis_declarer_tables_principales($tables_principales){
 	$auteurs['field']['mail_rep_moi'] = "tinyint(1) NOT NULL DEFAULT '1'";
 	$auteurs['field']['mail_rep_billet'] = "tinyint(1) NOT NULL DEFAULT '0'";
 	$auteurs['field']['mail_rep_conv'] = "tinyint(1) NOT NULL DEFAULT '0'";
+	$auteurs['field']['mail_suivre_moi'] = "tinyint(1) NOT NULL DEFAULT '1'";
 
 	// ajouts dans spip_mots
 	$mots = &$tables_principales['spip_mots'];
@@ -184,7 +185,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	if ((!isset($GLOBALS['meta'][$nom_meta_base_version]) )
 	|| (($current_version = $GLOBALS['meta'][$nom_meta_base_version])!=$version_cible)){
 		include_spip('base/abstract_sql');
-		if (version_compare($current_version,"0.3.0",'<')){
+		if (version_compare($current_version,"0.4.0",'<')){
 			include_spip('base/serial');
 			include_spip('base/auxiliaires');
 			include_spip('base/create');

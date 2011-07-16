@@ -619,7 +619,7 @@ function calculer_troll($id_auteur, $reseau = false) {
 				if ($reseau) $troll = calculer_troll($id_follow, false);
 			}
 			
-			$troll = max(70, ($troll - _TROLL_VAL)/30 );
+			$troll = max(70, ($troll - _TROLL_VAL)/20 );
 			
 			$total = $total + ($troll);
 			
@@ -740,7 +740,7 @@ function tester_mail_auteur($id_auteur, $val) {
 	$ret = false;
 	
 	if (!(isset($GLOBALS["envoi_mail"]["$id_auteur"]["$val"]))) {
-		$query = sql_select("mail_nouv_billet, mail_rep_moi, mail_rep_billet, mail_rep_conv", "spip_auteurs", "id_auteur=$id_auteur");
+		$query = sql_select("mail_nouv_billet, mail_rep_moi, mail_rep_billet, mail_rep_conv, mail_suivre_moi", "spip_auteurs", "id_auteur=$id_auteur");
 		if ($row = sql_fetch($query)) {
 			$GLOBALS["envoi_mail"]["$id_auteur"] = $row;
 		}
@@ -798,6 +798,58 @@ function construire_texte($id_parent, $id_ref) {
 	
 }
 
+function notifier_suivre_moi ($id_auteur, $id_follow) {
+	//mail_suivre_moi
+	// $id_auteur => celui qui est suivi => celui à prévenir
+	// $id_follow => celui qui suit
+	
+	if (tester_mail_auteur($id_auteur, "mail_suivre_moi")) {
+
+		$headers = "From: no-reply@"._HOST."\n";
+		$headers .= 'Content-Type: text/plain; charset="utf-8"'."\n"; 
+		$headers .= "Content-Transfer-Encoding: 8bit\n"; 
+		$headers .= "Message-Id:<$id_auteur.$id_follow@"._HOST.">\n"; 
+
+		$query_dest = sql_select("*", "spip_auteurs", "id_auteur = $id_follow");
+		if ($row_dest = sql_fetch($query_dest)) {
+			$nom_aut = $row_dest["nom"];
+			$login_aut = $row_dest["login"];
+		}
+					
+		$query_dest = sql_select("*", "spip_auteurs", "id_auteur = $id_auteur");
+		if ($row_dest = sql_fetch($query_dest)) {
+			$nom_dest = $row_dest["nom"];
+			$email_dest = $row_dest["email"];
+			$lang = $row_dest["lang"];
+			
+			if (strlen(trim($email_dest)) > 3) {
+				
+				
+				include_spip("inc/filtres_mini");
+				$url_me = url_absolue(generer_url_entite($id_follow,"auteur"));
+				
+				if ($lang == "en") {				
+					$titre_mail = "$nom_aut is following you on Seenthis.";
+					$annonce = "Hi $nom_dest,\n\n$nom_aut (@$login_aut) is following you on Seenthis.";
+				} else {
+					$titre_mail = "$nom_aut vous suit sur Seenthis.";
+					$annonce = "Bonjour $nom_dest,\n\n$nom_aut (@$login_aut) vous suit sur Seenthis.";
+				}
+				
+				$lien = "\n\n---------\nPour ne plus recevoir d'alertes de Seenthis,\n vous pouvez régler vos préférences dans votre profil\nhttp://"._HOST."\n\n";
+				
+				$envoyer = "\n\n$annonce\n$url_me\n\n$lien";
+				//echo "<hr /><pre>$envoyer</pre>";
+
+				$titre_mail = mb_encode_mimeheader(html_entity_decode($titre_mail, null, 'UTF-8'), 'UTF-8');
+				@mail("$email_dest", "Seenthis - $titre_mail", "$envoyer", $headers);
+			}
+		}
+	
+		
+	}
+	
+}	
 
 function notifier_me($id_me, $id_parent) {
 
