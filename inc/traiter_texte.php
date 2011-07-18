@@ -43,7 +43,7 @@ function _creer_lien_riche($lien) {
 	$lien_or = $lien;
 	
 	$favicon = recuperer_favicon($lien);
-	if ($favicon) $style = " style='padding-left: 20px; background:url($favicon) left center no-repeat;'";
+	if ($favicon) $style = " style='background-image:url($favicon);'";
 
 	// Supprimer slash final
 	$lien = preg_replace(",/$,", "", $lien);
