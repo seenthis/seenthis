@@ -41,6 +41,9 @@ function _creer_lien_riche($lien) {
 
 	
 	$lien_or = $lien;
+	
+	$favicon = recuperer_favicon($lien);
+	if ($favicon) $style = " style='padding-left: 20px; background:url($favicon) left center no-repeat;'";
 
 	// Supprimer slash final
 	$lien = preg_replace(",/$,", "", $lien);
@@ -95,7 +98,7 @@ function _creer_lien_riche($lien) {
 	
 	
 	
-	$le_lien = "<span class='lien_lien'>$total<a href=\"$lien_or\" class='spip_out'$titre$lang>$intitule</a></span>";
+	$le_lien = "<span class='lien_lien'$style>$total<a href=\"$lien_or\" class='spip_out'$titre$lang>$intitule</a></span>";
 
 	$le_lien = str_replace("&", "&amp;", $le_lien);
 	$le_lien = str_replace("&amp;amp;", "&amp;", $le_lien);
