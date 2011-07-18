@@ -47,7 +47,7 @@ function _creer_lien_riche($lien) {
 	$lien = preg_replace(",/$,", "", $lien);
 
 	// Si c'est une image, ne pas afficher le lien
-	if (preg_match(",\.(png|gif|jpg)$,", $lien)) {
+	if (preg_match(",\.(png|gif|jpg|jpeg)$,", $lien)) {
 		list($width, $height) = @getimagesize($lien);
 		if (($width * $height) >= 300) return;
 	}
@@ -167,6 +167,7 @@ function _traiter_block ($regs) {
 	} else {
 		$texte = typo($texte);
 	}
+	$texte = typo_seenthis($texte);
 	
 	$texte = str_replace("TILDE_SEENTHIS", "~", $texte);
 	
@@ -179,6 +180,31 @@ function _traiter_block ($regs) {
 	$GLOBALS["les_blocs"][$GLOBALS["num_bloc"]] = $le_bloc;
 	
 	return "\n\nXXX_LIEN_".$GLOBALS["num_bloc"]."_BLOC_XXX\n\n".$final;
+}
+
+function typo_seenthis($texte) {
+
+	// Remplacer les caractères spéciaux par des lettres,
+	// sinon ces caractères spéciaux provoquent eux-mêmes des limites de mots.
+	
+	$texte = str_replace("*", "seenthisgrassier", $texte);
+	$texte = preg_replace(",\bseenthisgrassier([^\ ]+.*[^\ ]+)seenthisgrassier\b,Uu", "<strong><span class='masquer_texte'>*</span>$1<span class='masquer_texte'>*</span></strong>", $texte);
+	$texte = str_replace("seenthisgrassier", "*", $texte);
+
+
+	$texte = str_replace("-", "seenthisstrkieseenthis", $texte);
+	$texte = preg_replace(",\bseenthisstrkieseenthis([^\ ]+.*[^\ ]+)seenthisstrkieseenthis\b,Uu", "<del><span class='masquer_texte'>-</span>$1<span class='masquer_texte'>-</span></del>", $texte);
+	// Quand transformés en tirets en début de ligne:
+	$texte = preg_replace(",^–([^\ ]+.*[^\ ]+)seenthisstrkieseenthis\b,Uu", "<del><span class='masquer_texte'>-</span>$1<span class='masquer_texte'>-</span></del>", $texte);
+	$texte = str_replace("seenthisstrkieseenthis", "-", $texte);
+
+
+	$texte = preg_replace(",\b\_([^\ ]+.*[^\ ]+)\_\b,Uu", "<em><span class='masquer_texte'>_</span>$1<span class='masquer_texte'>_</span></em>", $texte);
+
+
+
+	
+	return $texte;
 }
 
 function _traiter_texte($texte) {
@@ -211,6 +237,7 @@ function _traiter_texte($texte) {
 	$texte = preg_replace(",^\-,", "–", $texte);
 
 
+
 	// Extraire les citations (paragraphe commençant et se terminant par un «»)
 
 	$texte = preg_replace_callback(",()[[:space:]]?(\x{275d}[^\x{275e}]*\x{275e})()[[:space:]]?(),Uums", "_traiter_block", $texte);
@@ -237,6 +264,8 @@ function _traiter_texte($texte) {
 	} else {
 		$texte = typo($texte);
 	}
+	$texte = typo_seenthis($texte);
+
 	$texte = str_replace("TILDE_SEENTHIS", "~", $texte);
 	
 	// Remettre les infos des liens
