@@ -42,8 +42,6 @@ function _creer_lien_riche($lien) {
 	
 	$lien_or = $lien;
 	
-	$favicon = recuperer_favicon($lien);
-	if ($favicon) $style = " style='background-image:url($favicon);'";
 
 	// Supprimer slash final
 	$lien = preg_replace(",/$,", "", $lien);
@@ -96,6 +94,8 @@ function _creer_lien_riche($lien) {
 	include_spip("inc/lien_court");
 	$intitule = sucrer_utm(lien_court($lien, 45));
 	
+	$favicon = recuperer_favicon($lien_or);
+	if ($favicon) $style = " style='background-image:url($favicon);'";
 	
 	
 	$le_lien = "<span class='lien_lien'$style>$total<a href=\"$lien_or\" class='spip_out'$titre$lang>$intitule</a></span>";
