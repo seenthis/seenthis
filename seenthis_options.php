@@ -5,6 +5,12 @@
 
 define ("_TROLL_VAL", 3000);
 
+
+// Définir des id_groupes de mots à exclure (par exemples les URL)
+// define('_EXCLUDE_GROUPE', '21');
+
+if (!defined("_EXCLUDE_GROUPE")) define("_EXCLUDE_GROUPE", 0);
+
 function nofollow($texte){
    $texte = str_replace("<a href","<a rel='nofollow' href",$texte);
    return $texte;
@@ -28,7 +34,6 @@ define (_REG_DEBUT_URL, "((http|ftp)s?:\/\/(www\.)?)");
 define (_REG_FIN_URL, "(\.(html?|jpg|gif|png|php|css|js)\/?$)");
 
 
-define ('_ID_WEBMESTRES', '1:3');
 
 define('_TRANSLITTERER_URL', false);
 
