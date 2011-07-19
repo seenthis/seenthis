@@ -475,7 +475,7 @@ function OC_message($id_me) {
 	$texte = preg_replace("/"._REG_URL."/i", " ", $texte);
 	
 	traiterOpenCalais($texte, $id_me, "id_me", "spip_me_mot");
-	supprimer_microcache($id_me, "noisettes/oc_message");
+	cache_me($id_me);
 	inserer_themes($id_me);
 }
 
