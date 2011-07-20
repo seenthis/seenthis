@@ -783,20 +783,18 @@ function construire_texte($id_parent, $id_ref) {
 	if ($row = sql_fetch($query)) {
 		$nom_auteur = nom_auteur($row["id_auteur"]);
 		$texte = $row["texte"];
-		if ($row["id_me"] == $id_ref) $texte = "\n\n".message_texte(($texte))."\n";
-		else $texte = trim(extraire_titre($texte));
+		if ($row["id_me"] == $id_ref) $ret = message_texte(($texte))."\n";
+		else $ret = "\n> ---------\n> $nom_auteur ".trim(extraire_titre($texte));
 		
-		$ret = "\n---------\n$nom_auteur $texte";
 	}
 	
 	$query = sql_select("id_me, texte, id_auteur", "spip_me", "id_parent=$id_parent && statut='publi'");
 	while ($row = sql_fetch($query)) {
 		$nom_auteur = nom_auteur($row["id_auteur"]);
 		$texte = $row["texte"];
-		if ($row["id_me"] == $id_ref) $texte = "\n\n".message_texte(($texte))."\n";
-		else $texte = trim(extraire_titre($texte));
+		if ($row["id_me"] == $id_ref) $ret = message_texte(($texte))."\n\n".$ret;
+		else $ret .= "\n> ---------\n> $nom_auteur ".trim(extraire_titre($texte));
 		
-		$ret .= "\n---------\n$nom_auteur $texte";
 	}
 	
 	return $ret;
