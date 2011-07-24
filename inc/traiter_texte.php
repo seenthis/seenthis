@@ -13,8 +13,14 @@ function _traiter_hash ($regs) {
 		$url = declarer_url_arbo("mot", $id_mot);
 	}
 	
-	return "<span class='lien_tag'>#<a href='$url'>$aff_tag</a></span>";
+	$le_hash = "<span class='lien_tag'>#<a href='$url'>$aff_tag</a></span>";
+
+	$GLOBALS["num_hash"] ++;
 	
+	$GLOBALS["les_hashs"][$GLOBALS["num_hash"]] = $le_hash;
+	
+	
+	return "XXX_HASH_".$GLOBALS["num_hash"]."_HASH_XXX";
 	
 }
 
@@ -127,6 +133,7 @@ function _traiter_lien ($regs) {
 	return "XXX_LIEN_".$GLOBALS["num_lien"]."_LIEN_XXX$retour_parenthese";
 }
 
+
 function _traiter_lien_retablir($regs) {
 	$num = $regs[1];
 	
@@ -137,6 +144,14 @@ function _traiter_blocs_retablir($regs) {
 	
 	return trim($GLOBALS["les_blocs"][$num]);
 }
+
+function _traiter_hash_retablir($regs) {
+	$num = $regs[1];
+		
+	return trim($GLOBALS["les_hashs"][$num]);
+}
+
+
 
 function _traiter_block ($regs) {
 	$texte = $regs[2];
@@ -277,6 +292,7 @@ function _traiter_texte($texte) {
 	// Remettre les infos des liens
 	$texte = preg_replace_callback(",XXX_LIEN_([0-9]+)_BLOC_XXX,Uums", "_traiter_blocs_retablir", $texte);
 	$texte = preg_replace_callback(",XXX_LIEN_([0-9]+)_LIEN_XXX,", "_traiter_lien_retablir", $texte);
+	$texte = preg_replace_callback(",XXX_HASH_([0-9]+)_HASH_XXX,", "_traiter_hash_retablir", $texte);
 
 	// Detacher les blocs du reste du texte, afin de bien fermer et ouvrir les paragraphes.
 	$texte = str_replace("<blockquote>", "\n\n<blockquote>", $texte);
