@@ -825,7 +825,7 @@ function notifier_suivre_moi ($id_auteur, $id_follow) {
 			if (strlen(trim($email_dest)) > 3) {
 				
 				include_spip("inc/filtres_mini");
-				$url_me = "http://"._HOST.generer_url_entite($id_follow,"auteur");
+				$url_me = "http://"._HOST."/".generer_url_entite($id_follow,"auteur");
 				
 				if ($lang == "en") {				
 					$titre_mail = "$nom_aut is following you on Seenthis.";
