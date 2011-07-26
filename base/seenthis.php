@@ -130,6 +130,7 @@ function seenthis_declarer_tables_auxiliaires($tables_auxiliaires){
   `id_mot` bigint(21) NOT NULL,
   `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   `relevance` int(11) NOT NULL,
+  `off` varchar(3) NOT NULL DEFAULT 'non',
   KEY `id_me` (`id_me`),
   KEY `id_mot` (`id_mot`)
 "
@@ -161,6 +162,7 @@ function seenthis_declarer_tables_auxiliaires($tables_auxiliaires){
   `id_syndic` bigint(21) NOT NULL,
   `id_mot` bigint(21) NOT NULL,
   `relevance` int(11) NOT NULL,
+  `off` varchar(3) NOT NULL DEFAULT 'non',
   KEY `id_syndic` (`id_syndic`),
   KEY `id_mot` (`id_mot`)
 "
@@ -185,7 +187,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	if ((!isset($GLOBALS['meta'][$nom_meta_base_version]) )
 	|| (($current_version = $GLOBALS['meta'][$nom_meta_base_version])!=$version_cible)){
 		include_spip('base/abstract_sql');
-		if (version_compare($current_version,"0.4.0",'<')){
+		if (version_compare($current_version,"0.5.0",'<')){
 			include_spip('base/serial');
 			include_spip('base/auxiliaires');
 			include_spip('base/create');
