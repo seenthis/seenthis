@@ -205,6 +205,8 @@ function _traiter_traiter($reg) {
 
 function typo_seenthis($texte) {
 
+	$texte = str_replace("&#8217;", "’", $texte);
+
 	// Remplacer les caractères spéciaux par des lettres,
 	// sinon ces caractères spéciaux provoquent eux-mêmes des limites de mots.
 	
@@ -214,12 +216,14 @@ function typo_seenthis($texte) {
 
 
 	$texte = str_replace("-", "seenthisstrkieseenthis", $texte);
-	$texte = preg_replace(",\bseenthisstrkieseenthis([^\ ]+.*[^\ ]+)seenthisstrkieseenthis\b,Uu", "<del><span class='masquer_texte'>-</span>$1<span class='masquer_texte'>-</span></del>", $texte);
+	$texte = preg_replace(",\bseenthisstrkieseenthis([^\ ].*[^\ ]+)seenthisstrkieseenthis\b,Uu", "<del><span class='masquer_texte'>-</span>$1<span class='masquer_texte'>-</span></del>", $texte);
 	// Quand transformés en tirets en début de ligne:
 	$texte = preg_replace(",^–([^\ ]+[^<>]*[^\ ]+)seenthisstrkieseenthis\b,Uu", "<del><span class='masquer_texte'>-</span>$1<span class='masquer_texte'>-</span></del>", $texte);
 	$texte = str_replace("seenthisstrkieseenthis", "-", $texte);
 
-
+//	$texte = str_replace("_", "seenthisitialiser", $texte);
+//	$texte = preg_replace(",\bseenthisitialiser([^\ ]+[^<>]*[^\ ]+)seenthisitialiser\b,Uu", "<em><span class='masquer_texte'>_</span>$1<span class='masquer_texte'>_</span></em>", $texte);
+//	$texte = str_replace("seenthisitialiser", "*", $texte);
 	$texte = preg_replace(",\b\_([^\ ]+[^<>]*[^\ ]+)\_\b,Uu", "<em><span class='masquer_texte'>_</span>$1<span class='masquer_texte'>_</span></em>", $texte);
 
 
