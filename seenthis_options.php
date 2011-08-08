@@ -805,7 +805,7 @@ function notifier_suivre_moi ($id_auteur, $id_follow) {
 	
 	if (tester_mail_auteur($id_auteur, "mail_suivre_moi")) {
 
-		$headers = "From: no-reply@"._HOST."\n";
+		$headers = "From: Seenthis <no-reply@"._HOST.">\n";
 		$headers .= 'Content-Type: text/plain; charset="utf-8"'."\n"; 
 		$headers .= "Content-Transfer-Encoding: 8bit\n"; 
 		$headers .= "Message-Id:<$id_auteur.$id_follow@"._HOST.">\n"; 
@@ -930,7 +930,7 @@ function notifier_me($id_me, $id_parent) {
 		
 		if (isset($id_dest)) { 
 		
-			$headers = "From: no-reply@"._HOST."\n";
+			$headers = "From: ".mb_encode_mimeheader($nom_auteur)." - Seenthis <no-reply@"._HOST.">\n";
 			$headers .= 'Content-Type: text/plain; charset="utf-8"'."\n"; 
 			$headers .= "Content-Transfer-Encoding: 8bit\n"; 
 			$headers .= "Message-Id:<$id_me@"._HOST.">\n"; 
@@ -966,11 +966,13 @@ function notifier_me($id_me, $id_parent) {
 						}
 					}
 					
+//					$titre_mail = mb_encode_mimeheader($annonce);
+					
 					$lien = "\n\n---------\nPour ne plus recevoir d'alertes de Seenthis,\n vous pouvez régler vos préférences dans votre profil\nhttp://"._HOST."\n\n";
 					
-					$envoyer = "\n\n$annonce\n$url_me\n\n$texte$lien";
+					$envoyer = "$annonce\n$url_me\n\n$texte\n\n\n\n$lien";
 					//echo "<hr /><pre>$envoyer</pre>";
-					@mail("$email_dest", "Seenthis - $nom_auteur - $titre_mail", "$envoyer", $headers);
+					@mail("$email_dest", "$titre_mail", "$envoyer", $headers);
 				}
 			}
 			
