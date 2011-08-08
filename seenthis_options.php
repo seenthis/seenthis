@@ -39,7 +39,11 @@ define('_TRANSLITTERER_URL', false);
 
 function seenthis_rechercher_liste_des_champs($tables){
 
-	$tables['me'] = array(
+/*	$tables['me'] = array(
+				'texte' => 1
+			);
+			*/
+	$tables['me_recherche'] = array(
 				'texte' => 1
 			);
 						
@@ -301,16 +305,22 @@ function supprimer_me($id_me) {
 	
 	cache_me($id_me);
 	
-	$query = sql_select("id_auteur", "spip_me", "id_me = $id_me");
+	$query = sql_select("id_auteur, id_parent", "spip_me", "id_me = $id_me");
 	while ($row = sql_fetch($query)) {
+		$id_parent = $row["id_parent"];
 		$id_auteur = $row["id_auteur"];
 		cache_auteur($id_auteur);
+		
+		if ($id_parent > 0) $id_ref = $id_parent;
+		else $id_ref = $id_me;
 	}
 	
 	//	sql_query("DELETE FROM spip_me_auteur WHERE id_me=$id_me");
 	sql_query("DELETE FROM spip_me_mot WHERE id_me=$id_me");
 	sql_query("DELETE FROM spip_me_syndic WHERE id_me=$id_me");
 	sql_query("UPDATE spip_me SET statut='supp' WHERE id_me=$id_me");
+
+	sql_delete("spip_me_recherche", "id_me=$id_ref");
 
 	
 	$query = sql_select("id_me, id_auteur", "spip_me", "id_parent = $id_me");
@@ -981,6 +991,64 @@ function notifier_me($id_me, $id_parent) {
 	}
 }	
 
+function indexer_me($id_ref) {
+	//$ret = "<h3>$id_ref</h3>";
+	
+	
+	$query = sql_select("*", "spip_me", "(id_me=$id_ref OR id_parent=$id_ref) AND statut='publi'");
+	
+	$id_billets = false;
+	
+	while($row = sql_fetch($query)) {
+		$id_me = $row["id_me"];
+		$id_parent = $row["id_parent"];
+		//$ret .= " [$id_me]";
+		
+		$id_billets[] = $id_me;
+		
+		$texte = $row["texte"];
+		$texte = preg_replace(",[\_\*\-❝❞#],", " ", $texte);
+		
+		$ret .= $texte;
+		if($id_parent == 0) {
+			$id_auteur_ref = $row["id_auteur"];
+			$id_me_ref = $id_me;
+			$date_ref = $row["date"];
+			$ret .= "\n\n".$texte;
+		}
+		
+	}
+	
+	
+	if ($id_billets) {
+		$id_billets = join($id_billets, ",");
+		//$ret .= "<h4>$id_billets</h4>";
+		
+		$query = sql_select("spip_mots.titre", "spip_mots, spip_me_mot", "spip_me_mot.id_me IN ($id_billets) AND spip_mots.id_mot=spip_me_mot.id_mot AND spip_me_mot.off='non'");
+		while ($row = sql_fetch($query)){
+			$titre = $row["titre"];
+			
+			$ret .= " #$titre $titre";
+		}
+		
+	}
+	
+	sql_delete("spip_me_recherche", "id_me=$id_ref");
+	sql_insertq("spip_me_recherche",
+		array(
+			"id_me" => $id_me_ref,
+			"date" => $date_ref,
+			"id_auteur" => $id_auteur_ref,
+			"texte" => $ret
+		)
+	);
+		
+	
+	
+	return $id_ref;
+}
+
+
 
 function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0, $id_dest=0, $ze_mot=0, $time="NOW()"){
 
@@ -1051,8 +1119,27 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	
 	if ($id_parent > 0) {
 		job_queue_add('OC_message', 'thématiser message '.$id_parent, array($id_parent));
+		// Indexer le contenu, dans une demi-heure
+
+		job_queue_add(
+			'indexer_me', 
+			'indexer message '.$id_parent, 
+			array($id_parent),
+			"",
+			true,
+			time() + (60 * 30) 
+		);
 	} else {
 		job_queue_add('OC_message', 'thématiser message '.$id_me, array($id_me));
+		// Indexer le contenu, dans cinq minutes
+		job_queue_add(
+			'indexer_me', 
+			'indexer message '.$id_parent, 
+			array($id_parent),
+			"",
+			true,
+			time() + (60 * 5) 
+		);
 	}
 	
 	// $deja_vu pour eviter les doublons
