@@ -1134,8 +1134,8 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 		// Indexer le contenu, dans cinq minutes
 		job_queue_add(
 			'indexer_me', 
-			'indexer message '.$id_parent, 
-			array($id_parent),
+			'indexer message '.$id_me, 
+			array($id_me),
 			"",
 			true,
 			time() + (60 * 5) 
