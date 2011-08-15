@@ -20,7 +20,7 @@ function _traiter_hash ($regs) {
 	$GLOBALS["les_hashs"][$GLOBALS["num_hash"]] = $le_hash;
 	
 	
-	return "XXX_HASH_".$GLOBALS["num_hash"]."_HASH_XXX";
+	return "XXXHASH".$GLOBALS["num_hash"]."HASHXXX";
 	
 }
 
@@ -131,7 +131,7 @@ function _traiter_lien ($regs) {
 	
 	$GLOBALS["les_liens"][$GLOBALS["num_lien"]] = $le_lien;
 	
-	return "XXX_LIEN_".$GLOBALS["num_lien"]."_LIEN_XXX$retour_parenthese";
+	return "XXXLIEN".$GLOBALS["num_lien"]."LIENXXX$retour_parenthese";
 }
 
 
@@ -160,7 +160,7 @@ function _traiter_block ($regs) {
 	$texte = preg_replace(",[\x{275d}\x{275e}],u", "", $texte);
 
 	// Cas pathologique: des blocs dans des blocs
-	$texte = preg_replace_callback(",XXX_LIEN_([0-9]+)_BLOC_XXX,Uums", "_traiter_blocs_retablir", $texte);
+	$texte = preg_replace_callback(",XXXBLOC([0-9]+)BLOCXXX,Uums", "_traiter_blocs_retablir", $texte);
 	$texte = preg_replace(",<\/?blockquote[^>]*>,", "", $texte);
 	
 	$final = "";
@@ -195,7 +195,7 @@ function _traiter_block ($regs) {
 	
 	$GLOBALS["les_blocs"][$GLOBALS["num_bloc"]] = $le_bloc;
 	
-	return "\n\nXXX_LIEN_".$GLOBALS["num_bloc"]."_BLOC_XXX\n\n".$final;
+	return "\n\nXXXBLOC".$GLOBALS["num_bloc"]."BLOCXXX\n\n".$final;
 }
 
 function _traiter_traiter($reg) {
@@ -222,9 +222,10 @@ function typo_seenthis($texte) {
 	$texte = preg_replace(",^–([^\ ]+[^<>]*[^\ ]+)seenthisstrkieseenthis\b,Uu", "<del><span class='masquer_texte'>-</span>$1<span class='masquer_texte'>-</span></del>", $texte);
 	$texte = str_replace("seenthisstrkieseenthis", "-", $texte);
 
-//	$texte = str_replace("_", "seenthisitialiser", $texte);
+//	$texte = preg_replace(",\_,U", "seenthisitialiser", $texte);
 //	$texte = preg_replace(",\bseenthisitialiser([^\ ]+[^<>]*[^\ ]+)seenthisitialiser\b,Uu", "<em><span class='masquer_texte'>_</span>$1<span class='masquer_texte'>_</span></em>", $texte);
 //	$texte = str_replace("seenthisitialiser", "*", $texte);
+
 	$texte = preg_replace(",\b\_([^\ ]+[^<>]*[^\ ]+)\_\b,Uu", "<em><span class='masquer_texte'>_</span>$1<span class='masquer_texte'>_</span></em>", $texte);
 
 
@@ -277,7 +278,7 @@ function _traiter_texte($texte) {
 	$texte = preg_replace_callback(",(\n+|^)[[:space:]]?([«\x{201c}\"].*[»\x{201d}\"])()[[:space:]]?(\n+|$),Uums", "_traiter_block", $texte);
 
 	// Supprimer dans une variable temporaire les mentions XXX, de facon a recuprer seulement le texte
-	$texte_racine = preg_replace(",XXX_[A-Z]+_([0-9]+)_[A-Z]+_XXX,Uums", "", $texte);
+	$texte_racine = preg_replace(",XXX[A-Z]+([0-9]+)[A-Z]+XXX,Uums", "", $texte);
 	$lang = detecter_langue($texte_racine);
 	
 	$texte = str_replace("~", "TILDE_SEENTHIS", $texte);
@@ -295,9 +296,9 @@ function _traiter_texte($texte) {
 	$texte = str_replace("TILDE_SEENTHIS", "~", $texte);
 	
 	// Remettre les infos des liens
-	$texte = preg_replace_callback(",XXX_LIEN_([0-9]+)_BLOC_XXX,Uums", "_traiter_blocs_retablir", $texte);
-	$texte = preg_replace_callback(",XXX_LIEN_([0-9]+)_LIEN_XXX,", "_traiter_lien_retablir", $texte);
-	$texte = preg_replace_callback(",XXX_HASH_([0-9]+)_HASH_XXX,", "_traiter_hash_retablir", $texte);
+	$texte = preg_replace_callback(",XXXBLOC([0-9]+)BLOCXXX,Uums", "_traiter_blocs_retablir", $texte);
+	$texte = preg_replace_callback(",XXXLIEN([0-9]+)LIENXXX,", "_traiter_lien_retablir", $texte);
+	$texte = preg_replace_callback(",XXXHASH([0-9]+)HASHXXX,", "_traiter_hash_retablir", $texte);
 
 	// Detacher les blocs du reste du texte, afin de bien fermer et ouvrir les paragraphes.
 	$texte = str_replace("<blockquote>", "\n\n<blockquote>", $texte);
