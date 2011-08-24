@@ -33,6 +33,7 @@ function seenthis_declarer_tables_interfaces($interface){
 
 	// 'spip_' dans l'index de $tables_principales
 	$interface['table_des_tables']['me']='me';
+	$interface['table_des_tables']['me_texte']='me_texte';
 	$interface['table_des_tables']['me_recherche']='me_recherche';
 	$interface['table_des_tables']['me_follow']='me_follow';
 	$interface['tables_jointures']['spip_me'][] = 'spip_me_follow';		
@@ -42,6 +43,7 @@ function seenthis_declarer_tables_interfaces($interface){
 function seenthis_declarer_tables_objets_surnoms($interface){
 	// 'spip_' dans l'index de $tables_principales
 	$interface['me']='me';
+	$interface['me_texte']='me_texte';
 	$interface['me_recherche']='me_recherche';
 	$interface['me_follow']='me_follow';
 		
@@ -54,8 +56,6 @@ function seenthis_declarer_tables_principales($tables_principales){
 		`date` datetime NOT NULL,
 		`id_auteur` bigint(21) NOT NULL,
 		`id_parent` bigint(21) NOT NULL,
-		`texte` longtext NOT NULL,
-		`themes` text NOT NULL,
 		`statut` varchar(5) NOT NULL DEFAULT 'oui',
 		`ip` varchar(40) NOT NULL,
 		`id_dest` bigint(21) NOT NULL,
@@ -64,6 +64,13 @@ function seenthis_declarer_tables_principales($tables_principales){
 		PRIMARY KEY (`id_me`),
 		KEY `id_auteur` (`id_auteur`),
 		KEY `id_parent` (`id_parent`)
+	"
+	);
+
+	$tables_principales['spip_me_texte'] = seenthis_lire_create_table("
+		`id_me` bigint(21) NOT NULL,
+		`texte` longtext NOT NULL
+		PRIMARY KEY (`id_me`)
 	"
 	);
 
@@ -202,7 +209,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	if ((!isset($GLOBALS['meta'][$nom_meta_base_version]) )
 	|| (($current_version = $GLOBALS['meta'][$nom_meta_base_version])!=$version_cible)){
 		include_spip('base/abstract_sql');
-		if (version_compare($current_version,"0.6.0",'<')){
+		if (version_compare($current_version,"0.7.0",'<')){
 			include_spip('base/serial');
 			include_spip('base/auxiliaires');
 			include_spip('base/create');
@@ -211,6 +218,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 			maj_tables(array(
 				'spip_auteurs',
 				'spip_me',
+				'spip_me_texte',
 				'spip_me_recherche',
 				'spip_me_auteur',
 				'spip_me_follow',
@@ -232,6 +240,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 function seenthis_vider_tables($nom_meta_base_version) {
 	effacer_meta($nom_meta_base_version);
 	sql_drop_table("spip_me");
+	sql_drop_table("spip_me_texte");
 	sql_drop_table("spip_me_recherche");
 	sql_drop_table("spip_me_auteur");
 	sql_drop_table("spip_me_follow");

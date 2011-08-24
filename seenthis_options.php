@@ -482,12 +482,28 @@ function sucrer_utm ($url) {
 	
 }
 
+
+function texte_de_me($id_me) {
+	// Aller chercher le texte d'un id_me
+	// dans la table spip_me_texte
+	// 
+	// Stocker le résultat, parce qu'utilisé plusieurs fois dans le même script
+
+	if ($GLOBALS["texte_de_id_me"]["$id_me"]) return $GLOBALS["texte_de_id_me"]["$id_me"];
+
+	$query = sql_select("texte", "spip_me_texte", "id_me=$id_me");
+	if ($row = sql_fetch($query)) {
+		$GLOBALS["texte_de_id_me"]["$id_me"] = $row["texte"];
+		return $GLOBALS["texte_de_id_me"]["$id_me"];
+	}
+}
+
 function OC_message($id_me) {
 	include_spip("php/opencalais");
 	
-	$query = sql_select("texte", "spip_me", "(id_me=$id_me OR id_parent=$id_me) AND statut='publi'", "id_me");
+	$query = sql_select("id_me", "spip_me", "(id_me=$id_me OR id_parent=$id_me) AND statut='publi'", "id_me");
 	while ($row = sql_fetch($query)) {
-		$texte .= " ".$row["texte"];
+		$texte .= " ".texte_de_me($row["id_me"]);
 		
 	}
 
@@ -559,12 +575,14 @@ function inserer_themes($id_me) {
 		}
 	}
 
+	/*
 	sql_updateq ("spip_me", 
 		array(
 			"themes" => $update
 		),
 		"id_me = '$id_me'"
 	);
+	*/
 }
 
 
@@ -790,19 +808,21 @@ function nom_auteur($id_auteur) {
 function construire_texte($id_parent, $id_ref) {
 //		$texte = message_texte(traiter_texte($texte));
 		
-	$query = sql_select("id_me, texte, id_auteur", "spip_me", "id_me=$id_parent && statut='publi'");
+	$query = sql_select("id_me, id_auteur", "spip_me", "id_me=$id_parent && statut='publi'");
 	if ($row = sql_fetch($query)) {
 		$nom_auteur = nom_auteur($row["id_auteur"]);
-		$texte = $row["texte"];
+		$id_me = $row["id_me"];
+		$texte = texte_de_me($id_me);
 		if ($row["id_me"] == $id_ref) $ret = message_texte(($texte))."\n";
 		else $ret = "\n> ---------\n> $nom_auteur ".trim(extraire_titre($texte));
 		
 	}
 	
-	$query = sql_select("id_me, texte, id_auteur", "spip_me", "id_parent=$id_parent && statut='publi'");
+	$query = sql_select("id_me, id_auteur", "spip_me", "id_parent=$id_parent && statut='publi'");
 	while ($row = sql_fetch($query)) {
 		$nom_auteur = nom_auteur($row["id_auteur"]);
-		$texte = $row["texte"];
+		$id_me = $row["id_me"];
+		$texte = texte_de_me($id_me);
 		if ($row["id_me"] == $id_ref) $ret = message_texte(($texte))."\n\n".$ret;
 		else $ret .= "\n> ---------\n> $nom_auteur ".trim(extraire_titre($texte));
 		
@@ -866,11 +886,11 @@ function notifier_suivre_moi ($id_auteur, $id_follow) {
 
 function notifier_me($id_me, $id_parent) {
 
-	$query = sql_select("texte, id_auteur", "spip_me", "id_me=$id_me && statut='publi'");
+	$query = sql_select("id_auteur", "spip_me", "id_me=$id_me && statut='publi'");
 	if ($row = sql_fetch($query)) {
 		$id_auteur_me = $row["id_auteur"];
 		
-		$titre_mail = trim(extraire_titre($row["texte"]));
+		$titre_mail = trim(extraire_titre(texte_de_me($id_me)));
 
 		if ($id_parent == 0) {		
 			$url_me = "http://"._HOST."/messages/$id_me";
@@ -1010,7 +1030,7 @@ function indexer_me($id_ref) {
 		
 		$id_billets[] = $id_me;
 		
-		$texte = $row["texte"];
+		$texte = texte_de_me($id_me);
 		$texte = preg_replace(",[\_\*\-❝❞#],", " ", $texte);
 		
 		$ret .= $texte;
@@ -1073,11 +1093,17 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 				"id_parent" => $id_parent,
 				"id_dest" => $id_dest,
 				"id_mot" => $ze_mot,
-				"texte" => $texte_message,
 				"ip" => $_SERVER["REMOTE_ADDR"],
 				"statut" => "publi"
 			)
 		);
+		sql_insertq("spip_me_texte",
+			array(
+				"id_me" => $id_me,
+				"texte" => $texte_message
+			)
+		);
+		
 	} else {
 		// Mise à jour
 		
@@ -1108,9 +1134,14 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 				"id_parent" => $id_parent,
 				"id_dest" => $id_dest,
 				"id_mot" => $ze_mot,
-				"texte" => $texte_message,
 				"ip" => $_SERVER["REMOTE_ADDR"],
 				"statut" => "publi"
+			),
+			"id_me=$id_me"
+		);
+		sql_updateq("spip_me_texte", 
+			array(
+				"texte" => $texte_message
 			),
 			"id_me=$id_me"
 		);
