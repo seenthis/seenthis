@@ -52,10 +52,12 @@ function _creer_lien_riche($lien) {
 	// Supprimer slash final
 	$lien = preg_replace(",/$,", "", $lien);
 
-	// Si c'est une image, ne pas afficher le lien
+	// Si c'est une image, inclure la vignette sur place
 	if (preg_match(",\.(png|gif|jpg|jpeg)$,", $lien)) {
-		list($width, $height) = @getimagesize($lien);
-		if (($width * $height) >= 300) return;
+		return afficher_miniature($lien);
+	
+		//list($width, $height) = @getimagesize($lien);
+		//if (($width * $height) >= 300) return;
 	}
 
 	
@@ -306,6 +308,12 @@ function _traiter_texte($texte) {
 	
 	$texte = "<p>$texte</p>";
 
+	$preg = ",(<a rel='shadowbox\[Portfolio\].*<\/a>)\n+(<a rel='shadowbox\[Portfolio\].*<\/a>),";
+
+	while (preg_match("$preg", $texte)) {
+		$texte = preg_replace("$preg", "$1$2", $texte);
+	}
+	
 	$texte = preg_replace(",([[:space:]]?)\n\n+,", "</p><p>", $texte);
 	$texte = preg_replace(",<p>([[:space:]]?)<\/p>,", "", $texte);
 	$texte = preg_replace(",<p><blockquote([^>]*)>,", "<blockquote$1>", $texte);
