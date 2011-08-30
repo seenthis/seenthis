@@ -329,4 +329,26 @@ function _traiter_texte($texte) {
 
 	return "<div$inserer>$texte</div>";
 }
+
+
+function _texte_inserer_embed($regs) {
+	$url = $regs[2];
+	$embed = file("http://"._HOST."/autoembed/index.php?url=".urlencode($url));
+	if ($embed) {
+		$embed = join($embed, "");
+	} else {
+		$embed = "";
+	}
+	
+	//$regs[3] = str_replace("'spip_out'", "'spip_out done'", $regs[3]);
+
+	return $regs[0].$embed;
+}
+
+function _ajouter_embed($texte) {
+	$texte = preg_replace_callback(",(<a .*href=['\"])(.*)(['\"] class=['\"]spip_out['\"].*</a>),U", _texte_inserer_embed, $texte);
+
+	return $texte;
+}
+
 ?>

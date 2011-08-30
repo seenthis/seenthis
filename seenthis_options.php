@@ -715,6 +715,15 @@ function traiter_texte($texte) {
 	return _traiter_texte($texte);
 }
 
+
+function ajouter_embed($texte) {
+	include_spip("inc/traiter_texte");
+	return _ajouter_embed($texte);
+}
+
+
+
+
 function message_texte($texte) {
 	$texte = liens_absolus($texte);
 	
