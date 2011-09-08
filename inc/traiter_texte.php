@@ -332,13 +332,19 @@ function _traiter_texte($texte) {
 
 
 function _texte_inserer_embed($regs) {
+	include_spip('inc/distant');
+	
 	$url = $regs[2];
-	$embed = file("http://"._HOST."/autoembed/index.php?url=".urlencode($url));
-	if ($embed) {
-		$embed = join($embed, "");
+//	$embed = @file("http://"._HOST."/autoembed/index.php?url=".urlencode($url));
+	$fichier_embed = copie_locale("http://"._HOST."/autoembed/index.php?url=".urlencode($url));
+	
+	if ($fichier_embed) {
+		$embed = join(file($fichier_embed), "");
+		@unlink($fichier_embed);
 	} else {
 		$embed = "";
 	}
+	$embed = safehtml($embed);
 	
 	//$regs[3] = str_replace("'spip_out'", "'spip_out done'", $regs[3]);
 
