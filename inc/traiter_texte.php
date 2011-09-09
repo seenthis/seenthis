@@ -344,7 +344,7 @@ function _texte_inserer_embed($regs) {
 	} else {
 		$embed = "";
 	}
-	$embed = safehtml($embed);
+//	$embed = safehtml($embed);
 	
 	//$regs[3] = str_replace("'spip_out'", "'spip_out done'", $regs[3]);
 
