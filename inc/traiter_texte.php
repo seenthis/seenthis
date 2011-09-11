@@ -335,6 +335,7 @@ function _texte_inserer_embed($regs) {
 	include_spip('inc/distant');
 	
 	$url = $regs[2];
+	
 //	$embed = @file("http://"._HOST."/autoembed/index.php?url=".urlencode($url));
 	$fichier_embed = copie_locale("http://"._HOST."/autoembed/index.php?url=".urlencode($url));
 	
@@ -344,15 +345,14 @@ function _texte_inserer_embed($regs) {
 	} else {
 		$embed = "";
 	}
-//	$embed = safehtml($embed);
-	
-	//$regs[3] = str_replace("'spip_out'", "'spip_out done'", $regs[3]);
+
+	// $embed = safehtml($embed);
 
 	return $regs[0].$embed;
 }
 
 function _ajouter_embed($texte) {
-	$texte = preg_replace_callback(",(<a .*href=['\"])(.*)(['\"] class=['\"]spip_out['\"].*</a>),U", _texte_inserer_embed, $texte);
+	$texte = preg_replace_callback(",(<a .*href=['\"])([^>]*)(['\"] class=['\"]spip_out['\"].*</a>),U", _texte_inserer_embed, $texte);
 
 	return $texte;
 }
