@@ -338,7 +338,6 @@ function supprimer_me($id_me) {
 	
 }
 
-
 function allonger_url($url) {
 
 	if (!preg_match("/(seen\.li|youtu\.be|t\.co|reut\.rs|nyti\.ms|fb\.me|bit\.ly|goo\.gl|2tu\.us|icio\.us|tinyurl\.com|tr\.im|ur1\.ca|a\.pwal\.fr|j\.mp|is\.gd|a\.gd|ow\.ly|spedr\.com|shar\.es|twurl\.nl|shr\.im|u\.nu|ff\.im|bt\.io|minu\.me|zi\.pe)/", $url)) return $url;
@@ -351,10 +350,12 @@ function allonger_url($url) {
 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 	$a = curl_exec($ch);
-	if(preg_match('#Location: (.*)#', $a, $r)) $l = trim($r[1]);
-	
-	return $l;
 
+	if(preg_match('#Location: (.*)#', $a, $r)) {
+		$l = trim($r[1]);
+		if (!preg_match(",^(http|ftp)s?\:,", $l)) $l = curl_getinfo($ch , CURLINFO_EFFECTIVE_URL);
+	}	
+	return $l;
 }
 
 

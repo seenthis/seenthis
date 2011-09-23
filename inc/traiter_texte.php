@@ -53,7 +53,7 @@ function _creer_lien_riche($lien) {
 	$lien = preg_replace(",/$,", "", $lien);
 
 	// Si c'est une image, inclure la vignette sur place
-	if (preg_match(",\.(png|gif|jpg|jpeg)$,", $lien)) {
+	if (preg_match(",\.(png|gif|jpg|jpeg)$,i", $lien)) {
 		return afficher_miniature($lien);
 	
 		//list($width, $height) = @getimagesize($lien);
@@ -337,6 +337,7 @@ function _texte_inserer_embed($regs) {
 	$url = $regs[2];
 	
 //	$embed = @file("http://"._HOST."/autoembed/index.php?url=".urlencode($url));
+	//echo "http://"._HOST."/autoembed/index.php?url=".urlencode($url);
 	$fichier_embed = copie_locale("http://"._HOST."/autoembed/index.php?url=".urlencode($url));
 	
 	if ($fichier_embed) {
