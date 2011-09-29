@@ -335,7 +335,6 @@ function _texte_inserer_embed($regs) {
 	include_spip('inc/distant');
 	
 	$url = $regs[2];
-	
 //	$embed = @file("http://"._HOST."/autoembed/index.php?url=".urlencode($url));
 	//echo "http://"._HOST."/autoembed/index.php?url=".urlencode($url);
 	$fichier_embed = copie_locale("http://"._HOST."/autoembed/index.php?url=".urlencode($url));

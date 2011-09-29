@@ -54,6 +54,8 @@ function seenthis_declarer_tables_principales($tables_principales){
 	$tables_principales['spip_me'] = seenthis_lire_create_table("
 		`id_me` bigint(21) NOT NULL AUTO_INCREMENT,
 		`date` datetime NOT NULL,
+		`date_modif` datetime NOT NULL,
+		`date_parent` datetime NOT NULL,
 		`id_auteur` bigint(21) NOT NULL,
 		`id_parent` bigint(21) NOT NULL,
 		`statut` varchar(5) NOT NULL DEFAULT 'oui',
@@ -209,7 +211,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	if ((!isset($GLOBALS['meta'][$nom_meta_base_version]) )
 	|| (($current_version = $GLOBALS['meta'][$nom_meta_base_version])!=$version_cible)){
 		include_spip('base/abstract_sql');
-		if (version_compare($current_version,"0.7.0",'<')){
+		if (version_compare($current_version,"0.8.0",'<')){
 			include_spip('base/serial');
 			include_spip('base/auxiliaires');
 			include_spip('base/create');

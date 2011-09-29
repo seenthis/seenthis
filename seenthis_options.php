@@ -1095,10 +1095,22 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	
 	
 	if ($id_me == 0) {
+	
+		if ($id_parent > 0) {
+			$query_parent = sql_select("date", "spip_me", "id_me=$id_parent");
+			if ($row_parent= sql_fetch($query_parent)) {
+				$date_parent = $row_parent["date"];
+			}
+		} else {
+			$date_parent = "NOW()";
+		}
+	
 		// Creation
 		$id_me = sql_insertq("spip_me",
 			array(
 				"date" => "$time",
+				"date_parent" => "$date_parent",
+				"date_modif" => "NOW()",
 				"id_auteur" => $id_auteur,
 				"id_parent" => $id_parent,
 				"id_dest" => $id_dest,
@@ -1118,7 +1130,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 		// Mise à jour
 		
 		$maj = 1;
-		
+
 		
 		$query = sql_select("*", "spip_me", "id_me=$id_me");
 		if ($row = sql_fetch($query)) {
@@ -1127,6 +1139,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 			$ze_mot = $row["id_mot"];
 			$ip = $row["ip"];
 			$id_auteur_old = $row["id_auteur"];
+			$date_parent_old = $row["date_parent"];
 		}
 		
 		if ($id_auteur_old != $id_auteur) die ("Forbidden");
@@ -1137,11 +1150,22 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 		$query = sql_query("DELETE FROM spip_me_syndic WHERE id_me=$id_me");
 		$query = sql_query("DELETE FROM spip_me_auteur WHERE id_me=$id_me AND id_auteur!=$id_dest");
 
+		if ($id_parent > 0) {
+			$query_parent = sql_select("date", "spip_me", "id_me=$id_parent");
+			if ($row_parent= sql_fetch($query_parent)) {
+				$date_parent = $row_parent["date"];
+			}
+		} else {
+			$date_parent = "$date_parent_old";
+		}
+		
 
 		sql_updateq("spip_me", 
 			array(
 				"id_auteur" => $id_auteur,
 				"id_parent" => $id_parent,
+				"date_parent" => "$date_parent",
+				"date_modif" => "NOW()",
 				"id_dest" => $id_dest,
 				"id_mot" => $ze_mot,
 				"ip" => $_SERVER["REMOTE_ADDR"],
