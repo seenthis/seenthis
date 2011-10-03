@@ -1083,6 +1083,10 @@ function indexer_me($id_ref) {
 }
 
 
+function supprimer_background_favicon($texte) {
+	include_spip("inc/traiter_texte");
+	return _supprimer_background_favicon($texte);
+}	
 
 function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0, $id_dest=0, $ze_mot=0, $time="NOW()"){
 

@@ -104,6 +104,7 @@ function _creer_lien_riche($lien) {
 
 	if (function_exists('recuperer_favicon')) {
 		$favicon = recuperer_favicon($lien_or);
+		// Si modif, penser à modifier aussi la fonction supprimer_background_favicon
 		if ($favicon) $style = " style='background-image:url($favicon);'";
 	}
 	
@@ -115,6 +116,12 @@ function _creer_lien_riche($lien) {
 	return $le_lien;
 }
 
+
+function _supprimer_background_favicon($texte) {
+	//background-image:url(local/cache-favicon/cran-ch-05d83b3285753a7704da06a45e842561.png);
+	
+	return preg_replace(",style=\'background-image:url\(local/cache-favicon/[^\)]+\);\',","",$texte);
+}
 
 function _traiter_lien ($regs) {
 	$lien = $regs[0];
