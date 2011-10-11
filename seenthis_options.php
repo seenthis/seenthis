@@ -1294,7 +1294,8 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	// Extraire les tags et fabriquer des mots-clés
 
 	// Virer les liens hypertexte (qui peuvent contenir une chaîne #ancre)
-	$message_off = preg_replace("/"._REG_URL."/i", "", $texte_message);
+	$message_off = preg_replace("/"._REG_URL."/ui", "", $texte_message);
+
 
 	preg_match_all("/"._REG_HASH."/ui", $message_off, $regs);
 	if ($regs) {
@@ -1317,10 +1318,11 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 				
 				// echo "<li>$id_mot - $hash</li>";
 				cache_mot($id_mot);
-
+				
 				sql_insertq("spip_me_mot", array(
 					"id_me" => $id_me,
-					"id_mot" => $id_mot
+					"id_mot" => $id_mot,
+					"date" => "NOW()"
 				));
 				
 				// Hierarchiser ce mot
@@ -1338,8 +1340,8 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 			}
 		}
 	}
-
-
+	
+	
 	// Extraire les liens et fabriquer des spip_syndic
 	preg_match_all("/"._REG_URL."/ui", $texte_message, $regs);
 
