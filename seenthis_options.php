@@ -1098,6 +1098,14 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	$texte_message = preg_replace_callback("/"._REG_URL."/i", "sucrer_utm", $texte_message);
 	
 	
+	# Dans config de Varnish
+    #    if (req.request == "POST"){
+    #            set req.http.X-Forwarded-For = client.ip;
+    #             return(pass);
+    #    }
+	if ($_SERVER["HTTP_X_FORWARDED_FOR"]) $adresse_ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
+	else $adresse_ip = $_SERVER["REMOTE_ADDR"];
+	
 	if ($id_me == 0) {
 	
 		if ($id_parent > 0) {
@@ -1119,7 +1127,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 				"id_parent" => $id_parent,
 				"id_dest" => $id_dest,
 				"id_mot" => $ze_mot,
-				"ip" => $_SERVER["REMOTE_ADDR"],
+				"ip" => $adresse_ip,
 				"statut" => "publi"
 			)
 		);
@@ -1172,7 +1180,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 				"date_modif" => "NOW()",
 				"id_dest" => $id_dest,
 				"id_mot" => $ze_mot,
-				"ip" => $_SERVER["REMOTE_ADDR"],
+				"ip" => $adresse_ip,
 				"statut" => "publi"
 			),
 			"id_me=$id_me"
