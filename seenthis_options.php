@@ -1097,14 +1097,9 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	// Virer les UTM en dur dans la sauvegarde
 	$texte_message = preg_replace_callback("/"._REG_URL."/i", "sucrer_utm", $texte_message);
 	
-	
-	# Dans config de Varnish
-    #    if (req.request == "POST"){
-    #            set req.http.X-Forwarded-For = client.ip;
-    #             return(pass);
-    #    }
-	if ($_SERVER["HTTP_X_FORWARDED_FOR"]) $adresse_ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
-	else $adresse_ip = $_SERVER["REMOTE_ADDR"];
+	# Voir config Varnish/apache 
+	# http://seenthis.net/messages/37781
+	$adresse_ip = $_SERVER["REMOTE_ADDR"];
 	
 	if ($id_me == 0) {
 	
