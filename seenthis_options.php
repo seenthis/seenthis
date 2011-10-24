@@ -30,7 +30,7 @@ function nofollow($texte){
 define (_REG_CHARS, "a-z0-9\pN\pL\pM\'’°\&\+–\_");
 
 define (_REG_HASH, "(\#["._REG_CHARS."\@\.\/-]*["._REG_CHARS."])");
-define (_REG_URL, "((http|ftp)s?:\/\/["._REG_CHARS."\"#~!«»;:\|\.’\?=&%@!\/\,\(\)-]+["._REG_CHARS."#\/\=\(\)\$\*-]+)");
+define (_REG_URL, "((http|ftp)s?:\/\/["._REG_CHARS."\"#~!«»“”;:\|\.’\?=&%@!\/\,\(\)-]+["._REG_CHARS."#«»“”\/\=\(\)\$\*-]+)");
 //define(_REG_URL, "(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]\{\};:'\".,<>?«»“”‘’]))");
 define (_REG_PEOPLE, "\B@[a-zA-Z0-9\.\_\-]+[a-zA-Z0-9\_\-]");
 
@@ -762,12 +762,12 @@ function extraire_titre($texte) {
 	} 
 
 
-	if (mb_strlen($texte, "utf-8") > 110) {
-		$texte = mb_substr($texte, 0, 110, "utf-8");
+	if (mb_strlen($texte, "utf-8") > 100) {
+		$texte = mb_substr($texte, 0, 100, "utf-8");
 		$pos = mb_strrpos($texte, " ", "utf-8");
 		
 		if ($pos > 5) {
-			$texte = mb_substr($texte, 0, $pos, "utf-8")."...";
+			$texte = mb_substr($texte, 0, $pos, "utf-8")."…";
 		}
 	}
 	
