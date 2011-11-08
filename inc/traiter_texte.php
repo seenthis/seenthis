@@ -224,12 +224,13 @@ function typo_seenthis($texte) {
 	$texte = preg_replace(",\bseenthisgrassier([^\ ]+[^<>]*[^\ ]+)seenthisgrassier\b,Uu", "<strong><span class='masquer_texte'>*</span>$1<span class='masquer_texte'>*</span></strong>", $texte);
 	$texte = str_replace("seenthisgrassier", "*", $texte);
 
-
+/*
 	$texte = str_replace("-", "seenthisstrkieseenthis", $texte);
 	$texte = preg_replace(",\bseenthisstrkieseenthis([^\ ].*[^\ ]+)seenthisstrkieseenthis\b,Uu", "<del><span class='masquer_texte'>-</span>$1<span class='masquer_texte'>-</span></del>", $texte);
 	// Quand transformés en tirets en début de ligne:
 	$texte = preg_replace(",^–([^\ ]+[^<>]*[^\ ]+)seenthisstrkieseenthis\b,Uu", "<del><span class='masquer_texte'>-</span>$1<span class='masquer_texte'>-</span></del>", $texte);
 	$texte = str_replace("seenthisstrkieseenthis", "-", $texte);
+*/
 
 //	$texte = preg_replace(",\_,U", "seenthisitialiser", $texte);
 //	$texte = preg_replace(",\bseenthisitialiser([^\ ]+[^<>]*[^\ ]+)seenthisitialiser\b,Uu", "<em><span class='masquer_texte'>_</span>$1<span class='masquer_texte'>_</span></em>", $texte);
