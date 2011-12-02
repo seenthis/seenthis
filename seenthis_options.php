@@ -475,7 +475,7 @@ function recuperer_contenu_site ($id_syndic, $url) {
 function sucrer_utm ($url) {
 	if (is_array($url)) $url = $url[0];
 	
-	$url = str_replace("http://twitter.com/#!/", "http://twitter.com/", $url);
+	$url = preg_replace(",https?://twitter.com/#!/,", "http://twitter.com/", $url);
 	
 	$url = preg_replace(",([\?\&]|\&amp;)utm\_.*,", "", $url);
 	
