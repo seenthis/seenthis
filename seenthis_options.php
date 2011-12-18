@@ -884,8 +884,10 @@ function notifier_suivre_moi ($id_auteur, $id_follow) {
 				$envoyer = "\n\n$annonce\n$url_me\n\n$lien";
 				//echo "<hr /><pre>$envoyer</pre>";
 
+
 				$titre_mail = mb_encode_mimeheader(html_entity_decode($titre_mail, null, 'UTF-8'), 'UTF-8');
-				@mail("$email_dest", "Seenthis - $titre_mail", "$envoyer", $headers);
+				$envoyer_mail = charger_fonction('envoyer_mail','inc');
+				$envoyer_mail("$email_dest", "Seenthis - $titre_mail", "$envoyer", $headers);
 			}
 		}
 	
@@ -973,15 +975,15 @@ function notifier_me($id_me, $id_parent) {
 
 		
 		if (isset($id_dest)) { 
-		
-			$headers = "From: ".mb_encode_mimeheader($nom_auteur)." - Seenthis <no-reply@"._HOST.">\n";
-			$headers .= 'Content-Type: text/plain; charset="utf-8"'."\n"; 
-			$headers .= "Content-Transfer-Encoding: 8bit\n"; 
-			$headers .= "Message-Id:<$id_me@"._HOST.">\n"; 
+			//$from = mb_encode_mimeheader($nom_auteur)." - Seenthis <no-reply@"._HOST.">\n";
+			$from = $nom_auteur." - Seenthis <no-reply@"._HOST.">\n";
+			//$headers .= 'Content-Type: text/plain; charset="utf-8"'."\n"; 
+			//$headers .= "Content-Transfer-Encoding: 8bit\n"; 
+			$headers = "Message-Id:<$id_me@"._HOST.">\n"; 
 			if ($id_parent > 0) $headers .= "In-Reply-To:<$id_parent@"._HOST.">\n"; 
 
-			$texte = html_entity_decode($texte, null, 'UTF-8');	
-			$titre_mail = mb_encode_mimeheader(html_entity_decode($titre_mail, null, 'UTF-8'), 'UTF-8');
+			//$texte = html_entity_decode($texte, null, 'UTF-8');	
+			//$titre_mail = mb_encode_mimeheader(html_entity_decode($titre_mail, null, 'UTF-8'), 'UTF-8');
 
 		
 			$id_dest = join(",", $id_dest);
@@ -1016,7 +1018,9 @@ function notifier_me($id_me, $id_parent) {
 					
 					$envoyer = "$annonce\n$url_me\n\n$texte\n\n\n\n$lien";
 					//echo "<hr /><pre>$envoyer</pre>";
-					@mail("$email_dest", "$titre_mail", "$envoyer", $headers);
+					$envoyer_mail = charger_fonction('envoyer_mail','inc');
+					$envoyer_mail("$email_dest", "$titre_mail", "$envoyer", $from, $headers);
+
 				}
 			}
 			
