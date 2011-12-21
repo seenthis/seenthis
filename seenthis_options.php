@@ -122,7 +122,7 @@ function identifier_url($url, $id_parent) {
 	}
 	
 //	echo "<li>$id_syndic &gt; $id_parent / $url</li>";
-	
+	cache_url_fil($id_syndic);
 	return $id_syndic;
 
 }
@@ -132,7 +132,6 @@ function hierarchier_url($id_syndic) {
 	$query = sql_query("SELECT url_site FROM spip_syndic WHERE id_syndic = $id_syndic");
 	if ($row = sql_fetch($query)) {
 		$url_site = $row["url_site"];
-	
 		
 		$url = parse_url($url_site);
 		
@@ -210,6 +209,12 @@ function cache_mot_fil($id_me) {
 		$id_mot = $row["id_mot"];
 		cache_mot($id_mot);
 	}
+	// Supprimer le cache des mots liés
+	$query = sql_select("id_syndic", "spip_me_syndic", "id_me=$id_me");
+	while ($row = sql_fetch($query)) {
+		$id_syndic = $row["id_syndic"];
+		cache_url($id_syndic);
+	}
 	// Traiter les enfants
 	$query_enfants = sql_select("id_me", "spip_me", "id_parent=$id_me");
 	while ($row_enfants = sql_fetch($query_enfants)) {
@@ -217,6 +222,20 @@ function cache_mot_fil($id_me) {
 		cache_mot_fil($id_me);
 	}
 }
+
+function cache_url_fil($id_syndic) {
+	// Supprimer le cache des mots liés
+	cache_url($id_syndic);
+
+	// Traiter les enfants
+	$query_enfants = sql_select("id_syndic", "spip_syndic", "id_parent=$id_syndic");
+	while ($row_enfants = sql_fetch($query_enfants)) {
+		$id_syndic = $row_enfants["id_syndic"];
+		cache_mot_fil($id_syndic);
+	}
+	
+}
+
 
 function cache_auteur_fil($id_me) {
 	$query = sql_select("id_auteur, id_parent", "spip_me", "id_me=$id_me");
@@ -267,6 +286,20 @@ function cache_mot ($id_mot) {
 	}
 
 }
+
+
+function cache_url ($id_syndic) {
+	supprimer_microcache($id_syndic, "noisettes/contenu_site");
+	supprimer_microcache($id_syndic, "noisettes/afficher_enfants_site");
+	
+	$query = sql_select("id_parent", "spip_syndic", "id_syndic=$id_syndic");
+	while ($row = sql_fetch($query)) {
+		$id_parent = $row["id_parent"];
+		if ($id_parent > 0) cache_url($id_parent);
+	}
+}
+
+
 
 function nettoyer_graphisme_auteur($id_auteur) {
 			supprimer_microcache($id_auteur, "noisettes/head_auteur");
@@ -1403,6 +1436,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 				));
 				// Hierarchiser l'URL
 				hierarchier_url($id_syndic);
+				cache_url($id_syndic);
 				
 				$deja_vu["url"][$url] = true;
 				
