@@ -249,11 +249,12 @@ function _traiter_texte($texte) {
 	include_spip("inc/texte");
 //	include_spip("php/detecter_langue_fonctions");
 	
-	$texte = preg_replace(",\r,", "\n", $texte);
+	// Remplacer \r\n par \n
+	// mais sert aussi de ramasse miette: remplace tout de même les \r seuls.
+	$texte = preg_replace(",\r\n?,", "\n", $texte);
 	
 	$texte = str_replace("<", "&lt;", $texte);
 	$texte = str_replace(">", "&gt;", $texte);
-
 
 
 	// Echapper les URL
