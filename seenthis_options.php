@@ -882,10 +882,10 @@ function notifier_suivre_moi ($id_auteur, $id_follow) {
 	
 	if (tester_mail_auteur($id_auteur, "mail_suivre_moi")) {
 
-		$headers = "From: Seenthis <no-reply@"._HOST.">\n";
-		$headers .= 'Content-Type: text/plain; charset="utf-8"'."\n"; 
-		$headers .= "Content-Transfer-Encoding: 8bit\n"; 
-		$headers .= "Message-Id:<$id_auteur.$id_follow@"._HOST.">\n"; 
+		$from = "Seenthis <no-reply@"._HOST.">";
+		//$headers .= 'Content-Type: text/plain; charset="utf-8"'."\n"; 
+		//$headers .= "Content-Transfer-Encoding: 8bit\n"; 
+		$headers = "Message-Id:<$id_auteur.$id_follow@"._HOST.">\n"; 
 
 		$query_dest = sql_select("*", "spip_auteurs", "id_auteur = $id_follow");
 		if ($row_dest = sql_fetch($query_dest)) {
@@ -918,9 +918,9 @@ function notifier_suivre_moi ($id_auteur, $id_follow) {
 				//echo "<hr /><pre>$envoyer</pre>";
 
 
-				$titre_mail = mb_encode_mimeheader(html_entity_decode($titre_mail, null, 'UTF-8'), 'UTF-8');
+				//$titre_mail = mb_encode_mimeheader(html_entity_decode($titre_mail, null, 'UTF-8'), 'UTF-8');
 				$envoyer_mail = charger_fonction('envoyer_mail','inc');
-				$envoyer_mail("$email_dest", "Seenthis - $titre_mail", "$envoyer", $headers);
+				$envoyer_mail("$email_dest", "Seenthis - $titre_mail", "$envoyer", $from, $headers);
 			}
 		}
 	
