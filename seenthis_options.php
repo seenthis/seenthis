@@ -252,6 +252,7 @@ function cache_auteur($id_auteur) {
 	supprimer_microcache($id_auteur, "noisettes/atom_backend_auteur_follow");
 	supprimer_microcache($id_auteur, "noisettes/contenu_auteur");
 	supprimer_microcache($id_auteur, "noisettes/contenu_page_tags");
+	supprimer_microcache($id_auteur, "noisettes/contenu_page_sites");
 	supprimer_microcache($id_auteur, "noisettes/contenu_page_people");
 	supprimer_microcache($id_auteur, "noisettes/atom_messages_auteur");
 	supprimer_microcache($id_auteur, "noisettes/atom_backend_auteur");
@@ -291,6 +292,13 @@ function cache_mot ($id_mot) {
 function cache_url ($id_syndic) {
 	supprimer_microcache($id_syndic, "noisettes/contenu_site");
 	supprimer_microcache($id_syndic, "noisettes/afficher_enfants_site");
+
+	$query = sql_select("id_follow", "spip_me_follow_url", "id_mot=$id_mot");
+	while ($row = sql_fetch($query)) {
+		$id_auteur = $row["id_follow"];
+		supprimer_microcache($id_auteur, "noisettes/contenu_page_sites");
+		supprimer_microcache($id_auteur, "noisettes/contenu_accueil");
+	}
 	
 	$query = sql_select("id_parent", "spip_syndic", "id_syndic=$id_syndic");
 	while ($row = sql_fetch($query)) {

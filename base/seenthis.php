@@ -148,6 +148,15 @@ function seenthis_declarer_tables_auxiliaires($tables_auxiliaires){
   KEY `id_follow` (`id_follow`)
 "
 	);
+	$tables_auxiliaires['spip_me_follow_url'] = seenthis_lire_create_table(
+	"
+  `id_syndic` bigint(21) NOT NULL,
+  `id_follow` bigint(21) NOT NULL,
+  `date` datetime NOT NULL,
+  KEY `id_syndic` (`id_syndic`),
+  KEY `id_follow` (`id_follow`)
+"
+	);
 	$tables_auxiliaires['spip_me_mot'] = seenthis_lire_create_table(
 	"
   `id_me` bigint(21) NOT NULL,
@@ -211,7 +220,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	if ((!isset($GLOBALS['meta'][$nom_meta_base_version]) )
 	|| (($current_version = $GLOBALS['meta'][$nom_meta_base_version])!=$version_cible)){
 		include_spip('base/abstract_sql');
-		if (version_compare($current_version,"0.8.0",'<')){
+		if (version_compare($current_version,"0.9.0",'<')){
 			include_spip('base/serial');
 			include_spip('base/auxiliaires');
 			include_spip('base/create');
@@ -225,6 +234,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 				'spip_me_auteur',
 				'spip_me_follow',
 				'spip_me_follow_mot',
+				'spip_me_follow_url',
 				'spip_me_mot',
 				'spip_me_share',
 				'spip_me_syndic',
@@ -247,6 +257,7 @@ function seenthis_vider_tables($nom_meta_base_version) {
 	sql_drop_table("spip_me_auteur");
 	sql_drop_table("spip_me_follow");
 	sql_drop_table("spip_me_follow_mot");
+	sql_drop_table("spip_me_follow_url");
 	sql_drop_table("spip_me_mot");
 	sql_drop_table("spip_me_share");
 	sql_drop_table("spip_me_syndic");
