@@ -293,7 +293,7 @@ function cache_url ($id_syndic) {
 	supprimer_microcache($id_syndic, "noisettes/contenu_site");
 	supprimer_microcache($id_syndic, "noisettes/afficher_enfants_site");
 
-	$query = sql_select("id_follow", "spip_me_follow_url", "id_mot=$id_mot");
+	$query = sql_select("id_follow", "spip_me_follow_url", "id_syndic=$id_syndic");
 	while ($row = sql_fetch($query)) {
 		$id_auteur = $row["id_follow"];
 		supprimer_microcache($id_auteur, "noisettes/contenu_page_sites");
