@@ -685,7 +685,6 @@ function calculer_troll($id_auteur, $reseau = false) {
 	if ($row = sql_fetch($query)) {
 		$troll_forcer = $row["troll_forcer"];
 	}
-	
 	if ($troll_forcer >0) {
 		$total = $troll_forcer;
 	} else {
@@ -703,6 +702,22 @@ function calculer_troll($id_auteur, $reseau = false) {
 			$total = $total + ($troll);
 			
 		}
+		
+		//$total = max(0, $total);
+		//$total = min($total, 6000);
+
+		$query = sql_select("*", "spip_me_block", "id_auteur=$id_auteur");
+		while ($row = sql_fetch($query)) {
+			$id_blockeur = $row["id_auteur"];
+			$troll = afficher_troll($id_blockeur);
+			
+			$troll = max(70, ($troll - _TROLL_VAL)/20 );
+			
+			$total = $total - $troll;
+			
+		}
+		
+
 		
 		$total = round($total);
 		
@@ -1138,6 +1153,8 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	if ($id_auteur < 1) return false;
 	if ($id_me > 0) cache_me($id_me);
 	
+	$troll = afficher_troll($id_auteur);
+	
 
 	// Virer les UTM en dur dans la sauvegarde
 	$texte_message = preg_replace_callback("/"._REG_URL."/i", "sucrer_utm", $texte_message);
@@ -1168,7 +1185,8 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 				"id_dest" => $id_dest,
 				"id_mot" => $ze_mot,
 				"ip" => $adresse_ip,
-				"statut" => "publi"
+				"statut" => "publi",
+				"troll" => $troll
 			)
 		);
 		sql_insertq("spip_me_texte",
@@ -1250,6 +1268,8 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 			true,
 			time() + (60 * 30) 
 		);
+		
+		
 	} else {
 		job_queue_add('OC_message', 'thématiser message '.$id_me, array($id_me));
 		// Indexer le contenu, dans cinq minutes

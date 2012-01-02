@@ -37,6 +37,7 @@ function seenthis_declarer_tables_interfaces($interface){
 	$interface['table_des_tables']['me_recherche']='me_recherche';
 	$interface['table_des_tables']['me_follow']='me_follow';
 	$interface['tables_jointures']['spip_me'][] = 'spip_me_follow';		
+	$interface['tables_jointures']['spip_me'][] = 'spip_me_block';		
 	
 	return $interface;
 }
@@ -139,6 +140,15 @@ function seenthis_declarer_tables_auxiliaires($tables_auxiliaires){
   KEY `id_auteur` (`id_auteur`)
 "
 	);
+	$tables_auxiliaires['spip_me_block'] = seenthis_lire_create_table(
+	"
+  `id_block` bigint(21) NOT NULL,
+  `id_auteur` bigint(21) NOT NULL,
+  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  KEY `id_block` (`id_block`),
+  KEY `id_auteur` (`id_auteur`)
+"
+	);
 	$tables_auxiliaires['spip_me_follow_mot'] = seenthis_lire_create_table(
 	"
   `id_mot` bigint(21) NOT NULL,
@@ -220,7 +230,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	if ((!isset($GLOBALS['meta'][$nom_meta_base_version]) )
 	|| (($current_version = $GLOBALS['meta'][$nom_meta_base_version])!=$version_cible)){
 		include_spip('base/abstract_sql');
-		if (version_compare($current_version,"0.9.0",'<')){
+		if (version_compare($current_version,"0.9.5",'<')){
 			include_spip('base/serial');
 			include_spip('base/auxiliaires');
 			include_spip('base/create');
@@ -233,6 +243,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 				'spip_me_recherche',
 				'spip_me_auteur',
 				'spip_me_follow',
+				'spip_me_block',
 				'spip_me_follow_mot',
 				'spip_me_follow_url',
 				'spip_me_mot',
@@ -256,6 +267,7 @@ function seenthis_vider_tables($nom_meta_base_version) {
 	sql_drop_table("spip_me_recherche");
 	sql_drop_table("spip_me_auteur");
 	sql_drop_table("spip_me_follow");
+	sql_drop_table("spip_me_block");
 	sql_drop_table("spip_me_follow_mot");
 	sql_drop_table("spip_me_follow_url");
 	sql_drop_table("spip_me_mot");
