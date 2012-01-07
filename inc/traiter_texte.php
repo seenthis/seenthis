@@ -54,7 +54,12 @@ function _creer_lien_riche($lien) {
 
 	// Si c'est une image, inclure la vignette sur place
 	if (preg_match(",\.(png|gif|jpg|jpeg)$,i", $lien)) {
-		return afficher_miniature($lien);
+		$image = afficher_miniature($lien);
+		
+		if (preg_match(",\.(gif)$,i", $lien)) {
+			$image = inserer_attribut($image, "src", $lien);
+		}
+		return $image;
 	
 		//list($width, $height) = @getimagesize($lien);
 		//if (($width * $height) >= 300) return;
