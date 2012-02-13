@@ -27,7 +27,7 @@ function _traiter_hash ($regs) {
 function _traiter_people ($regs) {
 	$tag = mb_substr($regs[0], 1, 1000);
 	
-	$query = sql_query("SELECT id_auteur FROM spip_auteurs WHERE login='$tag'");
+	$query = sql_query("SELECT id_auteur FROM spip_auteurs WHERE login='$tag' && statut!='5poubelle'");
 	if ($row = sql_fetch($query)) {
 		$id_auteur = $row["id_auteur"];
 		
