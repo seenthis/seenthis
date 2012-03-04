@@ -351,15 +351,18 @@ function _texte_inserer_embed($regs) {
 	$url = $regs[2];
 //	$embed = @file("http://"._HOST."/autoembed/index.php?url=".urlencode($url));
 	//echo "http://"._HOST."/autoembed/index.php?url=".urlencode($url);
-	$fichier_embed = copie_locale("http://"._HOST."/autoembed/index.php?url=".urlencode($url));
-	
+#	$fichier_embed = copie_locale("http://"._HOST."/autoembed/index.php?url=".urlencode($url));
+
+	require_once 'autoembed/autoembed.php';
+	$embed = embed_url($url);
+/*
 	if ($fichier_embed) {
 		$embed = join(file($fichier_embed), "");
 		@unlink($fichier_embed);
 	} else {
 		$embed = "";
 	}
-
+*/
 	// $embed = safehtml($embed);
 
 	return $regs[0].$embed;
