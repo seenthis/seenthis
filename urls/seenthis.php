@@ -48,13 +48,21 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		# #URL_ME
 		if ($entite == 'me') {
 			# s'il y a un parent, c'est #URL_ME{parent}#message$i
-			$k = sql_allfetsel('id_me,id_parent', 'spip_me', 'id_me='.$i);
+			$k = sql_allfetsel('id_me,id_parent,texte', 'spip_me', 'id_me='.$i);
 			if (!$k[0]) $g = '';
 			if ($k[0]['id_parent'])
 				$g = urls_seenthis_dist($k[0]['id_parent'], $entite, $args, 'message'.$i);
 			# sinon c'est messages/$i
-			else
+			else {
 				$g = 'messages/'.$i;
+
+				// test pour des urls plus parlantes
+				// seenthis.net/a12-Debut-du-texte
+				$first = array_filter(explode("\n", $k[0]['texte']));
+				$g = base_convert($i,10,36)
+					. '-'
+					. preg_replace('/\W+/', '-', translitteration(couper(array_shift($first),40,'')));
+			}
 
 			// Ajouter les args
 			if ($args)
@@ -105,6 +113,14 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		if (preg_match(',/messages/(\d+)$,', $i, $r)) {
 			$g = array(
 				array('id_me' => $r[1]),
+				'message',
+				null,
+				null
+			);
+		}
+		elseif (preg_match(',/([a-z0-9]+)-,', $i, $r)) {
+			$g = array(
+				array('id_me' => intval($r[1],36)),
 				'message',
 				null,
 				null

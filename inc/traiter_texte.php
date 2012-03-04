@@ -346,23 +346,14 @@ function _traiter_texte($texte) {
 
 
 function _texte_inserer_embed($regs) {
-	include_spip('inc/distant');
-	
-	$url = $regs[2];
-//	$embed = @file("http://"._HOST."/autoembed/index.php?url=".urlencode($url));
-	//echo "http://"._HOST."/autoembed/index.php?url=".urlencode($url);
-#	$fichier_embed = copie_locale("http://"._HOST."/autoembed/index.php?url=".urlencode($url));
 
-	require_once 'autoembed/autoembed.php';
-	$embed = embed_url($url);
-/*
-	if ($fichier_embed) {
-		$embed = join(file($fichier_embed), "");
-		@unlink($fichier_embed);
-	} else {
-		$embed = "";
-	}
-*/
+	$url = $regs[2];
+
+	# plugin pas encore conforme a la normale
+	include_spip('autoembed/autoembed');
+	if (function_exists('embed_url'))
+		$embed = embed_url($url);
+
 	// $embed = safehtml($embed);
 
 	return $regs[0].$embed;
