@@ -348,15 +348,22 @@ function _traiter_texte($texte) {
 function _texte_inserer_embed($regs) {
 
 	$url = $regs[2];
+	$lien = $regs[0];
 
 	# plugin pas encore conforme a la normale
 	include_spip('autoembed/autoembed');
-	if (function_exists('embed_url'))
-		$embed = embed_url($url);
+	if (function_exists('embed_url')
+	AND $embed = embed_url($url)) {
+		// ajouter la class oembed-link au lien
+		// pour pouvoir le masquer en css
+		$lienclass = inserer_attribut($lien,
+			'class',
+			trim(extraire_attribut($lien,'class').' oembed-link')
+		);
+		return $lienclass.$embed;
+	}
 
-	// $embed = safehtml($embed);
-
-	return $regs[0].$embed;
+	return $lien;
 }
 
 function _ajouter_embed($texte) {
