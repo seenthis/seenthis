@@ -179,12 +179,13 @@ function _traiter_block ($regs) {
 	
 	$final = "";
 
+	/*
 	if (preg_match(",[»\x{201d}\"]([»\x{201d}\"])$,Uums", $texte, $fin) ) {
 		$final = $fin[1];
 		
 		$texte = preg_replace(",[»\x{201d}\"]$,Uums", "", $texte);
 	}
-
+	*/
 
 	$texte = str_replace("~", "TILDE_SEENTHIS", $texte);
 	
@@ -226,22 +227,12 @@ function typo_seenthis($texte) {
 	// sinon ces caractères spéciaux provoquent eux-mêmes des limites de mots.
 	
 	$texte = str_replace("*", "seenthisgrassier", $texte);
-	$texte = preg_replace(",\bseenthisgrassier([^\ ]+[^<>]*[^\ ]+)seenthisgrassier\b,Uu", "<strong><span class='masquer_texte'>*</span>$1<span class='masquer_texte'>*</span></strong>", $texte);
+	$texte = preg_replace(",\bseenthisgrassier([^\ ]+[^<>]*[^\ ]+)seenthisgrassier\b,Uu", "<strong>$1</strong>", $texte);
+	//$texte = preg_replace(",\bseenthisgrassier([^\ ]+[^<>]*[^\ ]+)seenthisgrassier\b,Uu", "<strong><span class='masquer_texte'>*</span>$1<span class='masquer_texte'>*</span></strong>", $texte);
 	$texte = str_replace("seenthisgrassier", "*", $texte);
 
-/*
-	$texte = str_replace("-", "seenthisstrkieseenthis", $texte);
-	$texte = preg_replace(",\bseenthisstrkieseenthis([^\ ].*[^\ ]+)seenthisstrkieseenthis\b,Uu", "<del><span class='masquer_texte'>-</span>$1<span class='masquer_texte'>-</span></del>", $texte);
-	// Quand transformés en tirets en début de ligne:
-	$texte = preg_replace(",^–([^\ ]+[^<>]*[^\ ]+)seenthisstrkieseenthis\b,Uu", "<del><span class='masquer_texte'>-</span>$1<span class='masquer_texte'>-</span></del>", $texte);
-	$texte = str_replace("seenthisstrkieseenthis", "-", $texte);
-*/
-
-//	$texte = preg_replace(",\_,U", "seenthisitialiser", $texte);
-//	$texte = preg_replace(",\bseenthisitialiser([^\ ]+[^<>]*[^\ ]+)seenthisitialiser\b,Uu", "<em><span class='masquer_texte'>_</span>$1<span class='masquer_texte'>_</span></em>", $texte);
-//	$texte = str_replace("seenthisitialiser", "*", $texte);
-
-	$texte = preg_replace(",\b\_([^\ ]+[^<>]*[^\ ]+)\_\b,Uu", "<em><span class='masquer_texte'>_</span>$1<span class='masquer_texte'>_</span></em>", $texte);
+	//$texte = preg_replace(",\b\_([^\ ]+[^<>]*[^\ ]+)\_\b,Uu", "<em><span class='masquer_texte'>_</span>$1<span class='masquer_texte'>_</span></em>", $texte);
+	$texte = preg_replace(",\b\_([^\ ]+[^<>]*[^\ ]+)\_\b,Uu", "<em>$1</em>", $texte);
 
 
 
@@ -285,14 +276,15 @@ function _traiter_texte($texte) {
 
 	$texte = preg_replace_callback(",()[[:space:]]?(\x{275d}[^\x{275e}]*\x{275e})()[[:space:]]?(),Uums", "_traiter_block", $texte);
 
-
+	/*
 	// Retester sur paragraphe multiple
 	$texte = preg_replace_callback(",(\n+|^)[[:space:]]?([«\x{201c}\"][^«\x{201c}\"]*[»\x{201d}\"])()[[:space:]]?(\n+|$),Uums", "_traiter_block", $texte);
 	// Tester d'abord sur paragraphes simples
 	$texte = preg_replace_callback(",(\n+|^)[[:space:]]?([«\x{201c}\"][^\n]*[»\x{201d}\"])()[[:space:]]?(\n+|$),Uums", "_traiter_block", $texte);
 	// Retester sur paragraphe multiple
 	$texte = preg_replace_callback(",(\n+|^)[[:space:]]?([«\x{201c}\"].*[»\x{201d}\"])()[[:space:]]?(\n+|$),Uums", "_traiter_block", $texte);
-
+	*/
+	
 	// Supprimer dans une variable temporaire les mentions XXX, de facon a recuprer seulement le texte
 	$texte_racine = preg_replace(",XXX[A-Z]+([0-9]+)[A-Z]+XXX,Uums", "", $texte);
 	$lang = detecter_langue($texte_racine);
@@ -351,6 +343,8 @@ function _texte_inserer_embed($regs) {
 	$lien = $regs[0];
 
 	# plugin pas encore conforme a la normale
+	# attention: autoembed n'est pas un plugin, c'est un serveur indépendant conçu comme tel
+	# que je souhaite pouvoir si nécessaire installer sur un autre serveur (c'est que ça bouffe, ces conneries)
 	include_spip('autoembed/autoembed');
 	if (function_exists('embed_url')
 	AND $embed = embed_url($url)) {
