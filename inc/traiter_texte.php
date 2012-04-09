@@ -174,8 +174,8 @@ function _traiter_block ($regs) {
 	$texte = preg_replace(",[\x{275d}\x{275e}],u", "", $texte);
 
 	// Cas pathologique: des blocs dans des blocs
-	$texte = preg_replace_callback(",XXXBLOC([0-9]+)BLOCXXX,Uums", "_traiter_blocs_retablir", $texte);
-	$texte = preg_replace(",<\/?blockquote[^>]*>,", "", $texte);
+	//$texte = preg_replace_callback(",XXXBLOC([0-9]+)BLOCXXX,Uums", "_traiter_blocs_retablir", $texte);
+	//$texte = preg_replace(",<\/?blockquote[^>]*>,", "", $texte);
 	
 	$final = "";
 
