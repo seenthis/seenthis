@@ -365,7 +365,7 @@ function supprimer_me($id_me) {
 	sql_query("DELETE FROM spip_me_syndic WHERE id_me=$id_me");
 	sql_query("UPDATE spip_me SET statut='supp' WHERE id_me=$id_me");
 
-	sql_delete("spip_me_recherche", "id_me=$id_ref");
+	if ($id_parent == 0) sql_delete("spip_me_recherche", "id_me=$id_ref");
 
 	
 	$query = sql_select("id_me, id_auteur", "spip_me", "id_parent = $id_me");
@@ -1101,14 +1101,14 @@ function indexer_me($id_ref) {
 		$id_billets[] = $id_me;
 		
 		$texte = texte_de_me($id_me);
-		$texte = preg_replace(",[\_\*\-❝❞#],", " ", $texte);
+		$texte = "\n\n ".preg_replace(",[\_\*\-❝❞#],", " ", $texte)." ";
 		
 		$ret .= $texte;
 		if($id_parent == 0) {
 			$id_auteur_ref = $row["id_auteur"];
 			$id_me_ref = $id_me;
 			$date_ref = $row["date"];
-			$ret .= "\n\n".$texte;
+			$ret .= $texte;
 		}
 		
 	}
@@ -1122,7 +1122,7 @@ function indexer_me($id_ref) {
 		while ($row = sql_fetch($query)){
 			$titre = $row["titre"];
 			
-			$ret .= " #$titre $titre";
+			$ret .= "\n\n #$titre $titre";
 		}
 		
 	}
