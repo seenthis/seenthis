@@ -54,7 +54,7 @@ function _creer_lien_riche($lien) {
 	if (preg_match(",\.(png|gif|jpe?g),i", $lien)) {
 
 		// Gérer les images en lien dropbox (remplacer www par dl)
-		$lien = preg_replace("/^(https\:\/\/)(www)(\.dropbox\.com\/s\/.*)$/", '\1dl\3', $lien);
+		$lien = preg_replace("/^(https\:\/\/)(www)(\.dropbox\.com\/.*\/.*\/.*)$/", '\1dl\3', $lien);
 
 		$image = afficher_miniature($lien);
 
