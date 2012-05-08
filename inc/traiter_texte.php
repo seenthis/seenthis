@@ -45,30 +45,33 @@ function _traiter_people ($regs) {
 
 function _creer_lien_riche($lien) {
 
-	
 	$lien_or = $lien;
-	
 
 	// Supprimer slash final
 	$lien = preg_replace(",/$,", "", $lien);
 
-	// Si c'est une image, inclure la vignette sur place
-	if (preg_match(",\.(png|gif|jpg|jpeg)$,i", $lien)) {
+	// Si ça ressemble à une image, inclure la vignette sur place
+	if (preg_match(",\.(png|gif|jpe?g),i", $lien)) {
+
+		// Gérer les images en lien dropbox (remplacer www par dl)
+		$lien = preg_replace("/^(https\:\/\/)(www)(\.dropbox\.com\/s\/.*)$/", '\1dl\3', $lien);
+
 		$image = afficher_miniature($lien);
-		
+
+		# gif animé
 		if (preg_match(",\.(gif)$,i", $lien)) {
 			$image = inserer_attribut($image, "src", $lien);
 		}
-		return $image;
+
+		if ($image) return $image;
 	
 		//list($width, $height) = @getimagesize($lien);
 		//if (($width * $height) >= 300) return;
 	}
-
 	
 	$query = sql_query("SELECT id_syndic, lang, titre, url_syndic FROM spip_syndic WHERE url_site=\"$lien\"");
 	if ($row = sql_fetch($query)) {
-		$id_syndic = $row["id_syndic"];	
+		$id_syndic = $row["id_syndic"];
 		$lang = $row["lang"];
 		$titre = $row["titre"];
 		$long = $row["url_syndic"];
@@ -139,7 +142,7 @@ function _traiter_lien ($regs) {
 	}
 
 	
-	$le_lien = _creer_lien_riche($lien);	
+	$le_lien = _creer_lien_riche($lien);
 	
 	$GLOBALS["num_lien"] ++;
 	
