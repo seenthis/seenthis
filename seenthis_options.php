@@ -954,7 +954,7 @@ function notifier_suivre_moi ($id_auteur, $id_follow) {
 
 function notifier_me($id_me, $id_parent) {
 
-	$query = sql_select("id_auteur", "spip_me", "id_me=$id_me && statut='publi'");
+	$query = sql_select("id_auteur", "spip_me", "id_me=$id_me AND statut='publi'");
 	if ($row = sql_fetch($query)) {
 		$id_auteur_me = $row["id_auteur"];
 		
@@ -1018,7 +1018,7 @@ function notifier_me($id_me, $id_parent) {
 		
 		// auteurs qui ont participé à la discussion
 		if ($id_parent > 0) {
-			$query = sql_select("id_auteur", "spip_me", "id_parent=$id_parent && id_me!=$id_me && id_auteur!=$id_auteur_me");
+			$query = sql_select("id_auteur", "spip_me", "id_parent=$id_parent AND id_me!=$id_me");
 			while ($row = sql_fetch($query)) {
 				$id_auteur = $row["id_auteur"];		
 				
@@ -1043,10 +1043,18 @@ function notifier_me($id_me, $id_parent) {
 
 		
 			$id_dest = join(",", $id_dest);
-						
-			$query_dest = sql_select("*", "spip_auteurs", "id_auteur IN ($id_dest)");
+
+spip_log($id_dest, 'notif');
+spip_log($id_auteur_me, 'notif');
+
+			$query_dest = sql_select("*", "spip_auteurs", "id_auteur IN ($id_dest)
+			AND id_auteur != $id_auteur_me
+			");
 			while ($row_dest = sql_fetch($query_dest)) {
 				$nom_dest = $row_dest["nom"];
+
+spip_log($row_dest, 'notif');
+
 				$email_dest = $row_dest["email"];
 				$lang = $row_dest["lang"];
 				
