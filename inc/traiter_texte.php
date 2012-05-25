@@ -58,13 +58,16 @@ function _creer_lien_riche($lien) {
 
 		$image = afficher_miniature($lien);
 
-		# gif animé
-		if (preg_match(",\.(gif)$,i", $lien)) {
-			$image = inserer_attribut($image, "src", $lien);
+		if ($image) {
+			# gif animé
+			if (preg_match(",\.(gif)$,i", $lien)) {
+				$image = inserer_attribut($image, "src", $lien);
+			}
+			$image .= "<span class=\"lien_court\"><span class=\"lien_off\">$lien</span></span>";
+
+			return $image;
 		}
 
-		if ($image) return $image;
-	
 		//list($width, $height) = @getimagesize($lien);
 		//if (($width * $height) >= 300) return;
 	}
