@@ -224,6 +224,8 @@ function _traiter_traiter($reg) {
 
 function typo_seenthis($texte) {
 
+var_dump($texte);
+
 	$texte = str_replace("&#8217;", "’", $texte);
 
 	// Remplacer les caractères spéciaux par des lettres,
@@ -251,10 +253,6 @@ function _traiter_texte($texte) {
 	// Remplacer \r\n par \n
 	// mais sert aussi de ramasse miette: remplace tout de même les \r seuls.
 	$texte = preg_replace(",\r\n?,", "\n", $texte);
-	
-	$texte = str_replace("<", "&lt;", $texte);
-	$texte = str_replace(">", "&gt;", $texte);
-
 
 	// Echapper les URL
 	// (parce que les URL peuvent contenir des «#» qui deviendraient des tags
@@ -266,12 +264,13 @@ function _traiter_texte($texte) {
 	// Remplacer les tags
 	$texte = preg_replace_callback("/"._REG_HASH."/ui", "_traiter_hash", $texte);
 
-
+	// echapper les balises HTML
+	$texte = str_replace("<", "&lt;", $texte);
+	$texte = str_replace(">", "&gt;", $texte);
 
 	$texte = trim($texte);
 	
-	$texte = preg_replace(",\n\-,", "\n–", $texte);
-	$texte = preg_replace(",^\-,", "–", $texte);
+	$texte = preg_replace(",^-,m", "–", $texte);
 
 
 
