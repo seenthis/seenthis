@@ -224,8 +224,6 @@ function _traiter_traiter($reg) {
 
 function typo_seenthis($texte) {
 
-var_dump($texte);
-
 	$texte = str_replace("&#8217;", "’", $texte);
 
 	// Remplacer les caractères spéciaux par des lettres,
