@@ -256,15 +256,15 @@ function _traiter_texte($texte) {
 	// (parce que les URL peuvent contenir des «#» qui deviendraient des tags
 	$texte = preg_replace_callback("/"._REG_URL."/ui", "_traiter_lien", $texte);
 
+	// echapper les balises HTML
+	$texte = str_replace("<", "&lt;", $texte);
+	$texte = str_replace(">", "&gt;", $texte);
+
 	// Remplacer les people
 	$texte = preg_replace_callback("/"._REG_PEOPLE."/i", "_traiter_people", $texte);
 	
 	// Remplacer les tags
 	$texte = preg_replace_callback("/"._REG_HASH."/ui", "_traiter_hash", $texte);
-
-	// echapper les balises HTML
-	$texte = str_replace("<", "&lt;", $texte);
-	$texte = str_replace(">", "&gt;", $texte);
 
 	$texte = trim($texte);
 	
