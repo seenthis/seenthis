@@ -63,7 +63,12 @@ function _creer_lien_riche($lien) {
 			if (preg_match(",\.(gif)$,i", $lien)) {
 				$image = inserer_attribut($image, "src", $lien);
 			}
-			$image .= "<span class=\"lien_court\"><span class=\"lien_off\">$lien</span></span>";
+			// Attention: 
+			// plus tard dans le traitement, un preg supprimer les retour à la ligne entre les images, de façon
+			// à afficher plusieurs images successives sur la même ligne.
+			// L'insertion du lien caché ne doit pas casser ça.
+			$lien_off= "<span class=\"lien_court\"><span class=\"lien_off\"> $lien </span></span>";
+			$image = str_replace("</a>", $lien_off."</a>", $image);
 
 			return $image;
 		}
