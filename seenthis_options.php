@@ -171,6 +171,7 @@ function cache_me ($id_me, $id_parent = 0) {
 	}
 
 	supprimer_microcache($id_me, "noisettes/atom_me");
+	supprimer_microcache($id_me, "noisettes/afficher_me_xml");
 	supprimer_microcache($id_me, "noisettes/atom_me_tw");
 
 	supprimer_microcache($id_me, "noisettes/afficher_message");
