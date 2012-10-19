@@ -30,7 +30,7 @@ function nofollow($texte){
 define (_REG_CHARS, "a-z0-9\pN\pL\pM\'‘’°\&\+–\_");
 
 define (_REG_HASH, "(\#["._REG_CHARS."\@\.\/-]*["._REG_CHARS."])");
-define (_REG_URL, "((http|ftp)s?:\/\/["._REG_CHARS."\"#~!«»“”;:\|\.’\?=&%@!\/\,\$\(\)\[\]-]+["._REG_CHARS."#«»“”\/\=\(\)\[\]\$\*-])");
+define (_REG_URL, "((http|ftp)s?:\/\/["._REG_CHARS."\"#~!«»“”;:\|\.’\?=&%@!\/\,\$\(\)\[\]<>-]+["._REG_CHARS."#«»“”\/\=\(\)\[\]\$\*-])");
 //define(_REG_URL, "(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]\{\};:'\".,<>?«»“”‘’]))");
 define (_REG_PEOPLE, "\B@[a-zA-Z0-9\.\_\-]+[a-zA-Z0-9\_\-]");
 
@@ -585,6 +585,7 @@ function OC_site($id_syndic) {
 }
 
 function inserer_themes($id_me) {
+	return; # cette fonction ne fait rien -- a part prendre du temps !
 
 	$mots = false;
 	$update = "";
