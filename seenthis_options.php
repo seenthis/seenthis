@@ -1167,9 +1167,11 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	# Voir config Varnish/apache 
 	# http://seenthis.net/messages/37781
 	$adresse_ip = $_SERVER["REMOTE_ADDR"];
-	
+
+	// creation ?
 	if ($id_me == 0) {
 	
+		// message en reponse
 		if ($id_parent > 0) {
 			$query_parent = sql_select("date", "spip_me", "id_me=$id_parent");
 			if ($row_parent= sql_fetch($query_parent)) {
@@ -1178,11 +1180,18 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 		} else {
 			$date_parent = $time;
 		}
-	
-		// Creation
+
+		// creer un UUID aleatoire
+		// a noter : si on veut creer un message avec un UUID specifique,
+		// utiliser plutot la fonction seenthis_uuid / get_create_me_uuid()
+		include_spip('inc/uuid');
+		$uuid = UUID::getuuid();
+
+		// Insertion en base
 		$id_me = sql_insertq("spip_me",
 			array(
 				"date" => "$time",
+				'uuid' => $uuid,
 				"date_parent" => "$date_parent",
 				"date_modif" => "NOW()",
 				"id_auteur" => $id_auteur,

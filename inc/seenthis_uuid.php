@@ -42,3 +42,16 @@ function get_create_me_uuid($what=null, $id_auteur=null) {
 
 	return $id_me;
 }
+
+
+function seenthis_remplir_uuid() {
+	spip_log("remplir arbitrairement les uuid manquants", 'maj');
+	include_spip('inc/uuid');
+	$s = sql_query('SELECT id_me FROM spip_me WHERE uuid=""');
+	while ($t = sql_fetch($s)) {
+		$uuid = UUID::getuuid();
+		sql_updateq('spip_me', array('uuid'=>$uuid), 'id_me='.$t['id_me']);
+	}
+	spip_log("uuid manquants : fin", 'maj');
+}
+

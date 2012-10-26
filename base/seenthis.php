@@ -66,6 +66,7 @@ function seenthis_declarer_tables_principales($tables_principales){
 		`id_mot` bigint(21) NOT NULL,
 		`troll` bigint(21) NOT NULL,
 		PRIMARY KEY (`id_me`),
+		KEY `uuid` (`uuid`),
 		KEY `id_auteur` (`id_auteur`),
 		KEY `id_parent` (`id_parent`)
 	"
@@ -231,7 +232,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	if ((!isset($GLOBALS['meta'][$nom_meta_base_version]) )
 	|| (($current_version = $GLOBALS['meta'][$nom_meta_base_version])!=$version_cible)){
 		include_spip('base/abstract_sql');
-		if (version_compare($current_version,"0.9.6",'<')){
+		if (version_compare($current_version,"0.9.8",'<')){
 			include_spip('base/serial');
 			include_spip('base/auxiliaires');
 			include_spip('base/create');
@@ -256,8 +257,16 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 				'spip_mots'
 			));
 
+
+			// en 0.9.8, remplir arbitrairement les uuid manquants
+			if (version_compare($current_version,"0.9.8",'<')){
+				include_spip('inc/seenthis_uuid');
+				seenthis_remplir_uuid();
+			}
+
 			ecrire_meta($nom_meta_base_version,$current_version=$version_cible,'non');
 		}
+
 	}
 }
 
