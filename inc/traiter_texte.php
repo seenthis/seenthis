@@ -238,12 +238,26 @@ function typo_seenthis($texte) {
 	// sinon ces caractères spéciaux provoquent eux-mêmes des limites de mots.
 	
 	$texte = str_replace("*", "seenthisgrassier", $texte);
-	$texte = preg_replace(",\bseenthisgrassier([^\ ]+[^<>]*[^\ ]+)seenthisgrassier\b,Uu", "<strong>$1</strong>", $texte);
+
+	// italique-gras _* .... *_
+	$texte = preg_replace(",_seenthisgrassier([^<>]*)seenthisgrassier_,Uu", "<strong><i>$1</i></strong>", $texte);
+
+	// gras-italique *_ .... _*
+	$texte = preg_replace(",_seenthisgrassier([^<>]*)seenthisgrassier_,Uu", "<strong><i>$1</i></strong>", $texte);
+
+	// gras
+	$texte = preg_replace(",\bseenthisgrassier([^<>]*)seenthisgrassier\b,Uu", "<strong>$1</strong>", $texte);
+
+	// un test pas concluant visant à conserver les étoiles en copier/coller
 	//$texte = preg_replace(",\bseenthisgrassier([^\ ]+[^<>]*[^\ ]+)seenthisgrassier\b,Uu", "<strong><span class='masquer_texte'>*</span>$1<span class='masquer_texte'>*</span></strong>", $texte);
+
+	// rétablir les etoiles pas utilisees
 	$texte = str_replace("seenthisgrassier", "*", $texte);
 
 	//$texte = preg_replace(",\b\_([^\ ]+[^<>]*[^\ ]+)\_\b,Uu", "<em><span class='masquer_texte'>_</span>$1<span class='masquer_texte'>_</span></em>", $texte);
-	$texte = preg_replace(",\b\_([^\ ]+[^<>]*[^\ ]+)\_\b,Uu", "<em>$1</em>", $texte);
+
+	// italiques
+	$texte = preg_replace(",\b\_([^<>]*)\_\b,Uu", "<em>$1</em>", $texte);
 
 
 
@@ -279,7 +293,6 @@ function _traiter_texte($texte) {
 	$texte = preg_replace(",^-,m", "–", $texte);
 
 
-
 	// Extraire les citations (paragraphe commençant et se terminant par un «»)
 
 	$texte = preg_replace_callback(",()[[:space:]]?(\x{275d}[^\x{275e}]*\x{275e})()[[:space:]]?(),Uums", "_traiter_block", $texte);
@@ -296,9 +309,9 @@ function _traiter_texte($texte) {
 	// Supprimer dans une variable temporaire les mentions XXX, de facon a recuprer seulement le texte
 	$texte_racine = preg_replace(",XXX[A-Z]+([0-9]+)[A-Z]+XXX,Uums", "", $texte);
 	$lang = detecter_langue($texte_racine);
-	
+
 	$texte = str_replace("~", "TILDE_SEENTHIS", $texte);
-	
+
 	if ($lang) {
 		$dir = lang_dir($lang);
 		lang_select($lang);
@@ -319,7 +332,7 @@ function _traiter_texte($texte) {
 	// Detacher les blocs du reste du texte, afin de bien fermer et ouvrir les paragraphes.
 	$texte = str_replace("<blockquote>", "\n\n<blockquote>", $texte);
 	$texte = str_replace("</blockquote>", "</blockquote>\n\n", $texte);
-	
+
 	$texte = "<p>$texte</p>";
 
 	$preg = ",(<a rel='shadowbox\[Portfolio\].*<\/a>)\n+(<a rel='shadowbox\[Portfolio\].*<\/a>),";
@@ -327,6 +340,7 @@ function _traiter_texte($texte) {
 	while (preg_match("$preg", $texte)) {
 		$texte = preg_replace("$preg", "$1$2", $texte);
 	}
+
 	
 	$texte = preg_replace(",([[:space:]]?)\n\n+,", "</p><p>", $texte);
 	$texte = preg_replace(",<p>([[:space:]]?)<\/p>,", "", $texte);
@@ -335,7 +349,7 @@ function _traiter_texte($texte) {
 	$texte = str_replace("</blockquote></p>", "</blockquote>", $texte);
 	
 	
-	
+
 	$texte = preg_replace(",([[:space:]]?)(\n|\r),", "<br />", $texte);
 	$texte = str_replace("<p><br />", "<p>", $texte);
 
