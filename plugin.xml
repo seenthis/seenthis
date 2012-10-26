@@ -30,7 +30,7 @@
 		<inclure>base/seenthis.php</inclure>
 	</pipeline>
 
-	<version_base>0.9.5</version_base>
+	<version_base>0.9.6</version_base>
 	<install>base/seenthis.php</install>
 
 	<necessite id="SPIP" version="[2.1.0;]" />

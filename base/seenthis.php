@@ -54,6 +54,7 @@ function seenthis_declarer_tables_objets_surnoms($interface){
 function seenthis_declarer_tables_principales($tables_principales){
 	$tables_principales['spip_me'] = seenthis_lire_create_table("
 		`id_me` bigint(21) NOT NULL AUTO_INCREMENT,
+		`uuid` CHAR(36) NOT NULL,
 		`date` datetime NOT NULL,
 		`date_modif` datetime NOT NULL,
 		`date_parent` datetime NOT NULL,
@@ -230,7 +231,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	if ((!isset($GLOBALS['meta'][$nom_meta_base_version]) )
 	|| (($current_version = $GLOBALS['meta'][$nom_meta_base_version])!=$version_cible)){
 		include_spip('base/abstract_sql');
-		if (version_compare($current_version,"0.9.5",'<')){
+		if (version_compare($current_version,"0.9.6",'<')){
 			include_spip('base/serial');
 			include_spip('base/auxiliaires');
 			include_spip('base/create');
