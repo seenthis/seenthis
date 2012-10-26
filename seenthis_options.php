@@ -807,7 +807,7 @@ function message_texte($texte) {
 function extraire_titre($texte) {
 	$texte = preg_replace(",([\t\r\n\ ]+),", " ", $texte);
 	$texte = preg_replace(",\ +,", " ", $texte);
-	$texte = ereg_replace("(#|@)", "", $texte);
+	$texte = preg_replace("/(#|@)/", "", $texte);
 
 	if (preg_match("/"._REG_URL."/i", $texte, $regs, PREG_OFFSET_CAPTURE)) {
 		$premier_lien = $regs[0][1];
@@ -1106,7 +1106,7 @@ function indexer_me($id_ref) {
 		$id_billets[] = $id_me;
 		
 		$texte = texte_de_me($id_me);
-		$texte = "\n\n ".preg_replace(",[\_\*\-❝❞#],", " ", $texte)." ";
+		$texte = "\n\n ".preg_replace(",[\_\*\-❝❞#],u", " ", $texte)." ";
 		
 		$ret .= $texte;
 		if($id_parent == 0) {
