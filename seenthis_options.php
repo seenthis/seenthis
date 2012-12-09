@@ -69,7 +69,7 @@ function hierarchiser_mot($id_mot, $titre) {
 	
 	for ($i = $l - 1; $i >0; $i--) {
 		$tag = mb_substr($titre, 0, $i);
-		$query = sql_query("SELECT id_mot FROM spip_mots WHERE titre = '$tag' && id_groupe=1");
+		$query = sql_query("SELECT id_mot FROM spip_mots WHERE titre=".sql_quote($tag)." && id_groupe=1");
 		
 		if ($row = sql_fetch($query)) {
 			$id_parent = $row["id_mot"];
@@ -1131,7 +1131,7 @@ function indexer_me($id_ref) {
 		}
 		
 	}
-	
+
 	sql_delete("spip_me_recherche", "id_me=$id_ref");
 	sql_insertq("spip_me_recherche",
 		array(
@@ -1269,8 +1269,9 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	
 	cache_auteur($id_auteur);
 	cache_me($id_me, $id_parent);
-	
+
 	if ($id_parent > 0) {
+
 		job_queue_add('OC_message', 'thématiser message '.$id_parent, array($id_parent));
 		// Indexer le contenu, dans une demi-heure
 
@@ -1354,7 +1355,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	// Ajouter mot automatique (ze_mot)
 	if ($ze_mot > 0) {
 			
-				$query = sql_query("SELECT id_mot, titre FROM spip_mots WHERE id_mot='$ze_mot'");
+				$query = sql_query("SELECT id_mot, titre FROM spip_mots WHERE id_mot=$ze_mot");
 				if ($row = sql_fetch($query)) {
 					$id_mot = $row["id_mot"];			
 					$titre = $row["titre"];			
@@ -1387,7 +1388,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 			
 			if (!$deja_vu["mot"][$hash]) {
 
-				$query = sql_query("SELECT id_mot FROM spip_mots WHERE titre='".addslashes($hash)."' AND id_groupe=1");
+				$query = sql_query("SELECT id_mot FROM spip_mots WHERE titre=".sql_quote($hash)." AND id_groupe=1");
 				if ($row = sql_fetch($query)) {
 					$id_mot = $row["id_mot"];			
 				} else {
@@ -1411,7 +1412,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 				hierarchiser_mot($id_mot, $hash);
 				
 				// Voir s'il y a des mots a re-hierarchiser
-				$query = sql_query("SELECT id_mot, titre FROM spip_mots WHERE id_groupe=1 AND titre LIKE '".addslashes($hash)."%'");
+				$query = sql_query("SELECT id_mot, titre FROM spip_mots WHERE id_groupe=1 AND titre LIKE ".sql_quote("$hash%"));
 				while ($row = sql_fetch($query)) {
 					$id_mot = $row["id_mot"];
 					$titre = $row["titre"];
