@@ -17,16 +17,6 @@ function nofollow($texte){
 } 
 
 
-
-/*define (_REG_CHARS, "a-z0-9\-–\_àáäâāăåąæçćĉċčĎďđéèëêēĕėęěĝğġģĥħíìïîĩīĭįıĳĵķĸĺļľŀłðñńņňŉŋóòöôõōŏőœøŕŗřśŝşšţťŧúùüûũūŭůűųŵÿýŷźżžþß"
-	."\'’°\&\+"
-	."אבגדהוזחטיךכלםמןנסעףפץצ֐ְֱֲֳִֵֶַָֹֺֻּֽ֑֖֛֢֣֥֦֧֪֚֭֮֒֓֔֕֗֘֙֜֝֞֟֠֡֨֩֫֬֯־ֿ׀ׁׂ׃ׄקרשתءآأؤإئابةتثجحخدذرزسشصضطظعغػؼؽؾؿـفقكلمنهوىيًٌٍَُِّْٕٖٝٓٔٗ٘ٙٚٛ"
-	."ՙ՚՛՜՝՞՟աբգդեզէըթժիլխծկհձղճմյնշոչպջռսվտրցւփքօֆև"
-	."ͰͱͲͳʹ͵Ͷͷͺͻͼͽ΄΅Ά·ΈΉΊΌΎΏΐάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώϐϑϒϓϔϕϖϗϙϛϝϟϡϰϱϲϳϴϵ϶ϸϹϺϻϼϽϾϿ"
-	."абвгдежзийклмнопрстуфхцчшщъыьэюяѐёђѓєѕіїјљњћќѝўџѡѣѥѧѩѫѭѯѱѳѵѷѹѻѽѿҁ҂҃҄҅҆҈҉ҋҍҏґғҕҗҙқҝҟҡңҥҧҩҫҭүұҳҷҹһҽҿӀӂӄӆӈӌӎӏӑӓӕӗәӛӝӟӡӣӥӧөӫӭӯӱӳӵӷӹӻӽӿԁԃԅԇԉԋԍԏԑԓԕԗԙԛԝԟԡԣ"
-	);
-*/
-
 define (_REG_CHARS, "a-z0-9\pN\pL\pM\'‘’°\&\+–\_");
 
 define (_REG_HASH, "(\#["._REG_CHARS."\@\.\/-]*["._REG_CHARS."])");
@@ -55,37 +45,38 @@ function seenthis_rechercher_liste_des_champs($tables){
 }
 
 
-function hierarchiser_mot($id_mot, $titre) {
+function hierarchiser_mot($id_mot) {
 	
 
-	$query = sql_select("id_groupe", "spip_mots", "id_mot=$id_mot");
+	$query = sql_select("id_groupe,titre,id_parent", "spip_mots", "id_mot=$id_mot");
 	if ($row = sql_fetch($query)) {
 		$id_groupe = $row["id_groupe"];
 		if ($id_groupe != 1) return false;
 	}
-	
-	$l = mb_strlen($titre);
-	cache_mot($id_mot);
-	
-	for ($i = $l - 1; $i >0; $i--) {
-		$tag = mb_substr($titre, 0, $i);
-		$query = sql_query("SELECT id_mot FROM spip_mots WHERE titre=".sql_quote($tag)." && id_groupe=1");
-		
-		if ($row = sql_fetch($query)) {
-			$id_parent = $row["id_mot"];
+	$titre = $row['titre'];
+	$id_parent = $row['id_parent'];
 
+	$query = sql_query("SELECT id_mot,titre FROM spip_mots WHERE ".sql_quote($titre)." LIKE CONCAT(titre,'%') AND id_groupe=1 ORDER BY LENGTH(titre) DESC LIMIT 1,1");
+	if ($row = sql_fetch($query)) {
+
+		if ($row["id_mot"] != $id_parent) {
 			sql_update ("spip_mots", 
 				array(
-					"id_parent" => $id_parent
+					"id_parent" => $row["id_mot"]
 				),
-				"id_mot = '$id_mot'"
+				"id_mot = $id_mot"
 			);
-			cache_mot($id_mot);
-			break;
 		}
-		
 	}
-	
+
+	cache_mot($id_mot);
+
+	// Voir s'il y a des mots a re-hierarchiser
+	$query = sql_query("SELECT id_mot, titre FROM spip_mots WHERE id_groupe=1 AND titre LIKE ".sql_quote("$titre%")." AND LENGTH(titre)>LENGTH(".sql_quote("$titre%").")");
+	while ($row = sql_fetch($query)) {
+		hierarchiser_mot($row["id_mot"]);
+	}
+
 }
 
 
@@ -273,7 +264,7 @@ function cache_mot ($id_mot) {
 	supprimer_microcache($id_mot, "noisettes/contenu_mot_fin");
 	supprimer_microcache($id_mot, "noisettes/contenu_mot_flou");
 
-	$query = sql_select("id_follow", "spip_me_follow_mot", "id_mot=$id_mot");
+	$query = sql_select("id_follow,id_mot", "spip_me_follow_mot", "id_mot=$id_mot");
 	while ($row = sql_fetch($query)) {
 		$id_auteur = $row["id_follow"];
 		supprimer_microcache($id_auteur, "noisettes/contenu_page_tags");
@@ -284,7 +275,7 @@ function cache_mot ($id_mot) {
 	$query = sql_select("id_parent", "spip_mots", "id_mot=$id_mot");
 	while ($row = sql_fetch($query)) {
 		$id_parent = $row["id_parent"];
-		if ($id_parent > 0) cache_mot($id_parent);
+		if ($id_parent > 0 AND ($id_parent!=$id_mot)) cache_mot($id_parent);
 	}
 
 }
@@ -1091,9 +1082,6 @@ function notifier_me($id_me, $id_parent) {
 }	
 
 function indexer_me($id_ref) {
-	//$ret = "<h3>$id_ref</h3>";
-	
-	
 	$query = sql_select("*", "spip_me", "(id_me=$id_ref OR id_parent=$id_ref) AND statut='publi'");
 	
 	$id_billets = false;
@@ -1266,7 +1254,8 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 		supprimer_microcache($id_me, "noisettes/message_texte");
 
 	}
-	
+
+	indexer_me($id_parent ? $id_parent : $id_me); # indexer tout de suite
 	cache_auteur($id_auteur);
 	cache_me($id_me, $id_parent);
 
@@ -1385,42 +1374,28 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 		foreach ($regs[0] as $k=>$hash) {
 		
 			$hash = mb_substr(mb_strtolower($hash, "UTF-8"), 1, 10000);
-			
-			if (!$deja_vu["mot"][$hash]) {
 
-				$query = sql_query("SELECT id_mot FROM spip_mots WHERE titre=".sql_quote($hash)." AND id_groupe=1");
-				if ($row = sql_fetch($query)) {
-					$id_mot = $row["id_mot"];			
-				} else {
-					$id_mot = sql_insertq ("spip_mots", 
-						array(
-							"titre" => $hash,
-							"id_groupe" => 1
-					));
-				}
-				
-				// echo "<li>$id_mot - $hash</li>";
-				cache_mot($id_mot);
-				
-				sql_insertq("spip_me_mot", array(
-					"id_me" => $id_me,
-					"id_mot" => $id_mot,
-					"date" => "NOW()"
+			$query = sql_query("SELECT id_mot FROM spip_mots WHERE titre=".sql_quote($hash)." AND id_groupe=1");
+			if ($row = sql_fetch($query)) {
+				$id_mot = $row["id_mot"];
+			} else {
+				$id_mot = sql_insertq ("spip_mots", 
+					array(
+						"titre" => $hash,
+						"id_groupe" => 1
 				));
-				
+
 				// Hierarchiser ce mot
-				hierarchiser_mot($id_mot, $hash);
-				
-				// Voir s'il y a des mots a re-hierarchiser
-				$query = sql_query("SELECT id_mot, titre FROM spip_mots WHERE id_groupe=1 AND titre LIKE ".sql_quote("$hash%"));
-				while ($row = sql_fetch($query)) {
-					$id_mot = $row["id_mot"];
-					$titre = $row["titre"];
-					hierarchiser_mot($id_mot, $titre);
-				}
-				$deja_vu["mot"][$hash] = true;
-				
+				hierarchiser_mot($id_mot);
 			}
+
+			sql_insertq("spip_me_mot", array(
+				"id_me" => $id_me,
+				"id_mot" => $id_mot,
+				"date" => "NOW()"
+			));
+
+			cache_mot($id_mot);
 		}
 	}
 	
