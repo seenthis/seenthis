@@ -5,7 +5,7 @@ function _traiter_hash ($regs) {
 	
 	$url = "?page=test_hash&amp;tag=$tag";
 	
-	$query = sql_query("SELECT id_mot FROM spip_mots WHERE titre='$tag' AND id_groupe=1");
+	$query = sql_query("SELECT id_mot FROM spip_mots WHERE titre=".sql_quote($tag)." AND id_groupe=1");
 	if ($row = sql_fetch($query)) {
 		$id_mot = $row["id_mot"];
 		
@@ -27,7 +27,7 @@ function _traiter_hash ($regs) {
 function _traiter_people ($regs) {
 	$tag = mb_substr($regs[0], 1, 1000);
 	
-	$query = sql_query("SELECT id_auteur FROM spip_auteurs WHERE login='$tag' && statut!='5poubelle'");
+	$query = sql_query("SELECT id_auteur FROM spip_auteurs WHERE login=".sql_quote($tag)." && statut!='5poubelle'");
 	if ($row = sql_fetch($query)) {
 		$id_auteur = $row["id_auteur"];
 		
