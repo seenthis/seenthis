@@ -31,20 +31,6 @@ define (_REG_FIN_URL, "(\.(html?|jpg|gif|png|php|css|js)\/?$)");
 
 define('_TRANSLITTERER_URL', false);
 
-function seenthis_rechercher_liste_des_champs($tables){
-
-/*	$tables['me'] = array(
-				'texte' => 1
-			);
-			*/
-	$tables['me_recherche'] = array(
-				'texte' => 1
-			);
-						
-	return $tables;
-}
-
-
 function hierarchiser_mot($id_mot) {
 	
 

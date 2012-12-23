@@ -10,10 +10,6 @@
 	<options>seenthis_options.php</options>
 
 	<pipeline>
-		<nom>rechercher_liste_des_champs</nom>
-		<inclure>seenthis_options.php</inclure>
-	</pipeline>
-	<pipeline>
 		<nom>declarer_tables_interfaces</nom>
 		<inclure>base/seenthis.php</inclure>
 	</pipeline>
