@@ -307,6 +307,10 @@ function liste_pointe_sql($debut, $max_pagination, $login, $moi, $nous) {
 	$mentions = sql_allfetsel('id_me', 'spip_me_share', sql_in('id_auteur', $nous), '', 'date DESC', '0,'.($debut + $max_pagination));
 	$pointe = array_merge($pointe, array_map('array_pop', $mentions));
 
+	# les messages auxquels j'ai repondu
+	$mentions = sql_allfetsel('DISTINCT(id_parent) as id', 'spip_me', "id_auteur=$moi AND id_parent>0 AND statut='publi'", '', 'date DESC', '0,'.($debut + $max_pagination));
+	$pointe = array_merge($pointe, array_map('array_pop', $mentions));
+
 	$pointe = array_unique($pointe);
 
 	if ($pointe)
