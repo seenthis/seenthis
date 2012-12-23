@@ -1,5 +1,7 @@
 <?php
 
+## DEVENU INUTILE AVEC spip_me_recherche, qui lui-même pourrait être remplacé par sphinx
+
 /***************************************************************************\
  *  SPIP, Systeme de publication pour l'internet                           *
  *                                                                         *
