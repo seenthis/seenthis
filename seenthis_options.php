@@ -1255,7 +1255,6 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 
 	}
 
-	indexer_me($id_parent ? $id_parent : $id_me); # indexer tout de suite
 	cache_auteur($id_auteur);
 	cache_me($id_me, $id_parent);
 
@@ -1469,6 +1468,9 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	else $pave = $id_me;
 
 	inserer_themes($id_me);
+
+	// indexer tout de suite
+	indexer_me($id_parent ? $id_parent : $id_me);
 
 	// notifications 
 	// uniquement si nouveau message, et si ça n'est pas une «archive» (delicious notamment)
