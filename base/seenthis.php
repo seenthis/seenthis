@@ -27,6 +27,18 @@ function seenthis_lire_create_table($x) {
 }
 
 
+function balise_TEXTE ($p) {
+	if ($p->type_requete == 'spip_me') {
+		$_id_me = champ_sql('id_me', $p);
+		$p->code = "texte_de_me($_id_me)";
+		$p->interdire_scripts = true;
+		return $p;
+	}
+	else {
+		$f = charger_fonction('DEFAUT', 'calculer_balise');
+		return $f('TEXTE', $p);
+	}
+}
 
 
 function seenthis_declarer_tables_interfaces($interface){
@@ -38,7 +50,9 @@ function seenthis_declarer_tables_interfaces($interface){
 	$interface['table_des_tables']['me_follow']='me_follow';
 	$interface['tables_jointures']['spip_me'][] = 'spip_me_follow';		
 	$interface['tables_jointures']['spip_me'][] = 'spip_me_block';		
-	
+
+	$interface['table_des_traitements']['TEXTE']['spip_me']= 'traiter_texte(%s)';
+
 	return $interface;
 }
 function seenthis_declarer_tables_objets_surnoms($interface){
