@@ -223,10 +223,10 @@ function cache_auteur_fil($id_me) {
 		
 		if ($id_parent > 0) cache_auteur_fil($id_parent);
 	}
+
 }
 
 function cache_auteur($id_auteur) {
-	supprimer_microcache($id_auteur, "noisettes/contenu_accueil");
 	supprimer_microcache($id_auteur, "noisettes/contenu_auteur");
 	supprimer_microcache($id_auteur, "noisettes/contenu_page_tags");
 	supprimer_microcache($id_auteur, "noisettes/contenu_page_sites");
@@ -234,6 +234,9 @@ function cache_auteur($id_auteur) {
 	supprimer_microcache($id_auteur, "noisettes/atom_backend_auteur");
 	supprimer_microcache($id_auteur, "noisettes/atom_backend_auteur_tw");
 
+	# invalider les caches normaux de SPIP
+	include_spip('inc/invalideur');
+	suivre_invalideur('*', true);
 }
 
 function cache_mot ($id_mot) {
@@ -245,7 +248,6 @@ function cache_mot ($id_mot) {
 	while ($row = sql_fetch($query)) {
 		$id_auteur = $row["id_follow"];
 		supprimer_microcache($id_auteur, "noisettes/contenu_page_tags");
-		supprimer_microcache($id_auteur, "noisettes/contenu_accueil");
 	}
 	
 	$query = sql_select("id_parent", "spip_mots", "id_mot=$id_mot");
@@ -265,7 +267,6 @@ function cache_url ($id_syndic) {
 	while ($row = sql_fetch($query)) {
 		$id_auteur = $row["id_follow"];
 		supprimer_microcache($id_auteur, "noisettes/contenu_page_sites");
-		supprimer_microcache($id_auteur, "noisettes/contenu_accueil");
 	}
 	
 	$query = sql_select("id_parent", "spip_syndic", "id_syndic=$id_syndic");

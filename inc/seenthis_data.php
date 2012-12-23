@@ -287,17 +287,17 @@ function liste_pointe_sql($debut, $max_pagination, $login, $moi, $nous) {
 	# on cherche des messages relativement recents et interessants
 	$pointe = array();
 
-	# les mentions @login vers moi :
+	# les mentions @login vers $moi :
 	$mentions = sql_allfetsel('id_me', 'spip_me_auteur', 'id_auteur='.$moi, '', 'date DESC', '0,'.($debut + $max_pagination));
 	$pointe = array_merge($pointe, array_map('array_pop', $mentions));
 
-	# les messages qui parlent d'un sujet qui m'interesse
+	# les messages qui parlent d'un sujet qui m'interesse $moi
 	if ($tags = liste_tags($moi)) {
 		$mentions = sql_allfetsel('id_me', 'spip_me_mot', sql_in('id_mot', $tags), '', 'date DESC', '0,'.($debut + $max_pagination));
 		$pointe = array_merge($pointe, array_map('array_pop', $mentions));
 	}
 
-	# les messages qui parlent d'un URL qui m'interesse
+	# les messages qui parlent d'un URL qui m'interesse $moi
 	if ($urls = liste_urls($moi)) {
 		$mentions = sql_allfetsel('id_me', 'spip_me_syndic', sql_in('id_syndic', $urls), '', 'date DESC', '0,'.($debut + $max_pagination));
 		$pointe = array_merge($pointe, array_map('array_pop', $mentions));
@@ -307,7 +307,7 @@ function liste_pointe_sql($debut, $max_pagination, $login, $moi, $nous) {
 	$mentions = sql_allfetsel('id_me', 'spip_me_share', sql_in('id_auteur', $nous), '', 'date DESC', '0,'.($debut + $max_pagination));
 	$pointe = array_merge($pointe, array_map('array_pop', $mentions));
 
-	# les messages auxquels j'ai repondu
+	# les messages auxquels j'ai repondu $moi
 	$mentions = sql_allfetsel('DISTINCT(id_parent) as id', 'spip_me', "id_auteur=$moi AND id_parent>0 AND statut='publi'", '', 'date DESC', '0,'.($debut + $max_pagination));
 	$pointe = array_merge($pointe, array_map('array_pop', $mentions));
 
