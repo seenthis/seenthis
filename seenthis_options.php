@@ -31,39 +31,83 @@ define (_REG_FIN_URL, "(\.(html?|jpg|gif|png|php|css|js)\/?$)");
 
 define('_TRANSLITTERER_URL', false);
 
-function hierarchiser_mot($id_mot) {
-	
 
-	$query = sql_select("id_groupe,titre,id_parent", "spip_mots", "id_mot=$id_mot");
-	if ($row = sql_fetch($query)) {
-		$id_groupe = $row["id_groupe"];
-		if ($id_groupe != 1) return false;
-	}
+/* on vient d'inserer le mot id_mot dans la base, et on veut déterminer :
+   1. son id_parent
+   2. eventuellement, des mots dont il deviendrait le parent
+   
+*/
+function hierarchiser_mot($id_mot) {
+	include_spip('base/abstract_sql');
+
+	$query = sql_select("titre,id_parent", "spip_mots", "id_mot=$id_mot AND id_groupe=1");
+	if (!$row = sql_fetch($query))
+		return false;
+
 	$titre = $row['titre'];
 	$id_parent = $row['id_parent'];
 
-	$query = sql_query("SELECT id_mot,titre FROM spip_mots WHERE ".sql_quote($titre)." LIKE CONCAT(titre,'%') AND id_groupe=1 ORDER BY LENGTH(titre) DESC LIMIT 1,1");
-	if ($row = sql_fetch($query)) {
+	spip_log("Changement de parent pour $id_mot '$titre' ?");
 
-		if ($row["id_mot"] != $id_parent) {
-			sql_update ("spip_mots", 
-				array(
-					"id_parent" => $row["id_mot"]
-				),
-				"id_mot = $id_mot"
-			);
+	// le premier mot inférieur à nous est notre parent
+	// (attention on ajoute 'A' devant pour eviter les ennuis avec les tags
+	// qui commencent par des chiffres :  "SELECT 30g = 30p"
+	$l = mb_strlen($titre);
+
+	// une seule lettre ? alors il n'a pas de parent, mais il peut s'inserer
+	// dans l'arbre
+	if ($l > 1)
+	while ($l-- > 0) {
+		#spip_log("essaie '".mb_substr($titre,0,$l)."'");
+		if ($a = sql_fetsel("id_mot as id_parent,titre", "spip_mots", "CONCAT('A',titre)=".sql_quote("A".mb_substr($titre,0,$l))." AND id_groupe=1")) {
+			if ($a['id_parent'] == $id_parent) {
+				spip_log("Ne change pas de parent: '$titre'($id_mot) : '$a[titre]' ($a[id_parent])");
+				return false;
+			} else {
+				spip_log("Nouveau parent pour '$titre'($id_mot) : '$a[titre]' ($a[id_parent])");
+				sql_update ("spip_mots", 
+					array(
+						"id_parent" => $a["id_parent"]
+					),
+					"id_mot = $id_mot"
+				);
+				$nouveau_parent = $a["id_parent"];
+			}
+			break;
 		}
+	}
+
+	// si on lui a trouvé un nouveau parent
+	// notre mot s'insère peut-être comme le parent
+	// de certains des mots qui avaient ce parent
+	foreach (sql_allfetsel("id_mot,titre", "spip_mots",
+	"id_parent=".intval($nouveau_parent)
+	." AND SUBSTRING(titre,1,LENGTH(".sql_quote($titre).")) = ".sql_quote($titre)
+	." AND id_mot!=$id_mot"
+	." AND id_groupe=1"
+	) as $f) {
+		hierarchiser_mot($f['id_mot']);
 	}
 
 	cache_mot($id_mot);
 
-	// Voir s'il y a des mots a re-hierarchiser
-	$query = sql_query("SELECT id_mot, titre FROM spip_mots WHERE id_groupe=1 AND titre LIKE ".sql_quote("$titre%")." AND LENGTH(titre)>LENGTH(".sql_quote("$titre%").")");
-	while ($row = sql_fetch($query)) {
-		hierarchiser_mot($row["id_mot"]);
-	}
-
 }
+
+/* utilitaire pour refaire la hierarchie des mots-cles ;
+   ne pas appeler en prod
+*/
+function tout_hier($raz=false) {
+	spip_log("Rechercher les parents... $raz");
+	include_spip('base/abstract_sql');
+	if ($raz)
+		sql_query("UPDATE spip_mots SET id_parent=0 WHERE id_groupe=1");
+	foreach(sql_allfetsel('id_mot,titre', 'spip_mots', 'id_parent=0 AND id_groupe=1') as $i) {
+		hierarchiser_mot($i['id_mot']);
+	}
+	spip_log("Fini de rechercher les parents.");
+}
+#tout_hier(false);
+#hierarchiser_mot(162166);
 
 
 function identifier_url($url, $id_parent) {
@@ -522,7 +566,7 @@ function OC_message($id_me) {
 	
 	traiterOpenCalais($texte, $id_me, "id_me", "spip_me_mot");
 	cache_me($id_me);
-	inserer_themes($id_me);
+	//inserer_themes($id_me);
 }
 
 function OC_site($id_syndic) {
@@ -546,12 +590,13 @@ function OC_site($id_syndic) {
 	$query_syndic = sql_select("id_me", "spip_me_syndic", "id_syndic=$id_syndic");
 	while ($row_syndic = sql_fetch($query_syndic)) {
 		$id_me = $row_syndic["id_me"];
-		inserer_themes($id_me);
+		//inserer_themes($id_me);
 		supprimer_microcache($id_me, "noisettes/oc_message");
 	}
 
 }
 
+/*
 function inserer_themes($id_me) {
 	return; # cette fonction ne fait rien -- a part prendre du temps !
 
@@ -587,15 +632,16 @@ function inserer_themes($id_me) {
 		}
 	}
 
-	/*
+	/ *
 	sql_updateq ("spip_me", 
 		array(
 			"themes" => $update
 		),
 		"id_me = '$id_me'"
 	);
-	*/
+	* /
 }
+*/
 
 
 function racine_bandeau($id_auteur) {
@@ -1118,6 +1164,7 @@ function supprimer_background_favicon($texte) {
 	return _supprimer_background_favicon($texte);
 }	
 
+// insertion ou modification en base d'un message
 function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0, $id_dest=0, $ze_mot=0, $time="NOW()"){
 
 	if ($id_auteur < 1) return false;
@@ -1338,31 +1385,78 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	}
 	
 
+
+	if ($id_parent > 0) $pave = $id_parent;
+	else $pave = $id_me;
+
+	// inserer_themes($id_me);
+
+	// indexer tout de suite
+	indexer_me($id_parent ? $id_parent : $id_me);
+
+
+	// inserer les tags
+	inserer_tags_liens($id_me);
+
+
+	// notifications 
+	// uniquement si nouveau message, et si ça n'est pas une «archive» (delicious notamment)
+	if ($maj == 0 && $time == "NOW()") {
+		job_queue_add(
+			'notifier_me', 
+			'notifier nouveau message '.$id_me, 
+			array($id_me, $id_parent),
+			"",
+			true,
+			time() + (60 * 5) 
+		);
+	}
 	
+	return array("id_me" => $id_me, "id_parent" => $id_parent, "maj" => $maj);
+}
+
+
+function inserer_tags_liens($id_me) {
+	spip_log("inserer_tags_liens $id_me");
+
+	$texte_message = texte_de_me($id_me);
+
+
 	// Extraire les tags et fabriquer des mots-clés
+
 
 	// Virer les liens hypertexte (qui peuvent contenir une chaîne #ancre)
 	$message_off = preg_replace("/"._REG_URL."/ui", "", $texte_message);
 
 
-	preg_match_all("/"._REG_HASH."/ui", $message_off, $regs);
-	if ($regs) {
+	if (preg_match_all("/"._REG_HASH."/ui", $message_off, $regs)) {
 		foreach ($regs[0] as $k=>$hash) {
-		
-			$hash = mb_substr(mb_strtolower($hash, "UTF-8"), 1, 10000);
 
-			$query = sql_query("SELECT id_mot FROM spip_mots WHERE titre=".sql_quote($hash)." AND id_groupe=1");
-			if ($row = sql_fetch($query)) {
-				$id_mot = $row["id_mot"];
-			} else {
+			$titre = substr($hash, 1);
+
+			# peut-être ce tag existe-t-il déjà
+			if ($s = sql_query('SELECT id_mot FROM spip_mots WHERE titre='.sql_quote($titre).' AND id_groupe=1')
+			AND $t = sql_fetch($s)) {
+				$id_mot = $t['id_mot'];
+			}
+			# sinon on le cree, on fabrique son URL, et on lance sa hierarchie
+			else {
 				$id_mot = sql_insertq ("spip_mots", 
 					array(
-						"titre" => $hash,
+						"titre" => substr($hash,1),
 						"id_groupe" => 1
 				));
+				$url = generer_url_entite($id_mot, 'mot');
 
-				// Hierarchiser ce mot
-				hierarchiser_mot($id_mot);
+				// Hierarchiser ce mot en tache de fond
+				job_queue_add(
+					'hierarchiser_mot',
+					'hierarchiser le mot '.$id_mot, 
+					array($id_mot),
+					"",
+					true,
+					time()
+				);
 			}
 
 			sql_insertq("spip_me_mot", array(
@@ -1380,7 +1474,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	preg_match_all("/"._REG_URL."/ui", $texte_message, $regs);
 
 	if ($regs) {
-		foreach ($regs[0] as $k=>$url) {	
+		foreach ($regs[0] as $k=>$url) {
 		
 			// Supprimer parenthese fermante finale si pas de parenthese ouvrante dans l'URL
 			if (preg_match(",\)$,", $url) && !preg_match(",\(,", $url)) {
@@ -1441,29 +1535,25 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 		}
 	}
 	
-	if ($id_parent > 0) $pave = $id_parent;
-	else $pave = $id_me;
-
-	inserer_themes($id_me);
-
-	// indexer tout de suite
-	indexer_me($id_parent ? $id_parent : $id_me);
-
-	// notifications 
-	// uniquement si nouveau message, et si ça n'est pas une «archive» (delicious notamment)
-	if ($maj == 0 && $time == "NOW()") {
-		job_queue_add(
-			'notifier_me', 
-			'notifier nouveau message '.$id_me, 
-			array($id_me, $id_parent),
-			"",
-			true,
-			time() + (60 * 5) 
-		);
-	}
-	
-	return array("id_me" => $id_me, "id_parent" => $id_parent, "maj" => $maj);
 }
+
+/* URL d'un tag : tags/[titre] */
+function _url_tag($titre) {
+	# on cherche ce mot par titre
+	if ($m = sql_fetsel('id_mot,titre', 'spip_mots', 'titre='.sql_quote($titre).' AND id_groupe=1')) {
+		$id_mot = $m['id_mot'];
+		return generer_url_entite($id_mot, 'mot');
+	}
+
+	return '';
+}
+/*
+	include_spip('inc/charsets');
+	$t = mb_strtolower(translitteration($titre));
+	$t = preg_replace('/[\W_]+/Su', '', $t);
+	if (strlen($t)==0) $t = '_';
+	$url = 'tag/'.$t;
+*/
 
 function erreur_405($texte, $err405 = 405) {
 	 header("HTTP/1.0 ".$err405." $texte");

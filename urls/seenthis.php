@@ -38,8 +38,6 @@ $GLOBALS['table_titre']['auteurs'] = 'login AS titre, lang';
 // http://doc.spip.org/@urls_libres_dist
 function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
-#	echo "<hr />";var_dump($i,$entite,$args,$ancre); echo "<br />\n";
-
 	// charger les URLs arbo, qui sont la base de notre systeme d'URLs
 	$arbo = charger_fonction('arbo', 'urls');
 

@@ -1,19 +1,11 @@
 <?php
+
 function _traiter_hash ($regs) {
-	$aff_tag = mb_substr($regs[0], 1, 1000);
-	$tag = addslashes(mb_strtolower($aff_tag, "UTF-8"));
-	
-	$url = "?page=test_hash&amp;tag=$tag";
-	
-	$query = sql_query("SELECT id_mot FROM spip_mots WHERE titre=".sql_quote($tag)." AND id_groupe=1");
-	if ($row = sql_fetch($query)) {
-		$id_mot = $row["id_mot"];
-		
-		include_spip("urls/arbo");
-		$url = declarer_url_arbo("mot", $id_mot);
-	}
-	
-	$le_hash = "<span class='lien_tag'>#<a href='$url'>$aff_tag</a></span>";
+	$tag = substr($regs[0],1);
+
+	$url = _url_tag($tag);
+
+	$le_hash = "<span class='lien_tag'>#<a href='$url'>$tag</a></span>";
 
 	$GLOBALS["num_hash"] ++;
 	
@@ -306,7 +298,7 @@ function _traiter_texte($texte) {
 	$texte = preg_replace_callback(",(\n+|^)[[:space:]]?([«\x{201c}\"].*[»\x{201d}\"])()[[:space:]]?(\n+|$),Uums", "_traiter_block", $texte);
 	*/
 	
-	// Supprimer dans une variable temporaire les mentions XXX, de facon a recuprer seulement le texte
+	// Supprimer dans une variable temporaire les mentions XXX, de facon a recuperer seulement le texte
 	$texte_racine = preg_replace(",XXX[A-Z]+([0-9]+)[A-Z]+XXX,Uums", "", $texte);
 	$lang = detecter_langue($texte_racine);
 
