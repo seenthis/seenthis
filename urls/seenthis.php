@@ -97,7 +97,6 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 				',/feed$,', '',
 				$_SERVER['REDIRECT_url_propre']);
 			$g = $arbo($r[1], $entite, $args, $ancre);
-var_dump($g);exit;
 			$g[1] = "backend";
 		}
 		else
