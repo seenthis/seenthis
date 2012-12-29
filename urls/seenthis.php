@@ -153,6 +153,13 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 					$fond = 'mot';
 					break;
 			}
+			# tag/truc/feed => flux RSS du tag
+			if (substr($titre,-5) == '/feed') {
+				$titre = substr($titre,0,-5);
+				$tag = substr($tag,0,-5);
+				$fond = 'backend_mot';
+			}
+
 
 			$contexte = array('tag' => $tag);
 
