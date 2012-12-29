@@ -124,7 +124,8 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			);
 		}
 		# la page d'un tag manuel ou opencalais :
-		else if (preg_match(',/tag/(([^:]+):(.*)|(.*))$,', $i, $r)) {
+		else if (preg_match(',/tag/(([^:]+):(.*)|(.*))$,',
+		preg_replace('/[?].*$/', '', $i), $r)) {
 			# tag/spip
 			if (isset($r[4])) {
 				$type = 'Hashtags';
@@ -159,7 +160,6 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 				$tag = substr($tag,0,-5);
 				$fond = 'backend_mot';
 			}
-
 
 			$contexte = array('tag' => $tag);
 
