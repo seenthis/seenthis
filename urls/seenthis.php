@@ -160,15 +160,14 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 				$tag = substr($tag,0,-5);
 				$fond = 'backend_mot';
 			}
-
-			$contexte = array('tag' => $tag);
+			$args['tag'] = $tag;
 
 			/* old style = id_mot */
 			if ($f = sql_fetsel('m.id_mot AS id_mot', 'spip_mots AS m LEFT JOIN spip_groupes_mots AS g ON m.id_groupe=g.id_groupe', 'm.titre='.sql_quote($titre).' AND g.titre='.sql_quote($type))) {
-				$contexte['id_mot'] = $f['id_mot'];
+				$args['id_mot'] = $f['id_mot'];
 
 			$g = array(
-				$contexte,
+				$args,
 				$fond,
 				null,
 				null
