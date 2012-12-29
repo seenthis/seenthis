@@ -43,6 +43,21 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
 
 	if (is_numeric($i)) {
+		# #URL_MOT
+		if ($entite == "mot") {
+			$k = sql_fetsel('m.titre AS titre, g.titre AS type, m.id_groupe AS id_groupe FROM spip_mots AS m LEFT JOIN spip_groupes_mots AS g ON m.id_groupe=g.id_groupe WHERE m.id_mot='.sql_quote($i));
+			if (!$k) return '';
+
+			# tag/spip
+			if ($k['id_groupe'] == 1)
+				$tag = $k['titre'];
+			# tag/technology:radiation
+			else
+				$tag = $k['type'].':'.$k['titre'];
+			$g = _DIR_RACINE.$GLOBALS['url_arbo_types']['mot'].'/'
+				. mb_strtolower($tag,'UTF8');
+		}
+
 		# #URL_ME
 		if ($entite == 'me') {
 			# s'il y a un parent, c'est #URL_ME{parent}#message$i
@@ -107,6 +122,53 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 				null,
 				null
 			);
+		}
+		# la page d'un tag manuel ou opencalais :
+		else if (preg_match(',/tag/(([^:]+):(.*)|(.*))$,', $i, $r)) {
+			# tag/spip
+			if (isset($r[4])) {
+				$type = 'Hashtags';
+				$titre = urldecode($r[4]);
+				$tag = "#$titre";
+			} else {
+				$type = urldecode($r[2]);
+				$titre = urldecode($r[3]);
+				$tag = "$type:$titre";
+			}
+			switch (substr($titre,-1)) {
+				# spip$ = seulement le mot 'spip'
+				case '$':
+					$fond = 'mot_fin';
+					$titre = substr($titre,0,-1);
+					$tag = substr($tag,0,-1);
+					break;
+				# spip* = 'spip', 'spip_zone' etc
+				case '*':
+					$fond = 'mot_flou';
+					$titre = substr($titre,0,-1);
+					$tag = substr($tag,0,-1);
+					break;
+				# spip* = 'spip', 'cms' etc (tous les thèmes liés à 'spip')
+				default:
+					$fond = 'mot';
+					break;
+			}
+
+			$contexte = array('tag' => $tag);
+
+			/* old style = id_mot */
+			if ($f = sql_fetsel('m.id_mot AS id_mot', 'spip_mots AS m LEFT JOIN spip_groupes_mots AS g ON m.id_groupe=g.id_groupe', 'm.titre='.sql_quote($titre).' AND g.titre='.sql_quote($type))) {
+				$contexte['id_mot'] = $f['id_mot'];
+
+			$g = array(
+				$contexte,
+				$fond,
+				null,
+				null
+			);
+
+			} # une fois les vieux urls de mots resorbes, on pourra supprimer ce if()
+
 		}
 	}
 
