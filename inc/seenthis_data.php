@@ -17,7 +17,7 @@ function inc_seenthisaccueil_to_array_dist($u) {
 	# IN (share,5) OR IN(replies,5) OR @texte "@fil"
 	# => puisque pas de OR, dans le @texte ajouter @replies et @share
 
-	# pour les share, date = date du partage
+	# pour les share de $moi, date = date du partage
 	# trier l'ensemble par date
 	# paginer…
 
@@ -261,7 +261,7 @@ function liste_favoris($qui,$debut=0,$max_pagination=500) {
 	# puis celle de mes amis
 	$moi = array_shift($qui);
 
-	if ($f = sql_allfetsel('s.id_me, UNIX_TIMESTAMP(s.date) as date', 'spip_me_share AS s LEFT JOIN spip_me AS m ON s.id_me=m.id_me', 's.id_auteur='.$moi.' AND m.statut="publi" AND m.id_parent=0', 's.id_me', array('date DESC'), '0,'.($debut+$max_pagination))) {
+	if ($f = sql_allfetsel('s.id_me, UNIX_TIMESTAMP(s.date) as date', 'spip_me_share AS s INNER JOIN spip_me AS m ON s.id_me=m.id_me', 's.id_auteur='.$moi.' AND m.statut="publi" AND m.id_parent=0', 's.id_me', array('date DESC'), '0,'.($debut+$max_pagination))) {
 		foreach ($f as $m) {
 			$me = intval($m['id_me']);
 			$r[$me] = (int) $m['date'];
@@ -270,7 +270,7 @@ function liste_favoris($qui,$debut=0,$max_pagination=500) {
 
 	if ($qui) {
 		$auteurs = sql_in('s.id_auteur', $qui);
-		if ($f = sql_allfetsel('s.id_me, UNIX_TIMESTAMP(s.date) as date', 'spip_me_share AS s LEFT JOIN spip_me AS m ON s.id_me=m.id_me', $auteurs.' AND m.statut="publi" AND m.id_parent=0', 's.id_me', array('date DESC'), '0,'.($debut+$max_pagination))) {
+		if ($f = sql_allfetsel('s.id_me, UNIX_TIMESTAMP(m.date) as date', 'spip_me_share AS s INNER JOIN spip_me AS m ON s.id_me=m.id_me', $auteurs.' AND m.statut="publi" AND m.id_parent=0', 's.id_me', array('date DESC'), '0,'.($debut+$max_pagination))) {
 			foreach ($f as $m) {
 				$me = intval($m['id_me']);
 				if (!isset($r[$me]))
