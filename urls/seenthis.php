@@ -79,15 +79,16 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
 		}
 	} else if (TRUE) {
+
 		# la page /people/
 		if (preg_match(',/people/?$,', $i)) {
 			$g = array(array(), 'people');
 		}
 		# la page people/xxx/follow/feed => ramener sur people/xxx
 		else if (
-			preg_match(',^.*(/people/.*)(/follow/feed)$,', $i, $r)
+			preg_match(',^.*(/people/.*)(/follow/feed)(\?|$),', $i, $r)
 		OR
-			preg_match(',^.*(/people/.*)(/feed)$,', $i, $r)
+			preg_match(',^.*(/people/.*)(/feed)(\?|$),', $i, $r)
 		) {
 			# arbo est naze et ne se base pas sur $i !
 			unset($_SERVER['REDIRECT_url_propre']);

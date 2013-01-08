@@ -32,8 +32,12 @@ function inc_seenthisaccueil_to_array_dist($u) {
 	$r = array();
 
 	# dans la page people/login on recoit l'id_auteur dans id ; mais pas d'id_auteur (!!!) du coup on detecte comme ça pour le moment
-	if ($env['id'] AND !$env['id_auteur'])
-		$env['follow'] = $env['id'];
+	if ($env['id'] AND !$env['id_auteur']) {
+		if (_request('page') == 'backend_auteur_follow')
+			$moi = $env['id'];
+		else
+			$env['follow'] = $env['id'];
+	}
 
 	switch($env['follow']) {
 		# $nous
