@@ -106,15 +106,6 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 					echo "ERREUR";
 			}
 		}
-		# la page people/xxx/feed => ramener sur people/xxx
-		else if (preg_match(',^(.*/people/.*)/feed$,', $i, $r)) {
-			# arbo est naze et ne se base pas sur $i !
-			$_SERVER['REDIRECT_url_propre'] = preg_replace(
-				',/feed$,', '',
-				$_SERVER['REDIRECT_url_propre']);
-			$g = $arbo($r[1], $entite, $args, $ancre);
-			$g[1] = "backend";
-		}
 		else
 		if (preg_match(',/messages/(\d+)$,', $i, $r)) {
 			$g = array(

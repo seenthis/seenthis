@@ -6,7 +6,7 @@
  * @param string $u "env"
  * @return array|bool
  */
-function inc_seenthisaccueil_to_array_dist($u) {
+function inc_seenthisaccueil_to_array_dist($u, $page=null) {
 	if (!$env = @unserialize($u))
 		return false;
 
@@ -26,17 +26,19 @@ function inc_seenthisaccueil_to_array_dist($u) {
 	$max_pagination = 300;
 	$debut = intval($env['debut_messages']);
 
-	$moi = intval($GLOBALS['visiteur_session']['id_auteur']);
-	$login = $GLOBALS['visiteur_session']['login'];
-
 	$r = array();
 
-	# dans la page people/login on recoit l'id_auteur dans id ; mais pas d'id_auteur (!!!) du coup on detecte comme ça pour le moment
-	if ($env['id'] AND !$env['id_auteur']) {
-		if (_request('page') == 'backend_auteur_follow')
+	switch($page) {
+		case 'backend_auteur_follow':
 			$moi = $env['id'];
-		else
+			break;
+		case 'auteur':
 			$env['follow'] = $env['id'];
+			break;
+		case 'accueil':
+		default:
+			$moi = intval($GLOBALS['visiteur_session']['id_auteur']);
+			break;
 	}
 
 	switch($env['follow']) {
@@ -54,7 +56,7 @@ function inc_seenthisaccueil_to_array_dist($u) {
 			# - $nous avons partagé (share $nous)
 			# - j'ai répondu (replies $moi)
 			# - pointe vers moi ($pointe)
-			$pointe = liste_pointe_sql($debut, $max_pagination, $login, $moi, $nous);
+			$pointe = liste_pointe_sql($debut, $max_pagination, $moi, $nous);
 			$where = '('.sql_in('id_auteur', $nous). $pointe.')';
 			$fav = liste_favoris($nous,$debut, $max_pagination);
 			break;
@@ -149,7 +151,7 @@ function inc_seenthisrecherche_to_array_dist($u) {
 			# - j'ai répondu (replies $moi)
 			# - pointe vers moi ($pointe)
 			$pointe = str_replace('id_me', 'm.id_me',
-				liste_pointe_sql($debut, $max_pagination, $login, $moi, $nous));
+				liste_pointe_sql($debut, $max_pagination, $moi, $nous));
 			$fav = liste_favoris($nous,$debut, $max_pagination);
 			$wherefollow = ' AND ('.sql_in('m.id_auteur', $nous). $pointe
 				. ' OR '.sql_in('m.id_me', array_keys($fav)).')';
@@ -286,7 +288,7 @@ function liste_favoris($qui,$debut=0,$max_pagination=500) {
 	return $r;
 }
 
-function liste_pointe_sql($debut, $max_pagination, $login, $moi, $nous) {
+function liste_pointe_sql($debut, $max_pagination, $moi, $nous) {
 
 	# on cherche des messages relativement recents et interessants
 	$pointe = array();
