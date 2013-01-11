@@ -3,7 +3,7 @@
 function _traiter_hash ($regs) {
 	$tag = substr($regs[0],1);
 
-	$url = _url_tag($tag);
+	$url = urlencode_1738(_url_tag($tag));
 
 	$le_hash = "<span class='lien_tag'>#<a href='$url'>$tag</a></span>";
 
