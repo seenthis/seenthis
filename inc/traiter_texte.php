@@ -19,18 +19,21 @@ function _traiter_hash ($regs) {
 function _traiter_people ($regs) {
 	$tag = mb_substr($regs[0], 1, 1000);
 	
-	$query = sql_query("SELECT id_auteur FROM spip_auteurs WHERE login=".sql_quote($tag)." && statut!='5poubelle'");
+	$query = sql_query("SELECT id_auteur,login
+		FROM spip_auteurs
+		WHERE login=".sql_quote(mb_strtolower($tag,'UTF8'))
+			." AND statut!='5poubelle'");
 	if ($row = sql_fetch($query)) {
+		/*
 		$id_auteur = $row["id_auteur"];
-		
-		include_spip("urls/arbo");
-		$url = declarer_url_arbo("auteur", $id_auteur);
+		$f = charger_fonction('seenthis', 'urls');
+		$url = $f($id_auteur, $type='auteur');
+		*/
+		$url = 'people/'.urlencode_1738(mb_strtolower($k['login'],'UTF8'));
 	}
 	if ($url) return "<span class='lien_people'>@<a href='$url'>$tag</a></span>";
 	else return "@$tag";
 //	else return "<span class='lien_people'>@<span class='inexistant'>$tag</span></span>";
-	
-	
 }
 
 

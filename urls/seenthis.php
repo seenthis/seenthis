@@ -55,7 +55,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			else
 				$tag = $k['type'].':'.$k['titre'];
 			$g = _DIR_RACINE.$GLOBALS['url_arbo_types']['mot'].'/'
-				. mb_strtolower($tag,'UTF8');
+				. urlencode_1738(mb_strtolower($tag,'UTF8'));
 		}
 
 		# #URL_ME
@@ -78,6 +78,17 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 				$g .= "#$ancre";
 
 		}
+
+		# #URL_AUTEUR
+		if ($entite == "auteur") {
+			$k = sql_fetsel('login FROM spip_auteurs WHERE id_auteur='.sql_quote($i));
+			if (!$k) return '';
+
+			# people/login
+			$g = _DIR_RACINE.$GLOBALS['url_arbo_types']['auteur'].'/'
+				. urlencode_1738(mb_strtolower($k['login'],'UTF8'));
+
+		}
 	} else if (TRUE) {
 
 		# la page /people/
@@ -86,24 +97,29 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 		# la page people/xxx/follow/feed => ramener sur people/xxx
 		else if (
-			preg_match(',^.*(/people/.*)(/follow/feed)(\?|$),', $i, $r)
+			preg_match(',^.*(/people/(.*?))((/follow)?/feed)(\?|$),', $i, $r)
 		OR
-			preg_match(',^.*(/people/.*)(/feed)(\?|$),', $i, $r)
+			preg_match(',^.*(/people/(.*)),', $i, $r)
 		) {
-			# arbo est naze et ne se base pas sur $i !
-			unset($_SERVER['REDIRECT_url_propre']);
-			unset($_ENV['url_propre']);
-			$g = $arbo($r[1], $entite, $args, $ancre);
+			if ($f = sql_fetsel('id_auteur', 'spip_auteurs', 'login='.sql_quote($r[2]))) {
+				$args['id_auteur'] = $f['id_auteur'];
+				$g = array(
+					$args
+				);
 
-			switch ($r[2]) {
-				case '/follow/feed':
-					$g[1] = "backend_auteur_follow";
-					break;
-				case '/feed':
-					$g[1] = "backend";
-					break;
-				default:
-					echo "ERREUR";
+				switch ($r[3]) {
+					case '/follow/feed':
+						$g[1] = "backend_auteur_follow";
+						break;
+					case '/feed':
+						$g[1] = "backend";
+						break;
+					case null:
+						$g[1] = "auteur";
+						break;
+					default:
+						echo "ERREUR";
+				}
 			}
 		}
 		else
@@ -173,6 +189,12 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 	// Sinon on se base sur l'url arbo
 	if (!isset($g)) {
 		$g = $arbo($i, $entite, $args, $ancre);
+		
+		# si c'est un mot old-style, on redirige vers l'URL new-style
+		if (is_array($g) AND $g[1] == 'mot' AND isset($g[0]['id_mot']) ) {
+			include_spip('inc/filtres_mini');
+			$g[2] = url_absolue(generer_url_entite($g[0]['id_mot'], $g[1]));
+		}
 	}
 
 	return $g;
