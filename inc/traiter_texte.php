@@ -23,7 +23,7 @@ function _traiter_people ($regs) {
 		FROM spip_auteurs
 		WHERE login=".sql_quote(mb_strtolower($tag,'UTF8'))
 			." AND statut!='5poubelle'");
-	if ($row = sql_fetch($query)) {
+	if ($k = sql_fetch($query)) {
 		/*
 		$id_auteur = $row["id_auteur"];
 		$f = charger_fonction('seenthis', 'urls');
