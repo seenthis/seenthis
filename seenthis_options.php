@@ -1537,23 +1537,21 @@ function inserer_tags_liens($id_me) {
 	
 }
 
-/* URL d'un tag : tags/[titre] */
-function _url_tag($titre) {
-	# on cherche ce mot par titre
-	if ($m = sql_fetsel('id_mot,titre', 'spip_mots', 'titre='.sql_quote($titre).' AND id_groupe=1')) {
-		$id_mot = $m['id_mot'];
-		return generer_url_entite($id_mot, 'mot');
+// Transformer les caracteres utf8 d'une URL (farsi par ex) selon la RFC 1738
+// Transformer aussi les caracteres de controle 00-1F, et l'espace 20
+// la fonction urlencode_1738() du core ne suffit pas,
+// car elle n'encode ni espaces, ni guillemets, etc.
+function urlencode_1738_plus($url) {
+	$uri = '';
+	$l = strlen($url);
+	for ($i=0; $i < $l; $i++) {
+		$u = ord($a = $url[$i]);
+		if ($u <= 0x20 OR $u >= 0x7F OR in_array($a, array("'",'"','%')))
+			$a = rawurlencode($a);
+		$uri .= $a;
 	}
-
-	return '';
+	return quote_amp($uri);
 }
-/*
-	include_spip('inc/charsets');
-	$t = mb_strtolower(translitteration($titre));
-	$t = preg_replace('/[\W_]+/Su', '', $t);
-	if (strlen($t)==0) $t = '_';
-	$url = 'tag/'.$t;
-*/
 
 function erreur_405($texte, $err405 = 405) {
 	 header("HTTP/1.0 ".$err405." $texte");

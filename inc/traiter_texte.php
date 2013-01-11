@@ -1,11 +1,13 @@
 <?php
 
 function _traiter_hash ($regs) {
-	$tag = substr($regs[0],1);
+	$tag = substr($regs[0],1); // supprimer le '#'
 
-	$url = urlencode_1738(_url_tag($tag));
+	$url = 'tag/'.mb_strtolower($tag,'UTF-8');
 
-	$le_hash = "<span class='lien_tag'>#<a href='$url'>$tag</a></span>";
+	$url = urlencode_1738_plus($url);
+
+	$le_hash = "<span class='lien_tag'>#<a href=\"$url\">$tag</a></span>";
 
 	$GLOBALS["num_hash"] ++;
 	

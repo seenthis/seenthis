@@ -53,7 +53,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			else
 				$tag = $k['type'].':'.$k['titre'];
 			$g = _DIR_RACINE.$GLOBALS['url_arbo_types']['mot'].'/'
-				. urlencode_1738(mb_strtolower($tag,'UTF8'));
+				. urlencode_1738_plus(mb_strtolower($tag,'UTF8'));
 		}
 
 		# #URL_ME
@@ -84,7 +84,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
 			# people/login
 			$g = _DIR_RACINE.$GLOBALS['url_arbo_types']['auteur'].'/'
-				. urlencode_1738(mb_strtolower($k['login'],'UTF8'));
+				. urlencode_1738_plus(mb_strtolower($k['login'],'UTF8'));
 
 		}
 	} else if (TRUE) {
