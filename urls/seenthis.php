@@ -38,9 +38,7 @@ $GLOBALS['table_titre']['auteurs'] = 'login AS titre, lang';
 // http://doc.spip.org/@urls_libres_dist
 function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
-	// charger les URLs arbo, qui sont la base de notre systeme d'URLs
-	$arbo = charger_fonction('arbo', 'urls');
-
+	define('_SET_HTML_BASE',1);
 
 	if (is_numeric($i)) {
 		# #URL_MOT
@@ -188,6 +186,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
 	// Sinon on se base sur l'url arbo
 	if (!isset($g)) {
+		$arbo = charger_fonction('arbo', 'urls');
 		$g = $arbo($i, $entite, $args, $ancre);
 		
 		# si c'est un mot old-style, on redirige vers l'URL new-style
