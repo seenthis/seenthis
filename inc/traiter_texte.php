@@ -31,7 +31,7 @@ function _traiter_people ($regs) {
 		$f = charger_fonction('seenthis', 'urls');
 		$url = $f($id_auteur, $type='auteur');
 		*/
-		$url = 'people/'.urlencode_1738(mb_strtolower($k['login'],'UTF8'));
+		$url = 'people/'.urlencode_1738_plus(mb_strtolower($k['login'],'UTF8'));
 	}
 	if ($url) return "<span class='lien_people'>@<a href='$url'>$tag</a></span>";
 	else return "@$tag";
@@ -120,11 +120,14 @@ function _creer_lien_riche($lien) {
 		// Si modif, penser à modifier aussi la fonction supprimer_background_favicon
 		if ($favicon) $style = " style='background-image:url($favicon);'";
 	}
-	
+
+	$lien_or = urlencode_1738_plus($lien_or);
+
 	$le_lien = "<span class='lien_lien'$style>$total<a href=\"$lien_or\" class='spip_out'$titre$lang>$intitule</a></span>";
 
 	$le_lien = str_replace("&", "&amp;", $le_lien);
 	$le_lien = str_replace("&amp;amp;", "&amp;", $le_lien);
+
 
 	return $le_lien;
 }
