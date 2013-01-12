@@ -1000,7 +1000,7 @@ function notifier_me($id_me, $id_parent) {
 				// alerte reponse a un billet favori
 				$query_fav = sql_select("id_auteur", "spip_me_share", "id_me=$id_parent");
 				while ($row_fav = sql_fetch($query_fav)) {
-					$id_auteur = $row_auteur["id_auteur"];
+					$id_auteur = $row_fav["id_auteur"];
 	
 					if (tester_mail_auteur($id_auteur, "mail_rep_moi")) {
 						$id_dest[] = $id_auteur;
