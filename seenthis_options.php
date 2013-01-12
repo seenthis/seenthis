@@ -1546,7 +1546,11 @@ function urlencode_1738_plus($url) {
 	$l = strlen($url);
 	for ($i=0; $i < $l; $i++) {
 		$u = ord($a = $url[$i]);
-		if ($u <= 0x20 OR $u >= 0x7F OR in_array($a, array("'",'"','%')))
+		if ($u <= 0x20 OR $u >= 0x7F OR in_array($a, array("'",'"','+')))
+			$a = rawurlencode($a);
+		// le % depend : s'il est suivi d'un code hex, ou pas
+		if ($a == '%'
+		AND !preg_match('/^[0-9a-f][0-9a-f]$/i', $url[$i+1].$url[$i+2]))
 			$a = rawurlencode($a);
 		$uri .= $a;
 	}
