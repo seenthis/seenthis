@@ -68,7 +68,7 @@ function seenthis_declarer_tables_objets_surnoms($interface){
 function seenthis_declarer_tables_principales($tables_principales){
 	$tables_principales['spip_me'] = seenthis_lire_create_table("
 		`id_me` bigint(21) NOT NULL AUTO_INCREMENT,
-		`uuid` CHAR(36) NOT NULL,
+		`uuid` char(36) NOT NULL,
 		`date` datetime NOT NULL,
 		`date_modif` datetime NOT NULL,
 		`date_parent` datetime NOT NULL,
@@ -88,22 +88,42 @@ function seenthis_declarer_tables_principales($tables_principales){
 
 	$tables_principales['spip_me_texte'] = seenthis_lire_create_table("
 		`id_me` bigint(21) NOT NULL,
+		`uuid` char(36) NOT NULL,
 		`texte` longtext NOT NULL
-		PRIMARY KEY (`id_me`)
+		PRIMARY KEY (`id_me`),
+		KEY `uuid` (`uuid`)
 	"
 	);
 
 	$tables_principales['spip_me_recherche'] = seenthis_lire_create_table("
 		`id_me` bigint(21) NOT NULL AUTO_INCREMENT,
+		`uuid` char(36) NOT NULL,
 		`date` datetime NOT NULL,
 		`id_auteur` bigint(21) NOT NULL,
 		`texte` longtext NOT NULL,
 		`troll` bigint(21) NOT NULL,
 		PRIMARY KEY (`id_me`),
+		KEY `uuid` (`uuid`),
 		KEY `id_auteur` (`id_auteur`)
 	"
 	);
 
+
+	$tables_principales['spip_me_tags'] = seenthis_lire_create_table("
+		`id_me` bigint(21) NOT NULL DEFAULT 0,
+		`uuid` char(36) NOT NULL DEFAULT '',
+		`tag` text NOT NULL DEFAULT '',
+		`class` char(6) NOT NULL DEFAULT '',
+		`date` datetime NOT NULL,
+		`relevance` int(11) NOT NULL,
+		`off` char(3) NOT NULL DEFAULT 'non'
+		KEY (`id_me`), # pas de primary
+		KEY `uuid` (`uuid`),
+		KEY `date` (`date`)"
+	## SPIP 2.1 n'accepte pas les KEY avec (60)
+	## on l'ajoute a la main plus bas
+	#		KEY `tag` (`tag`(60)),
+	);
 
 
 	// ajouts dans spip_auteurs
@@ -130,7 +150,10 @@ function seenthis_declarer_tables_principales($tables_principales){
 	$syndic['field']['titre'] = "text NOT NULL";
 	$syndic['field']['texte'] = "longtext NOT NULL";
 	$syndic['field']['lang'] = "varchar(10) NOT NULL";
+	$syndic['field']['md5'] = "char(32) DEFAULT NULL"; # md5 de l'URL
 	$syndic['key']['KEY id_parent'] = "id_parent";
+	$syndic['key']['KEY url'] = "url_site(255)";
+	$syndic['key']['KEY md5'] = "md5";
 
 	return $tables_principales;
 }
@@ -174,6 +197,16 @@ function seenthis_declarer_tables_auxiliaires($tables_auxiliaires){
   KEY `id_follow` (`id_follow`)
 "
 	);
+
+	$tables_auxiliaires['spip_me_follow_tag'] = seenthis_lire_create_table(
+	"
+		`tag` text NOT NULL DEFAULT '',
+		`id_follow` bigint(21) NOT NULL,
+		`date` datetime NOT NULL,
+		KEY `id_follow` (`id_follow`)
+"
+	);
+
 	$tables_auxiliaires['spip_me_follow_url'] = seenthis_lire_create_table(
 	"
   `id_syndic` bigint(21) NOT NULL,
@@ -246,7 +279,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	if ((!isset($GLOBALS['meta'][$nom_meta_base_version]) )
 	|| (($current_version = $GLOBALS['meta'][$nom_meta_base_version])!=$version_cible)){
 		include_spip('base/abstract_sql');
-		if (version_compare($current_version,"0.9.8",'<')){
+		if (version_compare($current_version,"0.9.9",'<')){
 			include_spip('base/serial');
 			include_spip('base/auxiliaires');
 			include_spip('base/create');
@@ -268,7 +301,8 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 				'spip_syndic',
 				'spip_syndic_oc',
 				'spip_traductions',
-				'spip_mots'
+				'spip_mots',
+				'spip_me_tags'
 			));
 
 
@@ -277,6 +311,12 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 				include_spip('inc/seenthis_uuid');
 				seenthis_remplir_uuid();
 			}
+
+			// en 0.9.9, remplir spip_me_tags & spip_me_follow_tags
+			if (version_compare($current_version,"0.9.9",'<')){
+				seenthis_mots2tags();
+			}
+
 
 			ecrire_meta($nom_meta_base_version,$current_version=$version_cible,'non');
 		}
@@ -318,5 +358,85 @@ function seenthis_install($action,$prefix,$version_cible){
 			break;
 	}
 }
+
+
+function seenthis_mots2tags() {
+
+	# convertir les spip_me_mot+spip_mots+spip_groupes_mots
+	# => en spip_me_tags
+	$s = sql_query($a = "INSERT INTO spip_me_tags (id_me, uuid, tag, class, date, relevance, off)
+	SELECT
+		a.id_me,
+		a.uuid,
+		CONCAT(
+			CASE WHEN g.titre='Hashtags' THEN '#' ELSE CONCAT(g.titre,':') END,
+			m.titre
+		) as tag,
+		CASE WHEN g.titre='Hashtags' THEN '#' ELSE 'oc' END as class,
+		a.date,
+		am.relevance,
+		am.off
+	FROM
+		spip_me AS a
+		INNER JOIN spip_me_mot AS am ON a.id_me=am.id_me
+		INNER JOIN spip_mots AS m on m.id_mot = am.id_mot
+		INNER JOIN spip_groupes_mots AS g on m.id_groupe=g.id_groupe
+	");
+
+
+	# convertir les spip_me_syndic+spip_syndic
+	# => en spip_me_tags
+	$s = sql_query($a = "INSERT INTO spip_me_tags (id_me, uuid, tag, class, date)
+	SELECT
+		a.id_me,
+		a.uuid,
+		m.url_site as tag,
+		'url' as class,
+		a.date
+	FROM
+		spip_me AS a
+		INNER JOIN spip_me_syndic AS am ON a.id_me=am.id_me
+		INNER JOIN spip_syndic AS m on m.id_syndic = am.id_syndic
+	");
+
+	sql_query("ALTER TABLE spip_me_tags ADD INDEX `tag` (`tag`(60))");
+
+	# convertir spip_me_follow_mot(id_mot)
+	# => en spip_me_follow_tag("#spip")
+	$s = sql_query($a = "INSERT INTO spip_me_follow_tag (tag, id_follow, date)
+	SELECT
+		CONCAT(
+			CASE WHEN g.titre='Hashtags' THEN '#' ELSE CONCAT(g.titre,':') END,
+			m.titre
+		) as tag,
+		f.id_follow,
+		f.date
+	FROM
+		spip_mots AS m
+		INNER JOIN spip_me_follow_mot AS f ON m.id_mot=f.id_mot
+		LEFT JOIN spip_groupes_mots AS g ON m.id_groupe=g.id_groupe
+	");
+
+	# convertir spip_me_follow_url(id_url)
+	# => en spip_me_follow_tag("url")
+	$s = sql_query($a = "INSERT INTO spip_me_follow_tag (tag, id_follow, date)
+	SELECT
+		m.url_syndic as tag,
+		f.id_follow,
+		f.date
+	FROM
+		spip_syndic AS m
+		INNER JOIN spip_me_follow_url AS f ON m.id_syndic=f.id_syndic
+	");
+
+
+	sql_query("ALTER TABLE spip_me_follow_tag ADD INDEX `tag` (`tag`(60))");
+
+
+	// ajouter les md5 sur la table spip_syndic
+	sql_query("UPDATE spip_syndic SET `md5`=MD5(url_site) WHERE `md5` IS NULL");
+
+}
+
 
 ?>

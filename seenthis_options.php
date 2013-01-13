@@ -38,6 +38,7 @@ define('_TRANSLITTERER_URL', false);
    
 */
 function hierarchiser_mot($id_mot) {
+	spip_log("hierarchiser_mot($id_mot)", "cache");
 	include_spip('base/abstract_sql');
 
 	$query = sql_select("titre,id_parent", "spip_mots", "id_mot=$id_mot AND id_groupe=1");
@@ -52,14 +53,14 @@ function hierarchiser_mot($id_mot) {
 	// le premier mot inférieur à nous est notre parent
 	// (attention on ajoute 'A' devant pour eviter les ennuis avec les tags
 	// qui commencent par des chiffres :  "SELECT 30g = 30p"
-	$l = mb_strlen($titre);
+	$l = mb_strlen($titre, 'UTF8');
 
 	// une seule lettre ? alors il n'a pas de parent, mais il peut s'inserer
 	// dans l'arbre
 	if ($l > 1)
 	while ($l-- > 0) {
-		#spip_log("essaie '".mb_substr($titre,0,$l)."'");
-		if ($a = sql_fetsel("id_mot as id_parent,titre", "spip_mots", "CONCAT('A',titre)=".sql_quote("A".mb_substr($titre,0,$l))." AND id_groupe=1")) {
+		spip_log("essaie parent '".mb_substr($titre,0,$l, 'UTF8')."'");
+		if ($a = sql_fetsel("id_mot as id_parent,titre", "spip_mots", "CONCAT('A',titre)=".sql_quote("A".mb_substr($titre,0,$l, 'UTF8'))." AND id_groupe=1")) {
 			if ($a['id_parent'] == $id_parent) {
 				spip_log("Ne change pas de parent: '$titre'($id_mot) : '$a[titre]' ($a[id_parent])");
 				return false;
@@ -82,7 +83,10 @@ function hierarchiser_mot($id_mot) {
 	// de certains des mots qui avaient ce parent
 	foreach (sql_allfetsel("id_mot,titre", "spip_mots",
 	"id_parent=".intval($nouveau_parent)
-	." AND SUBSTRING(titre,1,LENGTH(".sql_quote($titre).")) = ".sql_quote($titre)
+	." AND LENGTH(titre) > ".strlen($titre)
+	." AND titre LIKE ".sql_quote(
+		str_replace(array('_', '%'), array('\\_', '\\%'), $titre)
+		."%" )
 	." AND id_mot!=$id_mot"
 	." AND id_groupe=1"
 	) as $f) {
@@ -107,26 +111,30 @@ function tout_hier($raz=false) {
 	spip_log("Fini de rechercher les parents.");
 }
 #tout_hier(false);
-#hierarchiser_mot(162166);
+#hierarchiser_mot(161876);
 
 
 function identifier_url($url, $id_parent) {
-	
-	$query = sql_query("SELECT id_syndic FROM spip_syndic WHERE url_site='$url'");
+	spip_log("identifier_url($url, $id_parent)", "cache");
+
+	$query = sql_query("SELECT id_syndic,id_parent FROM spip_syndic WHERE url_site=".sql_quote($url));
 	if ($row = sql_fetch($query)) {
-		$id_syndic = $row["id_syndic"];			
-		sql_updateq ("spip_syndic", 
-			array(
+		$id_syndic = $row["id_syndic"];
+		if ($row["id_parent"] != $id_parent) {
+			sql_updateq ("spip_syndic", 
+				array(
 				"id_rubrique" => 1,
 				"id_secteur" => 1,
 				"id_parent" => $id_parent,
 				"nom_site" => $url,
 				"url_site" => $url,
+				"md5" => md5($url),
 				"statut" => "publie",
 				"date" => "NOW()"
-			),
-			"id_syndic=$id_syndic"
-		);
+				),
+				"id_syndic=$id_syndic"
+			);
+		}
 	} else {
 		$id_syndic = sql_insertq ("spip_syndic", 
 			array(
@@ -135,6 +143,7 @@ function identifier_url($url, $id_parent) {
 				"id_parent" => $id_parent,
 				"nom_site" => $url,
 				"url_site" => $url,
+				"md5" => md5($url),
 				"statut" => "publie",
 				"date" => "NOW()"
 		));
@@ -143,12 +152,12 @@ function identifier_url($url, $id_parent) {
 	}
 	
 //	echo "<li>$id_syndic &gt; $id_parent / $url</li>";
-	cache_url_fil($id_syndic);
 	return $id_syndic;
 
 }
 
 function hierarchier_url($id_syndic) {
+	spip_log("hierarchier_url($id_syndic)", "cache");
 
 	$query = sql_query("SELECT url_site FROM spip_syndic WHERE id_syndic = $id_syndic");
 	if ($row = sql_fetch($query)) {
@@ -164,6 +173,7 @@ function hierarchier_url($id_syndic) {
 		$chemins = explode("/", $path);
 		
 		$id_parent = identifier_url("$scheme://$host", 0);
+		cache_url($id_parent);
 		$chemin_complet = "$scheme://$host";
 		
 		foreach($chemins as $chemin) {
@@ -182,6 +192,7 @@ function hierarchier_url($id_syndic) {
 // - effacer message lui-même
 // - effacer le parent (c-a-dire fil de messages)
 function cache_me ($id_me, $id_parent = 0) {
+	spip_log("cache_me ($id_me, $id_parent)", "cache");
 	
 	// Si on connait deja l'id_parent, pas besoin de boucle.
 	if ($id_parent < 1) {
@@ -225,17 +236,18 @@ function cache_me ($id_me, $id_parent = 0) {
 }
 
 function cache_mot_fil($id_me) {
+	spip_log("cache_mot_fil($id_me)", "cache");
 	// Supprimer le cache des mots liés
 	$query = sql_select("id_mot", "spip_me_mot", "id_me=$id_me");
 	while ($row = sql_fetch($query)) {
 		$id_mot = $row["id_mot"];
 		cache_mot($id_mot);
 	}
-	// Supprimer le cache des mots liés
+	// Supprimer le cache des sites liés
 	$query = sql_select("id_syndic", "spip_me_syndic", "id_me=$id_me");
 	while ($row = sql_fetch($query)) {
 		$id_syndic = $row["id_syndic"];
-		cache_url($id_syndic);
+		cache_url_fil($id_syndic);
 	}
 	// Traiter les enfants
 	$query_enfants = sql_select("id_me", "spip_me", "id_parent=$id_me");
@@ -246,20 +258,22 @@ function cache_mot_fil($id_me) {
 }
 
 function cache_url_fil($id_syndic) {
-	// Supprimer le cache des mots liés
+	spip_log("cache_url_fil($id_syndic)", "cache");
+	// Supprimer le cache des sites liés
 	cache_url($id_syndic);
 
 	// Traiter les enfants
 	$query_enfants = sql_select("id_syndic", "spip_syndic", "id_parent=$id_syndic");
 	while ($row_enfants = sql_fetch($query_enfants)) {
 		$id_syndic = $row_enfants["id_syndic"];
-		cache_mot_fil($id_syndic);
+		cache_url_fil($id_syndic);
 	}
 	
 }
 
 
 function cache_auteur_fil($id_me) {
+	spip_log("cache_auteur_fil($id_me)", "cache");
 	$query = sql_select("id_auteur, id_parent", "spip_me", "id_me=$id_me");
 	while ($row = sql_fetch($query)) {
 		$id_auteur = $row["id_auteur"];
@@ -271,6 +285,7 @@ function cache_auteur_fil($id_me) {
 }
 
 function cache_auteur($id_auteur) {
+	spip_log("cache_auteur($id_auteur)", "cache");
 	supprimer_microcache($id_auteur, "noisettes/contenu_auteur");
 	supprimer_microcache($id_auteur, "noisettes/contenu_page_tags");
 	supprimer_microcache($id_auteur, "noisettes/contenu_page_sites");
@@ -284,6 +299,8 @@ function cache_auteur($id_auteur) {
 }
 
 function cache_mot ($id_mot) {
+	spip_log("cache_mot ($id_mot)", "cache");
+
 	supprimer_microcache($id_mot, "noisettes/contenu_mot");
 	supprimer_microcache($id_mot, "noisettes/contenu_mot_fin");
 	supprimer_microcache($id_mot, "noisettes/contenu_mot_flou");
@@ -304,6 +321,7 @@ function cache_mot ($id_mot) {
 
 
 function cache_url ($id_syndic) {
+	spip_log("cache_url ($id_syndic)", "cache");
 	supprimer_microcache($id_syndic, "noisettes/contenu_site");
 	supprimer_microcache($id_syndic, "noisettes/afficher_enfants_site");
 
@@ -311,12 +329,6 @@ function cache_url ($id_syndic) {
 	while ($row = sql_fetch($query)) {
 		$id_auteur = $row["id_follow"];
 		supprimer_microcache($id_auteur, "noisettes/contenu_page_sites");
-	}
-	
-	$query = sql_select("id_parent", "spip_syndic", "id_syndic=$id_syndic");
-	while ($row = sql_fetch($query)) {
-		$id_parent = $row["id_parent"];
-		if ($id_parent > 0) cache_url($id_parent);
 	}
 }
 
@@ -376,6 +388,7 @@ function supprimer_me($id_me) {
 	//	sql_query("DELETE FROM spip_me_auteur WHERE id_me=$id_me");
 	sql_query("DELETE FROM spip_me_mot WHERE id_me=$id_me");
 	sql_query("DELETE FROM spip_me_syndic WHERE id_me=$id_me");
+	sql_query("DELETE FROM spip_me_tags WHERE id_me=$id_me");
 	sql_query("UPDATE spip_me SET statut='supp' WHERE id_me=$id_me");
 
 	if ($id_parent == 0) sql_delete("spip_me_recherche", "id_me=$id_ref");
@@ -583,7 +596,7 @@ function OC_site($id_syndic) {
 	
 	$query = sql_select("id_mot", "spip_syndic_oc", "id_syndic=$id_syndic");
 	while ($row = sql_fetch($query)) {
-		$id_mot .= $row["id_mot"];
+		$id_mot = $row["id_mot"];
 		cache_mot($id_mot);
 	}
 
@@ -851,11 +864,10 @@ function extraire_titre($texte) {
 }
 
 
-$GLOBALS["envoi_mail"];
 function tester_mail_auteur($id_auteur, $val) {
 	$ret = false;
 	
-	if (!(isset($GLOBALS["envoi_mail"]["$id_auteur"]["$val"]))) {
+	if (!(isset($GLOBALS["envoi_mail"]["$id_auteur"]))) {
 		$query = sql_select("mail_nouv_billet, mail_rep_moi, mail_rep_billet, mail_rep_conv, mail_suivre_moi", "spip_auteurs", "id_auteur=$id_auteur");
 		if ($row = sql_fetch($query)) {
 			$GLOBALS["envoi_mail"]["$id_auteur"] = $row;
@@ -864,10 +876,11 @@ function tester_mail_auteur($id_auteur, $val) {
 	
 	$reponse = $GLOBALS["envoi_mail"]["$id_auteur"]["$val"];
 	
-	if ($reponse == 1) $ret = true;
-	else $ret = false;
-	
-	
+	if ($reponse == 1)
+		$ret = true;
+	else
+		$ret = false;
+
 	return $ret;
 }
 
@@ -1244,6 +1257,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 
 		$query = sql_query("DELETE FROM spip_me_mot WHERE id_me=$id_me AND id_mot!=$ze_mot");
 		$query = sql_query("DELETE FROM spip_me_syndic WHERE id_me=$id_me");
+		$query = sql_query("DELETE FROM spip_me_tags WHERE id_me=$id_me");
 		$query = sql_query("DELETE FROM spip_me_auteur WHERE id_me=$id_me AND id_auteur!=$id_dest");
 
 		if ($id_parent > 0) {
@@ -1415,11 +1429,14 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	return array("id_me" => $id_me, "id_parent" => $id_parent, "maj" => $maj);
 }
 
-
 function inserer_tags_liens($id_me) {
 	spip_log("inserer_tags_liens $id_me");
 
 	$texte_message = texte_de_me($id_me);
+
+	$t = sql_fetsel('uuid,date', 'spip_me', 'id_me='.$id_me);
+	$uuid = $t['uuid'];
+	$date = $t['date'];
 
 
 	// Extraire les tags et fabriquer des mots-clés
@@ -1430,7 +1447,12 @@ function inserer_tags_liens($id_me) {
 
 
 	if (preg_match_all("/"._REG_HASH."/ui", $message_off, $regs)) {
+		$tags = array();
 		foreach ($regs[0] as $k=>$hash) {
+
+			$tags[] = $hash;
+
+			// DEBUT MOTS-CLES OLD STYLE
 
 			$titre = substr($hash, 1);
 
@@ -1443,7 +1465,7 @@ function inserer_tags_liens($id_me) {
 			else {
 				$id_mot = sql_insertq ("spip_mots", 
 					array(
-						"titre" => substr($hash,1),
+						"titre" => $titre,
 						"id_groupe" => 1
 				));
 				$url = generer_url_entite($id_mot, 'mot');
@@ -1466,9 +1488,23 @@ function inserer_tags_liens($id_me) {
 			));
 
 			cache_mot($id_mot);
+
+			// FIN MOTS-CLES OLD STYLE
+
+		}
+
+		// tags new style (spip_me_tags)
+		sql_delete('spip_me_tags', 'uuid='.sql_quote($uuid).' AND class="#"');
+		foreach(array_unique($tags) as $tag) {
+			sql_insertq('spip_me_tags', array(
+				'id_me' => $id_me,
+				'uuid' => $uuid,
+				'tag' => $tag,
+				'class' => '#',
+				'date' => $date
+			));
 		}
 	}
-	
 	
 	// Extraire les liens et fabriquer des spip_syndic
 	preg_match_all("/"._REG_URL."/ui", $texte_message, $regs);
@@ -1487,7 +1523,7 @@ function inserer_tags_liens($id_me) {
 			if (!$deja_vu["url"][$url]) {
 
 
-				$query = sql_query("SELECT id_syndic FROM spip_syndic WHERE url_site='".addslashes($url)."'");
+				$query = sql_query($a = "SELECT id_syndic FROM spip_syndic WHERE url_site=".sql_quote($url));
 				if ($row = sql_fetch($query)) {
 					$id_syndic = $row["id_syndic"];
 					
@@ -1512,6 +1548,7 @@ function inserer_tags_liens($id_me) {
 							"id_secteur" => 1,
 							"nom_site" => $url,
 							"url_site" => $url,
+							"md5" => md5($url),
 							"statut" => "publie",
 							"date" => "NOW()"
 					));
@@ -1522,15 +1559,16 @@ function inserer_tags_liens($id_me) {
 					"id_me" => $id_me,
 					"id_syndic" => $id_syndic
 				));
+				sql_insertq("spip_me_tags", array(
+					"id_me" => $id_me,
+					'uuid' => $uuid,
+					"tag" => $url,
+					"class" => 'url',
+					"date" => 'NOW()'
+				));
 				// Hierarchiser l'URL
 				hierarchier_url($id_syndic);
-				cache_url($id_syndic);
-				
 				$deja_vu["url"][$url] = true;
-				
-				
-				
-
 			}
 		}
 	}

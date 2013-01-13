@@ -74,12 +74,13 @@ function _creer_lien_riche($lien) {
 		//if (($width * $height) >= 300) return;
 	}
 	
-	$query = sql_query("SELECT id_syndic, lang, titre, url_syndic FROM spip_syndic WHERE url_site=\"$lien\"");
+	$query = sql_query("SELECT id_syndic, lang, titre, url_syndic, md5 FROM spip_syndic WHERE url_site=".sql_quote($lien));
 	if ($row = sql_fetch($query)) {
 		$id_syndic = $row["id_syndic"];
 		$lang = $row["lang"];
 		$titre = $row["titre"];
 		$long = $row["url_syndic"];
+		$md5 = $row['md5'];
 		
 		if (strlen($long) > 0) {
 			$lien_or = $long;
@@ -104,8 +105,10 @@ function _creer_lien_riche($lien) {
 		$query_total = sql_query("SELECT spip_me.* FROM spip_me, spip_me_syndic 
 			WHERE spip_me_syndic.id_syndic=$id_syndic  AND spip_me_syndic.id_me=spip_me.id_me AND spip_me.statut='publi'
 			LIMIT 1,1");
-		while ($row = sql_fetch($query_total)) {
-			$total = "<span class='lien_lien_total'><a href='sites/$id_syndic'>►</a></span>";
+		if ($row = sql_fetch($query_total)) {
+			include_spip('inc/urls');
+			$url = generer_url_entite($id_syndic,'site');
+			$total = "<span class='lien_lien_total'><a href='$url'>►</a></span>";
 		}
 	} else {
 		$total = "";

@@ -297,17 +297,25 @@ function liste_pointe_sql($debut, $max_pagination, $moi, $nous) {
 	$mentions = sql_allfetsel('id_me', 'spip_me_auteur', 'id_auteur='.$moi, '', 'date DESC', '0,'.($debut + $max_pagination));
 	$pointe = array_merge($pointe, array_map('array_pop', $mentions));
 
-	# les messages qui parlent d'un sujet qui m'interesse $moi
-	if ($tags = liste_tags($moi)) {
-		$mentions = sql_allfetsel('id_me', 'spip_me_mot', sql_in('id_mot', $tags), '', 'date DESC', '0,'.($debut + $max_pagination));
+	# les messages qui parlent d'un sujet ou url qui m'interesse $moi
+	if ($tags = sql_allfetsel('tag', 'spip_me_follow_tag', 'id_follow='.$moi)) {
+		$tags = array_map('array_pop', $tags);
+
+		// tags stricts ?
+		# $condition = sql_in('tag', $tags);
+		// tags ou extensions du tag
+		$condition = array();
+		foreach($tags as $tag)
+			$condition[] = 'tag like '.sql_quote($tag."%");
+		$condition = '('.join(' OR ', $condition).')';
+
+		$mentions = sql_allfetsel('id_me', 'spip_me_tags', $condition, '', 'date DESC', '0,'.($debut + $max_pagination));
+
 		$pointe = array_merge($pointe, array_map('array_pop', $mentions));
+
 	}
 
-	# les messages qui parlent d'un URL qui m'interesse $moi
-	if ($urls = liste_urls($moi)) {
-		$mentions = sql_allfetsel('id_me', 'spip_me_syndic', sql_in('id_syndic', $urls), '', 'date DESC', '0,'.($debut + $max_pagination));
-		$pointe = array_merge($pointe, array_map('array_pop', $mentions));
-	}
+	# faut-il ajouter les messages ayant des URLs avec un tag opencalais que je suis ?
 
 	# les messages mis en favoris par $nous
 	$mentions = sql_allfetsel('id_me', 'spip_me_share', sql_in('id_auteur', $nous), '', 'date DESC', '0,'.($debut + $max_pagination));
@@ -324,29 +332,3 @@ function liste_pointe_sql($debut, $max_pagination, $moi, $nous) {
 }
 
 
-function liste_tags($moi) {
-	$tags = array();
-	foreach(sql_allfetsel('id_mot', 'spip_me_follow_mot', 'id_follow='.$moi) as $m) {
-		$titre_mot = sql_fetsel('titre,texte', 'spip_mots', "id_mot=".$m['id_mot']);
-		# cette merde a cause de l'encodage pourri de la base ; a revoir
-		# cas test : http://localhost/seenthis/tags/pr%C3%A9carit%C3%A9?var_mode=recalcul
-		$titre_mot = importer_charset($titre_mot['titre'], 'iso-8859-1');
-		$check[] = 'titre like '.sql_quote(trim($titre_mot).'%');
-	}
-
-	# ici au lieu d'envoyer array($t) il faudrait vérifier si on a mis un $
-	# et dans le cas contraire, lister les tags qui commencent par titre_mot
-	# OU ALORS, indexer sur @mots ___TAG*
-	if ($check) {
-		foreach (sql_allfetsel('id_mot,titre', 'spip_mots', JOIN(' OR ', $check)) as $m) {
-			$tags[] = $m['id_mot']; #CRC32(/*mb_strtolower*/trim(importer_charset($m['titre'], 'iso-8859-1')));
-		}
-	}
-
-	return $tags;
-}
-
-function liste_urls($moi) {
-	$urls = sql_allfetsel('id_syndic', 'spip_me_follow_url', 'id_follow='.$moi);
-	return array_map('array_pop', $urls);
-}
