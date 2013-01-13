@@ -116,7 +116,7 @@ function seenthis_declarer_tables_principales($tables_principales){
 		`class` char(6) NOT NULL DEFAULT '',
 		`date` datetime NOT NULL,
 		`relevance` int(11) NOT NULL,
-		`off` char(3) NOT NULL DEFAULT 'non'
+		`off` char(3) NOT NULL DEFAULT 'non',
 		KEY (`id_me`), # pas de primary
 		KEY `uuid` (`uuid`),
 		KEY `date` (`date`)"
