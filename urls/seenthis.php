@@ -28,6 +28,7 @@ if (!defined('_MARQUEUR_URL'))
 $GLOBALS['url_arbo_types']=array(
 	'mot'=>'tag',
 	'auteur'=>'people',
+	'site' =>'sites'
 );
 
 ## delicate composition pour prendre le login a la place du nom dans l'URL
@@ -87,8 +88,20 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 				. urlencode_1738_plus(mb_strtolower($k['login'],'UTF8'));
 
 		}
-	} else if (TRUE) {
 
+		# generer_url_entite('site', id_syndic)
+		if ($entite == "site") {
+			$k = sql_fetsel('url_site,md5 FROM spip_syndic WHERE id_syndic='.sql_quote($i));
+			if (!$k) return '';
+			#if (!$ref = $k['md5']) // a activer si on veut le md5 dans l'url
+				$ref = $i;
+
+			# people/login
+			$g = _DIR_RACINE.$GLOBALS['url_arbo_types']['site'].'/'
+				. $ref;
+
+		}
+	} else if (TRUE) {
 		# la page /people/
 		if (preg_match(',/people/?$,', $i)) {
 			$g = array(array(), 'people');
@@ -129,6 +142,55 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 				null
 			);
 		}
+		# la page d'un site :
+		else
+		if (preg_match(',/sites/(\d+)$,i', $i, $r)) {
+			if ($f = sql_fetsel('id_syndic, url_site, md5', 'spip_syndic', 'id_syndic='.$r[1])) {
+				$args['id_syndic'] = $f['id_syndic'];
+				$args['url'] = $f['url_site'];
+				$args['md5'] = $f['md5'];
+			}
+			$g = array(
+				$args,
+				'site',
+				null,
+				null
+			);
+		}
+		else
+		if (preg_match(',/sites/([0-9a-f]{32})$,i', $i, $r)) {
+			/* old style = id_syndic */
+			if ($f = sql_fetsel('id_syndic, url_site, md5', 'spip_syndic', 'MD5(url_site)='.sql_quote($r[1]))) {
+				$args['id_syndic'] = $f['id_syndic'];
+				$args['url'] = $f['url_site'];
+				$args['md5'] = $f['md5'];
+			}
+			$g = array(
+				$args,
+				'site',
+				null,
+				null
+			);
+		}
+
+		else
+		if (preg_match(',/sites/(https?:.*)$,', $i, $r)) {
+			/* old style = id_syndic */
+
+			if ($f = sql_fetsel('id_syndic, url_site, md5', 'spip_syndic', 'MD5(url_site)='.sql_quote(md5($r[1])))) {
+				$args['id_syndic'] = $f['id_syndic'];
+				$args['url'] = $f['url_site'];
+				$args['md5'] = $f['md5'];
+			}
+			$g = array(
+				$args,
+				'site',
+				null,
+				null
+			);
+		}
+
+
 		# la page d'un tag manuel ou opencalais :
 		else if (preg_match(',/tag/(([^:]+):(.*)|(.*))$,',
 		preg_replace('/[?].*$/', '', $i), $r)) {
