@@ -108,9 +108,9 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 		# la page people/xxx/follow/feed => ramener sur people/xxx
 		else if (
-			preg_match(',^.*(/people/(.*?))((/follow)?/feed)(\?|$),', $i, $r)
+			preg_match(',^.*(/people/([^?]+))((/follow)?/feed)(\?|$),', $i, $r)
 		OR
-			preg_match(',^.*(/people/(.*)),', $i, $r)
+			preg_match(',^.*(/people/([^?]+)),', $i, $r)
 		) {
 			if ($f = sql_fetsel('id_auteur', 'spip_auteurs', 'login='.sql_quote($r[2]))) {
 				$args['id_auteur'] = $f['id_auteur'];
@@ -233,6 +233,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			/* old style = id_mot */
 			if ($f = sql_fetsel('m.id_mot AS id_mot', 'spip_mots AS m LEFT JOIN spip_groupes_mots AS g ON m.id_groupe=g.id_groupe', 'm.titre='.sql_quote($titre).' AND g.titre='.sql_quote($type))) {
 				$args['id_mot'] = $f['id_mot'];
+			}
 
 			$g = array(
 				$args,
@@ -240,8 +241,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 				null,
 				null
 			);
-
-			} # une fois les vieux urls de mots resorbes, on pourra supprimer ce if()
+			# une fois les vieux urls de mots resorbes, on pourra supprimer ce if()
 
 		}
 	}
