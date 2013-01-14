@@ -53,7 +53,14 @@ function _creer_lien_riche($lien) {
 		// Gérer les images en lien dropbox (remplacer www par dl)
 		$lien = preg_replace("/^(https\:\/\/)(www)(\.dropbox\.com\/.*\/.*\/.*)$/", '\1dl\3', $lien);
 
+
+		// hacker temporairement adresse_site de maniere a obtenir
+		// les images des serveurs qui controlent le referer…
+		// cf. inc/distant ligne 632
+		$a=$GLOBALS['meta']["adresse_site"];
+		$GLOBALS['meta']["adresse_site"] = $lien;
 		$image = afficher_miniature($lien);
+		$GLOBALS['meta']["adresse_site"] = $a;
 
 		if ($image) {
 			# gif animé
