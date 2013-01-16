@@ -717,7 +717,7 @@ function calculer_troll($id_auteur, $reseau = false) {
 	if ($troll_forcer >0) {
 		$total = $troll_forcer;
 	} else {
-		$query = sql_select("auteur.id_auteur, auteur.troll, auteur.troll_forcer", "spip_auteurs as auteur, spip_me_follow as follow", "follow.id_auteur=$id_auteur AND follow.id_follow=auteur.id_auteur");
+		$query = sql_select("auteur.id_auteur, auteur.troll, auteur.troll_forcer", "spip_auteurs as auteur LEFT JOIN spip_me_follow as follow ON follow.id_follow=auteur.id_auteur", "follow.id_auteur=$id_auteur");
 		while ($row = sql_fetch($query)) {
 			$id_follow = $row["id_auteur"];
 			$troll = $row["troll_forcer"];
@@ -766,10 +766,11 @@ function calculer_troll($id_auteur, $reseau = false) {
 	return $total;
 }
 
-$val_troll = array();
 
 function afficher_troll($id_auteur) {
-	if ($val_troll["$id_auteur"]) return $val_troll["$id_auteur"];
+	static $val_troll = array();
+
+	if (isset($val_troll["$id_auteur"])) return $val_troll["$id_auteur"];
 	else {
 		$query = sql_select("troll, troll_forcer", "spip_auteurs", "id_auteur=$id_auteur");
 		if ($row = sql_fetch($query)) {
@@ -781,7 +782,7 @@ function afficher_troll($id_auteur) {
 			return $troll;
 		}
 	}
-	return $false;
+	return false;
 }
 
 function rel_troll($id_auteur) {
@@ -1178,7 +1179,8 @@ function supprimer_background_favicon($texte) {
 }	
 
 // insertion ou modification en base d'un message
-function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0, $id_dest=0, $ze_mot=0, $time="NOW()"){
+function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0, $id_dest=0, $ze_mot=0, $time="NOW()", $uuid=null){
+	include_spip('base/abstract_sql');
 
 	if ($id_auteur < 1) return false;
 	if ($id_me > 0) cache_me($id_me);
@@ -1193,6 +1195,18 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	# http://seenthis.net/messages/37781
 	$adresse_ip = $_SERVER["REMOTE_ADDR"];
 
+	// Valider ou creer un UUID aleatoire
+	include_spip('inc/uuid');
+	if (is_null($uuid)) {
+		$uuid = UUID::getuuid();
+	} else {
+		$uuid = UUID::getuuid($uuid);
+		if ($t = sql_getfetsel('id_me', 'spip_me', 'uuid='.sql_quote($uuid))) {
+			$id_me = $t['id_me'];
+			spip_log("uuid: $uuid, found id_me=$id_me", 'debug');
+		}
+	}
+
 	// creation ?
 	if ($id_me == 0) {
 	
@@ -1205,12 +1219,6 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 		} else {
 			$date_parent = $time;
 		}
-
-		// creer un UUID aleatoire
-		// a noter : si on veut creer un message avec un UUID specifique,
-		// utiliser plutot la fonction seenthis_uuid / get_create_me_uuid()
-		include_spip('inc/uuid');
-		$uuid = UUID::getuuid();
 
 		// Insertion en base
 		$id_me = sql_insertq("spip_me",
@@ -1228,6 +1236,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 				"troll" => $troll
 			)
 		);
+
 		sql_insertq("spip_me_texte",
 			array(
 				"id_me" => $id_me,
