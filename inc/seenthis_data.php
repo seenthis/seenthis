@@ -126,15 +126,6 @@ function inc_seenthisrecherche_to_array_dist($u) {
 
 	$where = array();
 
-	
-
-	## env[age] est la date minimum au format "YYYY-MM-dd H:i:s"
-	if ($env['age']
-	AND strtotime($env['age']) // verifier que la date est valide
-	) {
-		$wheredate = ' AND (m.date >= '.sql_quote($env['age']).')';
-	}
-
 	switch($env['follow']) {
 		# $nous
 		case '':
