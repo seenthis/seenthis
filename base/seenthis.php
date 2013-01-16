@@ -421,7 +421,7 @@ function seenthis_mots2tags() {
 	# => en spip_me_follow_tag("url")
 	$s = sql_query($a = "INSERT INTO spip_me_follow_tag (tag, id_follow, date)
 	SELECT
-		m.url_syndic as tag,
+		m.url_site as tag,
 		f.id_follow,
 		f.date
 	FROM
