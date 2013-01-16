@@ -29,6 +29,7 @@ function get_create_me_uuid($what=null, $id_auteur=null) {
 				"date_modif" => "NOW()",
 				"date_parent" => "NOW()",
 				"id_auteur" => $id_auteur,
+				'troll' => afficher_troll($id_auteur),
 				'uuid' => $uuid
 			)
 		);
