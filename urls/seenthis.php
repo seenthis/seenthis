@@ -102,8 +102,62 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
 		}
 	} else if (TRUE) {
+		# la page d'un tag manuel ou opencalais :
+		if (preg_match(',/tag/(([^:]+):(.*)|(.*))$,',
+		preg_replace('/[?].*$/', '', $i), $r)) {
+			# tag/spip
+			if (isset($r[4])) {
+				$type = 'Hashtags';
+				$titre = urldecode($r[4]);
+				$tag = "#$titre";
+			} else {
+				$type = urldecode($r[2]);
+				$titre = urldecode($r[3]);
+				$tag = "$type:$titre";
+			}
+			switch (substr($titre,-1)) {
+				# spip$ = seulement le mot 'spip'
+				case '$':
+					$fond = 'mot_fin';
+					$titre = substr($titre,0,-1);
+					$tag = substr($tag,0,-1);
+					break;
+				# spip* = 'spip', 'spip_zone' etc
+				case '*':
+					$fond = 'mot_flou';
+					$titre = substr($titre,0,-1);
+					$tag = substr($tag,0,-1);
+					break;
+				# spip* = 'spip', 'cms' etc (tous les thèmes liés à 'spip')
+				default:
+					$fond = 'mot';
+					break;
+			}
+			# tag/truc/feed => flux RSS du tag
+			if (substr($titre,-5) == '/feed') {
+				$titre = substr($titre,0,-5);
+				$tag = substr($tag,0,-5);
+				$fond = 'backend_mot';
+			}
+			$args['tag'] = $tag;
+
+			/* old style = id_mot */
+			if ($f = sql_fetsel('m.id_mot AS id_mot', 'spip_mots AS m LEFT JOIN spip_groupes_mots AS g ON m.id_groupe=g.id_groupe', 'm.titre='.sql_quote($titre).' AND g.titre='.sql_quote($type))) {
+				$args['id_mot'] = $f['id_mot'];
+			}
+
+			$g = array(
+				$args,
+				$fond,
+				null,
+				null
+			);
+			# une fois les vieux urls de mots resorbes, on pourra supprimer ce if()
+
+		}
+
 		# la page /people/
-		if (preg_match(',/people/?$,', $i)) {
+		else if (preg_match(',/people/?$,', $i)) {
 			$g = array(array(), 'people');
 		}
 		# la page people/xxx/follow/feed => ramener sur people/xxx
@@ -190,60 +244,6 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			);
 		}
 
-
-		# la page d'un tag manuel ou opencalais :
-		else if (preg_match(',/tag/(([^:]+):(.*)|(.*))$,',
-		preg_replace('/[?].*$/', '', $i), $r)) {
-			# tag/spip
-			if (isset($r[4])) {
-				$type = 'Hashtags';
-				$titre = urldecode($r[4]);
-				$tag = "#$titre";
-			} else {
-				$type = urldecode($r[2]);
-				$titre = urldecode($r[3]);
-				$tag = "$type:$titre";
-			}
-			switch (substr($titre,-1)) {
-				# spip$ = seulement le mot 'spip'
-				case '$':
-					$fond = 'mot_fin';
-					$titre = substr($titre,0,-1);
-					$tag = substr($tag,0,-1);
-					break;
-				# spip* = 'spip', 'spip_zone' etc
-				case '*':
-					$fond = 'mot_flou';
-					$titre = substr($titre,0,-1);
-					$tag = substr($tag,0,-1);
-					break;
-				# spip* = 'spip', 'cms' etc (tous les thèmes liés à 'spip')
-				default:
-					$fond = 'mot';
-					break;
-			}
-			# tag/truc/feed => flux RSS du tag
-			if (substr($titre,-5) == '/feed') {
-				$titre = substr($titre,0,-5);
-				$tag = substr($tag,0,-5);
-				$fond = 'backend_mot';
-			}
-			$args['tag'] = $tag;
-
-			/* old style = id_mot */
-			if ($f = sql_fetsel('m.id_mot AS id_mot', 'spip_mots AS m LEFT JOIN spip_groupes_mots AS g ON m.id_groupe=g.id_groupe', 'm.titre='.sql_quote($titre).' AND g.titre='.sql_quote($type))) {
-				$args['id_mot'] = $f['id_mot'];
-			}
-
-			$g = array(
-				$args,
-				$fond,
-				null,
-				null
-			);
-			# une fois les vieux urls de mots resorbes, on pourra supprimer ce if()
-
-		}
 	}
 
 	// Sinon on se base sur l'url arbo
