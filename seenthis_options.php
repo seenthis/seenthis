@@ -207,13 +207,13 @@ function cache_me ($id_me, $id_parent = 0) {
 	supprimer_microcache($id_me, "noisettes/atom_me_tw");
 
 	supprimer_microcache($id_me, "noisettes/afficher_message");
-	supprimer_microcache($id_me, "noisettes/afficher_un_message");
-	
+	supprimer_microcache($id_me, "noisettes/message_texte");
+
+
 	// Pas de noisettes pour id_parent 0.
 	if ($id_parent > 0) {
 		$id_share = $id_parent;
 		supprimer_microcache($id_parent, "noisettes/afficher_message");
-		supprimer_microcache($id_parent, "noisettes/afficher_un_message");
 		supprimer_microcache($id_parent, "noisettes/oc_message");
 
 		cache_mot_fil ($id_parent);
@@ -347,7 +347,6 @@ function nettoyer_nom_auteur($id_auteur) {
 	$query = sql_select("id_me", "spip_me", "id_auteur=$id_auteur");
 	while ($row = sql_fetch($query)) {
 		$id_me = $row["id_me"];
-		supprimer_microcache($id_me, "noisettes/message_nom_auteur");
 		cache_me($id_me);
 	}
 }
