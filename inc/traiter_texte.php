@@ -26,18 +26,12 @@ function _traiter_people ($regs) {
 		WHERE login=".sql_quote(mb_strtolower($tag,'UTF8'))
 			." AND statut!='5poubelle'");
 	if ($k = sql_fetch($query)) {
-		/*
-		$id_auteur = $row["id_auteur"];
-		$f = charger_fonction('seenthis', 'urls');
-		$url = $f($id_auteur, $type='auteur');
-		*/
+		$GLOBALS['destinataires'] .= microcache($k['id_auteur'], 'noisettes/message_logo_auteur_small');
 		$url = 'people/'.urlencode_1738_plus(mb_strtolower($k['login'],'UTF8'));
+		return "<span class='lien_people'>@<a href='$url'>$tag</a></span>";
 	}
-	if ($url) return "<span class='lien_people'>@<a href='$url'>$tag</a></span>";
 	else return "@$tag";
-//	else return "<span class='lien_people'>@<span class='inexistant'>$tag</span></span>";
 }
-
 
 
 function _creer_lien_riche($lien) {
@@ -293,8 +287,10 @@ function _traiter_texte($texte) {
 	$texte = str_replace(">", "&gt;", $texte);
 
 	// Remplacer les people
+	$GLOBALS['destinataires'] = '';
 	$texte = preg_replace_callback("/"._REG_PEOPLE."/i", "_traiter_people", $texte);
-	
+	$destinataires = $GLOBALS['destinataires'];
+
 	// Remplacer les tags
 	$texte = preg_replace_callback("/"._REG_HASH."/ui", "_traiter_hash", $texte);
 
@@ -365,7 +361,11 @@ function _traiter_texte($texte) {
 
 	if ($lang) $inserer = " lang=\"$lang\" dir=\"$dir\"";
 
-	return "<div$inserer>$texte</div>";
+	if ($destinataires)
+		$destinataires = '<div class="destinataires">'.$destinataires.'</div>';
+
+
+	return "$destinataires<div$inserer>$texte</div>";
 }
 
 
