@@ -5,7 +5,6 @@
 
 define ("_TROLL_VAL", 3000);
 
-
 // Définir des id_groupes de mots à exclure (par exemples les URL)
 // define('_EXCLUDE_GROUPE', '21');
 
@@ -1200,8 +1199,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 		$uuid = UUID::getuuid();
 	} else {
 		$uuid = UUID::getuuid($uuid);
-		if ($t = sql_getfetsel('id_me', 'spip_me', 'uuid='.sql_quote($uuid))) {
-			$id_me = $t['id_me'];
+		if ($id_me = sql_getfetsel('id_me', 'spip_me', 'uuid='.sql_quote($uuid))) {
 			spip_log("uuid: $uuid, found id_me=$id_me", 'debug');
 		}
 	}
