@@ -244,6 +244,16 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			);
 		}
 
+		else
+		if (preg_match(',/all$,i', $i, $r)) {
+			$args['follow'] = 'all';
+			$g = array(
+				$args,
+				'sommaire',
+				null,
+				null
+			);
+		}
 	}
 
 	// Sinon on se base sur l'url arbo
