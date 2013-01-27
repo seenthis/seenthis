@@ -985,8 +985,9 @@ function notifier_me($id_me, $id_parent) {
 	$query = sql_select("id_auteur", "spip_me", "id_me=$id_me AND statut='publi'");
 	if ($row = sql_fetch($query)) {
 		$id_auteur_me = $row["id_auteur"];
-		
-		$titre_mail = trim(extraire_titre(texte_de_me($id_me)));
+
+		$texte = texte_de_me($id_me);
+		$titre_mail = trim(extraire_titre($texte));
 
 		if ($id_parent == 0) {		
 			$url_me = "http://"._HOST."/messages/$id_me";
@@ -1023,8 +1024,10 @@ function notifier_me($id_me, $id_parent) {
 			}
 		}
 		
-		if ($id_parent > 0) $texte = construire_texte($id_parent, $id_me);
-		else $texte = construire_texte($id_me, $id_me);
+		if ($id_parent > 0)
+			$texte = construire_texte($id_parent, $id_me);
+		else
+			$texte = construire_texte($id_me, $id_me);
 		
 
 		// auteurs qui suivent l'auteur
@@ -1057,7 +1060,20 @@ function notifier_me($id_me, $id_parent) {
 			}
 		}
 
-		
+		// destinataires cités dans le message ; sauf s'ils bloquent l'auteur
+		include_spip('inc/traiter_texte');
+		$t = preg_replace_callback("/"._REG_URL."/ui", "_traiter_lien", $texte);
+		if (preg_match_all("/"._REG_PEOPLE."/i", $t, $people)) {
+			foreach ($people[0] as $k=>$p) {
+				$people[$k] = mb_substr($p,1); // liste des logins cites
+			}
+			$s = sql_query($q = 'SELECT m.id_auteur FROM spip_auteurs AS m LEFT JOIN spip_me_block AS b ON b.id_block=m.id_auteur AND b.id_auteur='.sql_quote($id_auteur_me).' WHERE '.sql_in('m.login', array_unique($people)).' AND b.id_block IS NULL');
+			while($t = sql_fetch($s)) {
+				$id_dest[] = $t['id_auteur'];
+			}
+		}
+
+
 		if (isset($id_dest)) { 
 			//$from = mb_encode_mimeheader($nom_auteur)." - Seenthis <no-reply@"._HOST.">\n";
 			$from = $nom_auteur." - Seenthis <no-reply@"._HOST.">\n";
@@ -1080,7 +1096,8 @@ function notifier_me($id_me, $id_parent) {
 
 				$email_dest = $row_dest["email"];
 				$lang = $row_dest["lang"];
-				
+				spip_log("notifier $id_me($id_parent) a $email_dest", 'notifier');
+
 				if (strlen(trim($email_dest)) > 3) {
 					
 					if ($lang == "en") {				
