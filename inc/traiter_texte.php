@@ -395,8 +395,8 @@ function _traiter_texte($texte) {
 
 	if ($lang) $inserer = " lang=\"$lang\" dir=\"$dir\"";
 
-	if ($destinataires)
-		$destinataires = '<div class="destinataires">'.join('',array_unique($destinataires)).'</div>';
+	if ($destinataires = join('',array_unique($destinataires)))
+		$destinataires = '<div class="destinataires">'.$destinataires.'</div>';
 
 
 	return "$destinataires<div$inserer>$texte</div>";
