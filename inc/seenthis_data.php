@@ -18,6 +18,10 @@ function inc_seenthisaccueil_to_array_dist($u, $page=null) {
 	# => puisque pas de OR, dans le @texte ajouter @replies et @share
 
 	# pour les share de $moi, date = date du partage
+
+	# ne pas prendre les messages des auteurs bloques (i.e. dans $where)
+	# sauf s'ils ont été mis en favori par $nous (i.e. dans $fav)
+
 	# trier l'ensemble par date
 	# paginer…
 
@@ -59,12 +63,14 @@ function inc_seenthisaccueil_to_array_dist($u, $page=null) {
 			$pointe = liste_pointe_sql($debut, $max_pagination, $moi, $nous);
 			$where = '('.sql_in('id_auteur', $nous). $pointe.')';
 			$fav = liste_favoris($nous,$debut, $max_pagination);
+			$auteurs_bloques = auteurs_bloques($moi);
 			break;
 
 		# tout : pas de filtre
 		case 'all':
 			$where = "1=1";
 			$fav = liste_favoris($moi,$debut, $max_pagination);
+			$auteurs_bloques = auteurs_bloques($moi);
 			break;
 
 		# $moi ou une autre
@@ -76,6 +82,7 @@ function inc_seenthisaccueil_to_array_dist($u, $page=null) {
 				$elle = $elle[0]['id_auteur'];
 				$fav = liste_favoris($elle,$debut, $max_pagination);
 				$where = '('.sql_in('id_auteur', $elle) .')';
+				$auteurs_bloques = auteurs_bloques($elle);
 			}
 			else {
 				$where = "0=1";
@@ -89,7 +96,11 @@ function inc_seenthisaccueil_to_array_dist($u, $page=null) {
 	# requete triee par date, avec des dates remises en fonction des favoris
 	$r = $fav;
 
-	$res = sql_allfetsel('id_me,UNIX_TIMESTAMP(date) as date', 'spip_me', $where.' AND id_parent=0 AND statut="publi"', '', 'date DESC', $max_pagination + $debut);
+	$bloquer = count($auteurs_bloques)
+		? ' AND '.sql_in('id_auteur', $auteurs_bloques, 'NOT')
+		: '';
+
+	$res = sql_allfetsel('id_me,UNIX_TIMESTAMP(date) as date', 'spip_me', $where.$bloquer.' AND id_parent=0 AND statut="publi"', '', 'date DESC', $max_pagination + $debut);
 
 	foreach ($res as &$match) {
 		$date = $match['date'];
@@ -146,11 +157,13 @@ function inc_seenthisrecherche_to_array_dist($u) {
 			$fav = liste_favoris($nous,$debut, $max_pagination);
 			$wherefollow = ' AND ('.sql_in('m.id_auteur', $nous). $pointe
 				. ' OR '.sql_in('m.id_me', array_keys($fav)).')';
+			$auteurs_bloques = auteurs_bloques($moi);
 			break;
 
 		# tout : pas de filtre
 		case 'all':
 			$wherefollow = "";
+			$auteurs_bloques = auteurs_bloques($moi);
 			break;
 
 		# $moi ou une autre
@@ -163,6 +176,7 @@ function inc_seenthisrecherche_to_array_dist($u) {
 				$fav = liste_favoris($elle,$debut, $max_pagination);
 				$wherefollow = 'AND (('.sql_in('m.id_auteur', $elle) .')'
 					. ' OR '.sql_in('m.id_me', array_keys($fav)).')';
+				$auteurs_bloques = auteurs_bloques($elle);
 			}
 			else {
 				$wherefollow = "AND 0=1";
@@ -214,7 +228,11 @@ function inc_seenthisrecherche_to_array_dist($u) {
 	if ($boolean = preg_match(', [+-><~]|\* |".*?",', " $r "))
 		$val = $match = "MATCH($key) AGAINST ($p IN BOOLEAN MODE)";
 
-	$res = sql_allfetsel("SQL_CALC_FOUND_ROWS r.id_me AS id, m.date, $val AS score, $tseg", "spip_me_recherche AS r INNER JOIN spip_me AS m ON r.id_me=m.id_me", "$match AND m.statut='publi'$wheredate$wherefollow", null, 'tseg ASC, score DESC'
+	$bloquer = count($auteurs_bloques)
+		? ' AND '.sql_in('m.id_auteur', $auteurs_bloques, 'NOT')
+		: '';
+
+	$res = sql_allfetsel("SQL_CALC_FOUND_ROWS r.id_me AS id, m.date, $val AS score, $tseg", "spip_me_recherche AS r INNER JOIN spip_me AS m ON r.id_me=m.id_me", "$match AND m.statut='publi'$wheredate$wherefollow$bloquer", null, 'tseg ASC, score DESC'
 	, "$debut,$max_pagination"
 	);
 	$t = sql_fetch(mysql_query("SELECT FOUND_ROWS() as total"));
@@ -322,4 +340,8 @@ function liste_pointe_sql($debut, $max_pagination, $moi, $nous) {
 		return " OR ".sql_in('id_me', $pointe);
 }
 
+/* quels sont les auteurs que je bloque */
+function auteurs_bloques($moi) {
+	return array_map('array_pop', sql_allfetsel('id_auteur', 'spip_me_block', 'id_block='.sql_quote($moi)));
+}
 
