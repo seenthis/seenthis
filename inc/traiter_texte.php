@@ -26,7 +26,7 @@ function _traiter_people ($regs) {
 		WHERE login=".sql_quote(mb_strtolower($tag,'UTF8'))
 			." AND statut!='5poubelle'");
 	if ($k = sql_fetch($query)) {
-		$GLOBALS['destinataires'] .= microcache($k['id_auteur'], 'noisettes/message_logo_auteur_small');
+		$GLOBALS['destinataires'][] = microcache($k['id_auteur'], 'noisettes/message_logo_auteur_small');
 		$url = 'people/'.urlencode_1738_plus(mb_strtolower($k['login'],'UTF8'));
 		return "<span class='lien_people'>@<a href='$url'>$tag</a></span>";
 	}
@@ -38,8 +38,42 @@ function _creer_lien_riche($lien) {
 
 	$lien_or = $lien;
 
+	// lien local ?
+	if (FALSE
+	AND preg_match(',^https?://('
+		.preg_quote(_HOST).'/messages/(\d+)|'
+		.preg_quote(_SHORT_HOST).'/([a-f0-9]+)'
+		.'),',
+	$lien, $r)) {
+		if ($r[3]) # short
+			$id_me = base_convert($r[3],36,10);
+		else
+			$id_me = $r[2];
+
+		if ($id_me
+		AND $t = texte_de_me($id_me)) {
+			$t = array_filter(explode("\n", $t));
+			$titre = supprimer_tags(typo_seenthis(couper($t[0], 60)));
+			if (!strlen($titre)) $titre = $lien;
+			return "<style>    a.internal-link { text-decoration: none;  } a.internal-link span.titre { text-decoration: underline;  }  a.internal-link span.url {     display:inline-block;     width:1px;     height:1px;     overflow:hidden;     color:transparent;    }    a.internal-link::before {     content: '❝';  }    a.internal-link::after {     content: '❞';  text-decoration: none;}    }    </style>    <a href='$lien' class='internal-link'><span class='url'>$lien </span><span class='titre'>$titre</span></a>";
+		}
+	}
+
+
 	// Supprimer slash final
 	$lien = preg_replace(",/$,", "", $lien);
+
+	// Gérer les images seafile (seafile officiels seulement, pour le moment)
+	if (FALSE
+	AND preg_match(',^http://cloud.seafile.com/f/,', $lien)
+	AND $g = file_get_contents(copie_locale($lien))
+	AND $b = extraire_balises($g, 'img')) {
+		foreach($b as $img) {
+			if (extraire_attribut($img, 'id') == 'image-view'
+			AND $l = extraire_attribut($img, 'src'))
+				$lien = url_absolue($l, $lien);
+		}
+	}
 
 	// Si ça ressemble à une image, inclure la vignette sur place
 	if (preg_match(",\.(png|gif|jpe?g|svg),i", $lien)) {
@@ -287,7 +321,7 @@ function _traiter_texte($texte) {
 	$texte = str_replace(">", "&gt;", $texte);
 
 	// Remplacer les people
-	$GLOBALS['destinataires'] = '';
+	$GLOBALS['destinataires'] = array();
 	$texte = preg_replace_callback("/"._REG_PEOPLE."/i", "_traiter_people", $texte);
 	$destinataires = $GLOBALS['destinataires'];
 
@@ -362,7 +396,7 @@ function _traiter_texte($texte) {
 	if ($lang) $inserer = " lang=\"$lang\" dir=\"$dir\"";
 
 	if ($destinataires)
-		$destinataires = '<div class="destinataires">'.$destinataires.'</div>';
+		$destinataires = '<div class="destinataires">'.join('',array_unique($destinataires)).'</div>';
 
 
 	return "$destinataires<div$inserer>$texte</div>";
