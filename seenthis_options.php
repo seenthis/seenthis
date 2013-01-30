@@ -540,10 +540,15 @@ function recuperer_contenu_site ($id_syndic, $url) {
 function sucrer_utm ($url) {
 	if (is_array($url)) $url = $url[0];
 	
+	# twitter/#!/truc
 	$url = preg_replace(",https?://twitter.com/#!/,", "http://twitter.com/", $url);
-	
+
+	# utm_xxx =
 	$url = preg_replace(",([\?\&]|\&amp;)utm\_.*,", "", $url);
-	
+
+	# #.UQk2gR0q7bM
+	$url = preg_replace(",#\..*$,", "", $url);
+
 	return $url;
 	
 }
