@@ -423,27 +423,29 @@ function allonger_url($url) {
 	return $l;
 }
 
-
 function recuperer_contenu_site ($id_syndic, $url) {
 	include_spip("inc/distant");
 
 	// D'abord tester le nom du (futur) fichier local
 	// ce qui permet de ne travailler que sur le HTML
 	$local = fichier_copie_locale($url);
-
 	$recup = 0;
 	
 	if (!preg_match(",html$,", $local)) {
 		$recup = 2;
 	} else {
-	
 		$contenu = _DIR_RACINE.copie_locale($url);
 		if ($contenu) {
 			$html = join(file($contenu), "");
 			include_spip("inc/texte");
 
+			// quand copie_locale() qui ne transcode pas en utf8
+			if (!is_utf8($html)) {
+				$c = mb_detect_encoding($html, "UTF-8, ISO-8859-1, ISO-8859-15");
+				$html = importer_charset($html, $c);
+			}
 
-			// Virer les scripts en amont			
+			// Virer les scripts en amont
 			$html = preg_replace(",<script.*</script>,Uims", "", $html);
 			$html = interdire_scripts($html, true);
 			
@@ -1094,6 +1096,9 @@ function notifier_me($id_me, $id_parent) {
 			$id_dest = join(",", $id_dest);
 			
 			spip_log("$id_me($id_parent) : destinataires=$id_dest", 'notifier');
+
+			spip_log("$id_me($id_parent) : destinataires=$id_dest", 'notifier');
+
 
 			$query_dest = sql_select("*", "spip_auteurs", "id_auteur IN ($id_dest)
 			AND id_auteur != $id_auteur_me
