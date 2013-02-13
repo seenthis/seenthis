@@ -1092,6 +1092,8 @@ function notifier_me($id_me, $id_parent) {
 
 		
 			$id_dest = join(",", $id_dest);
+			
+			spip_log("$id_me($id_parent) : destinataires=$id_dest", 'notifier');
 
 			$query_dest = sql_select("*", "spip_auteurs", "id_auteur IN ($id_dest)
 			AND id_auteur != $id_auteur_me
