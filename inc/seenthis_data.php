@@ -59,14 +59,14 @@ function inc_seenthisaccueil_to_array_dist($u, $page=null) {
 			# - pointe vers moi ($pointe)
 			$pointe = liste_pointe_sql($debut, $max_pagination, $moi);
 			$where = '('.sql_in('id_auteur', $nous). $pointe.')';
-			$fav = liste_favoris($nous,$debut, $max_pagination);
+			$fav = liste_partages($nous,$debut, $max_pagination);
 			$auteurs_bloques = auteurs_bloques($moi);
 			break;
 
 		# tout : pas de filtre
 		case 'all':
 			$where = "1=1";
-			$fav = liste_favoris($moi,$debut, $max_pagination);
+			$fav = liste_partages($moi,$debut, $max_pagination);
 			$auteurs_bloques = auteurs_bloques($moi);
 			break;
 
@@ -77,7 +77,7 @@ function inc_seenthisaccueil_to_array_dist($u, $page=null) {
 			if ($elle = sql_allfetsel('id_auteur', 'spip_auteurs', '(login='.sql_quote($env['follow'])." OR id_auteur=".intval($env['id']).") AND statut!='5poubelle'")) {
 				# $selfollow="(IN(id_auteur,$moi) OR IN(share,$moi)) as ok";
 				$elle = $elle[0]['id_auteur'];
-				$fav = liste_favoris($elle,$debut, $max_pagination);
+				$fav = liste_partages($elle,$debut, $max_pagination);
 				$where = '('.sql_in('id_auteur', $elle) .')';
 				$auteurs_bloques = auteurs_bloques($elle);
 			}
@@ -162,7 +162,7 @@ function inc_seenthisbackend_to_array_dist($u, $variante=null) {
 			# - pointe vers moi ($pointe)
 			$pointe = liste_pointe_sql($debut, $max_pagination, $moi);
 			$where = '('.sql_in('id_auteur', $nous). $pointe.')';
-			$fav = liste_favoris($nous,$debut, $max_pagination);
+			$fav = liste_partages($nous,$debut, $max_pagination);
 			$auteurs_bloques = auteurs_bloques($moi);
 			break;
 
@@ -181,7 +181,7 @@ function inc_seenthisbackend_to_array_dist($u, $variante=null) {
 			# - pointe vers moi ($pointe)
 			$pointe = liste_pointe_sql($debut, $max_pagination, $moi);
 			$where = '('.sql_in('id_auteur', $nous). $pointe.')';
-			$fav = liste_favoris($nous,$debut, $max_pagination);
+			$fav = liste_partages($nous,$debut, $max_pagination);
 			$auteurs_bloques = auteurs_bloques($moi);
 			break;
 
@@ -191,7 +191,7 @@ function inc_seenthisbackend_to_array_dist($u, $variante=null) {
 			# ensuite on va faire notre selection de tout ce que :
 			# - j'ai envoyé + partagé (share $nous)
 			$where = 'id_auteur='.$moi;
-			$fav = liste_favoris($moi,$debut, $max_pagination);
+			$fav = liste_partages($moi,$debut, $max_pagination);
 			break;
 
 	}
@@ -257,7 +257,7 @@ function inc_seenthisrecherche_to_array_dist($u) {
 			# - pointe vers moi ($pointe)
 			$pointe = str_replace('id_me', 'm.id_me',
 				liste_pointe_sql($debut, $max_pagination, $moi));
-			$fav = liste_favoris($nous,$debut, $max_pagination);
+			$fav = liste_partages($nous,$debut, $max_pagination);
 			$wherefollow = ' AND ('.sql_in('m.id_auteur', $nous). $pointe
 				. ' OR '.sql_in('m.id_me', array_keys($fav)).')';
 			$auteurs_bloques = auteurs_bloques($moi);
@@ -276,7 +276,7 @@ function inc_seenthisrecherche_to_array_dist($u) {
 			if ($elle = sql_allfetsel('id_auteur', 'spip_auteurs', '(login='.sql_quote($env['follow'])." OR id_auteur=".intval($env['id']).") AND statut!='5poubelle'")) {
 				# $selfollow="(IN(id_auteur,$moi) OR IN(share,$moi)) as ok";
 				$elle = $elle[0]['id_auteur'];
-				$fav = liste_favoris($elle,$debut, $max_pagination);
+				$fav = liste_partages($elle,$debut, $max_pagination);
 				$wherefollow = 'AND (('.sql_in('m.id_auteur', $elle) .')'
 					. ' OR '.sql_in('m.id_me', array_keys($fav)).')';
 				$auteurs_bloques = auteurs_bloques($elle);
@@ -369,15 +369,16 @@ function inc_syndicrecherche_to_array_dist($u) {
 	return $res;
 }
 
-function liste_favoris($qui,$debut=0,$max_pagination=500) {
+function liste_partages($nous,$debut=0,$max_pagination=500) {
 	$r = array();
 
-	if (!is_array($qui))
-		$qui = array($qui);
+	if (!is_array($nous))
+		$nous = array($nous);
 
 	# en deux temps, car je cherche en priorité la date de mes fav,
 	# puis celle de mes amis
-	$moi = array_shift($qui);
+	$eux = $nous;
+	$moi = array_shift($eux);
 
 	if ($f = sql_allfetsel('s.id_me, UNIX_TIMESTAMP(s.date) as date', 'spip_me_share AS s INNER JOIN spip_me AS m ON s.id_me=m.id_me', 's.id_auteur='.$moi.' AND m.statut="publi" AND m.id_parent=0', 's.id_me', array('date DESC'), '0,'.($debut+$max_pagination))) {
 		foreach ($f as $m) {
@@ -386,9 +387,16 @@ function liste_favoris($qui,$debut=0,$max_pagination=500) {
 		}
 	}
 
-	if ($qui) {
-		$auteurs = sql_in('s.id_auteur', $qui);
-		if ($f = sql_allfetsel('s.id_me, UNIX_TIMESTAMP(m.date) as date', 'spip_me_share AS s INNER JOIN spip_me AS m ON s.id_me=m.id_me', $auteurs.' AND m.statut="publi" AND m.id_parent=0', 's.id_me', array('date DESC'), '0,'.($debut+$max_pagination))) {
+	# logique d'horodatage des partages de mes amis :
+	# - si le message est ecrit par quelqu'un que je suis, la date ne change
+	#   pas (m.date), car j'ai deja vu ce message dans mon flux
+	# - en revanche, si c'est un message provenant d'une personne que je ne
+	#   suis pas, je n'ai pas vu ce message, un partage le "remonte"
+	#   dans mon flux, à la date du partage (s.date)
+	if ($eux) {
+		$nous = sql_in('s.id_auteur', $nous);
+		$eux = sql_in('m.id_auteur', $eux);
+		if ($f = sql_allfetsel('s.id_me, UNIX_TIMESTAMP(m.date) as mdate, MIN(UNIX_TIMESTAMP(s.date)) AS sdate, IF ('.$eux.', UNIX_TIMESTAMP(m.date), MIN(UNIX_TIMESTAMP(s.date))) as date', 'spip_me_share AS s INNER JOIN spip_me AS m ON s.id_me=m.id_me', $nous.' AND m.statut="publi" AND m.id_parent=0', 's.id_me', array('date DESC'), '0,'.($debut+$max_pagination))) {
 			foreach ($f as $m) {
 				$me = intval($m['id_me']);
 				if (!isset($r[$me]))
