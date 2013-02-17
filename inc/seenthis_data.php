@@ -33,9 +33,6 @@ function inc_seenthisaccueil_to_array_dist($u, $page=null) {
 	$r = array();
 
 	switch($page) {
-		case 'backend_auteur_follow':
-			$moi = $env['id'];
-			break;
 		case 'auteur':
 			$env['follow'] = $env['id'];
 			break;
@@ -60,7 +57,7 @@ function inc_seenthisaccueil_to_array_dist($u, $page=null) {
 			# - $nous avons partagé (share $nous)
 			# - j'ai répondu (replies $moi)
 			# - pointe vers moi ($pointe)
-			$pointe = liste_pointe_sql($debut, $max_pagination, $moi, $nous);
+			$pointe = liste_pointe_sql($debut, $max_pagination, $moi);
 			$where = '('.sql_in('id_auteur', $nous). $pointe.')';
 			$fav = liste_favoris($nous,$debut, $max_pagination);
 			$auteurs_bloques = auteurs_bloques($moi);
@@ -111,7 +108,113 @@ function inc_seenthisaccueil_to_array_dist($u, $page=null) {
 	}
 
 	arsort($r);
-	$r =  array_keys($r);
+	$r = array_keys($r);
+
+	return array_splice($r,0, $max_pagination+$debut);
+
+}
+
+
+/**
+ * seenthisaccueil -> tableau
+ * @param string $u "env"
+ * @return array|bool
+ */
+function inc_seenthisbackend_to_array_dist($u, $variante=null) {
+	if (!$env = @unserialize($u))
+		return false;
+
+	$max_pagination = 25;
+	$debut = 0; //intval($env['debut_messages']);
+
+	$r = array();
+
+	// utilisateur de base
+	$moi = $env['id_auteur'];
+	
+	// $variante = '', 'only', 'follow', 'all'
+
+	switch($variante) {
+
+		# /LOGIN/only/feed
+		case 'only':
+			# $nous = $moi
+			$nous = array($moi);
+
+			# ensuite on va faire notre selection de tout ce que :
+			# - j'ai envoyé
+			$where = 'id_auteur='.$moi;
+			$fav = array();
+			$auteurs_bloques = '';
+			break;
+
+		# follow: ici c'est UNIQUEMENT ceux que je suis ($nous mais pas $moi)
+		# /LOGIN/follow/feed
+		case 'follow':
+			$nous = array_merge(array(0),liste_follow($moi));
+
+			# ensuite on va faire notre selection de tout ce que :
+			# - $nous avons envoyé
+			# - $nous avons partagé (share $nous)
+			# - les mots que je suis (IN tags [liste des tags])
+			# - les URLs que je suis (…………)
+			# - j'ai répondu (replies $moi)
+			# - pointe vers moi ($pointe)
+			$pointe = liste_pointe_sql($debut, $max_pagination, $moi);
+			$where = '('.sql_in('id_auteur', $nous). $pointe.')';
+			$fav = liste_favoris($nous,$debut, $max_pagination);
+			$auteurs_bloques = auteurs_bloques($moi);
+			break;
+
+		# /LOGIN/all/feed
+		case 'all':
+			# $nous = $moi + les gens que je follow
+			$nous = array_merge(array($moi),liste_follow($moi));
+
+			# ensuite on va faire notre selection de tout ce que :
+			# - j'ai envoyé
+			#   + les gens que je suis (id_auteur $nous)
+			# - les mots que je suis (IN tags [liste des tags])
+			# - les URLs que je suis (…………)
+			# - $nous avons partagé (share $nous)
+			# - j'ai répondu (replies $moi)
+			# - pointe vers moi ($pointe)
+			$pointe = liste_pointe_sql($debut, $max_pagination, $moi);
+			$where = '('.sql_in('id_auteur', $nous). $pointe.')';
+			$fav = liste_favoris($nous,$debut, $max_pagination);
+			$auteurs_bloques = auteurs_bloques($moi);
+			break;
+
+		# /LOGIN/feed
+		case '':
+		default:
+			# ensuite on va faire notre selection de tout ce que :
+			# - j'ai envoyé + partagé (share $nous)
+			$where = 'id_auteur='.$moi;
+			$fav = liste_favoris($moi,$debut, $max_pagination);
+			break;
+
+	}
+
+	# requete triee par date, avec des dates remises en fonction des favoris
+	$r = $fav;
+
+	$bloquer = count($auteurs_bloques)
+		? ' AND '.sql_in('id_auteur', $auteurs_bloques, 'NOT')
+		: '';
+
+	$res = sql_allfetsel('id_me,UNIX_TIMESTAMP(date) as date', 'spip_me', $where.$bloquer.' AND id_parent=0 AND statut="publi"', '', 'date DESC', $max_pagination + $debut);
+
+	foreach ($res as &$match) {
+		$date = $match['date'];
+		$id = $match['id_me'];
+		if (!isset($r[$id])) {
+			$r[$id] = $date;
+		}
+	}
+
+	arsort($r);
+	$r = array_keys($r);
 
 	return array_splice($r,0, $max_pagination+$debut);
 
@@ -153,7 +256,7 @@ function inc_seenthisrecherche_to_array_dist($u) {
 			# - j'ai répondu (replies $moi)
 			# - pointe vers moi ($pointe)
 			$pointe = str_replace('id_me', 'm.id_me',
-				liste_pointe_sql($debut, $max_pagination, $moi, $nous));
+				liste_pointe_sql($debut, $max_pagination, $moi));
 			$fav = liste_favoris($nous,$debut, $max_pagination);
 			$wherefollow = ' AND ('.sql_in('m.id_auteur', $nous). $pointe
 				. ' OR '.sql_in('m.id_me', array_keys($fav)).')';
@@ -297,7 +400,7 @@ function liste_favoris($qui,$debut=0,$max_pagination=500) {
 	return $r;
 }
 
-function liste_pointe_sql($debut, $max_pagination, $moi, $nous) {
+function liste_pointe_sql($debut, $max_pagination, $moi) {
 
 	# on cherche des messages relativement recents et interessants
 	$pointe = array();
@@ -321,18 +424,13 @@ function liste_pointe_sql($debut, $max_pagination, $moi, $nous) {
 		$mentions = sql_allfetsel('id_me', 'spip_me_tags', $condition, '', 'date DESC', '0,'.($debut + $max_pagination));
 
 		$pointe = array_merge($pointe, array_map('array_pop', $mentions));
-
 	}
-
-	# faut-il ajouter les messages ayant des URLs avec un tag opencalais que je suis ?
-
-	# les messages mis en favoris par $nous
-	$mentions = sql_allfetsel('id_me', 'spip_me_share', sql_in('id_auteur', $nous), '', 'date DESC', '0,'.($debut + $max_pagination));
-	$pointe = array_merge($pointe, array_map('array_pop', $mentions));
 
 	# les messages auxquels j'ai repondu $moi
 	$mentions = sql_allfetsel('DISTINCT(id_parent) as id', 'spip_me', "id_auteur=$moi AND id_parent>0 AND statut='publi'", '', 'date DESC', '0,'.($debut + $max_pagination));
 	$pointe = array_merge($pointe, array_map('array_pop', $mentions));
+
+	# faut-il ajouter les messages ayant des URLs avec un tag opencalais que je suis ?
 
 	$pointe = array_unique($pointe);
 
