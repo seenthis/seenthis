@@ -289,8 +289,6 @@ function cache_auteur($id_auteur) {
 	supprimer_microcache($id_auteur, "noisettes/contenu_page_tags");
 	supprimer_microcache($id_auteur, "noisettes/contenu_page_sites");
 	supprimer_microcache($id_auteur, "noisettes/atom_messages_auteur");
-	supprimer_microcache($id_auteur, "noisettes/atom_backend_auteur");
-	supprimer_microcache($id_auteur, "noisettes/atom_backend_auteur_tw");
 
 	# invalider les caches normaux de SPIP
 	include_spip('inc/invalideur');
