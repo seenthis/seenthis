@@ -414,11 +414,18 @@ function _texte_inserer_embed($regs) {
 	include_spip('autoembed/autoembed');
 	if (function_exists('embed_url')
 	AND $embed = embed_url($url)) {
-		// ajouter la class oembed-link au lien
-		// pour pouvoir le masquer en css
+		// ajouter au A la class oembed-link + oembed-source-mp3audio
+		// pour pouvoir le masquer en css ; mais ca ne suffit pas
+		// car le favicon est present dans le flux en amont…
+		$class = ' oembed-link';
+
+		if ($c = extraire_attribut($embed, 'class')
+		AND preg_match(',\boembed-source-\w+\b,', $c, $r))
+			$class .= ' '.$r[0];
+
 		$lienclass = inserer_attribut($lien,
 			'class',
-			trim(extraire_attribut($lien,'class').' oembed-link')
+			trim(extraire_attribut($lien,'class').$class)
 		);
 		return $lienclass.$embed;
 	}
