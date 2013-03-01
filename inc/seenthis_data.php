@@ -394,10 +394,12 @@ function liste_partages($nous,$debut=0,$max_pagination=500) {
 	#   suis pas, je n'ai pas vu ce message, un partage le "remonte"
 	#   dans mon flux, à la date du partage (s.date)
 	if ($eux) {
-		$nous = sql_in('s.id_auteur', $nous);
-		$eux = sql_in('m.id_auteur', $eux);
-		if ($f = sql_allfetsel('s.id_me, UNIX_TIMESTAMP(m.date) as mdate, MIN(UNIX_TIMESTAMP(s.date)) AS sdate, IF ('.$eux.', UNIX_TIMESTAMP(m.date), MIN(UNIX_TIMESTAMP(s.date))) as date', 'spip_me_share AS s INNER JOIN spip_me AS m ON s.id_me=m.id_me', $nous.' AND m.statut="publi" AND m.id_parent=0', 's.id_me', array('date DESC'), '0,'.($debut+$max_pagination))) {
+		$nous = sql_in('m.id_auteur', $nous);
+		$eux = sql_in('s.id_auteur', $eux);
+		if ($f = sql_allfetsel('s.id_me, UNIX_TIMESTAMP(m.date) as mdate, MIN(UNIX_TIMESTAMP(s.date)) AS sdate, IF ('.$nous.', UNIX_TIMESTAMP(m.date), MIN(UNIX_TIMESTAMP(s.date))) as date', 'spip_me_share AS s INNER JOIN spip_me AS m ON s.id_me=m.id_me', $eux.' AND m.statut="publi" AND m.id_parent=0', 's.id_me', array('date DESC'), '0,'.($debut+$max_pagination))) {
 			foreach ($f as $m) {
+				if ($m['id_me'] == 107735)
+					var_dump($m);
 				$me = intval($m['id_me']);
 				if (!isset($r[$me]))
 					$r[$me] = (int) $m['date'];
