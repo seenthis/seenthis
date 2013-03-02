@@ -388,15 +388,17 @@ function liste_partages($nous,$debut=0,$max_pagination=500) {
 	}
 
 	# logique d'horodatage des partages de mes amis :
-	# - si le message est ecrit par quelqu'un que je suis, la date ne change
-	#   pas (m.date), car j'ai deja vu ce message dans mon flux
+	# - si le message est ecrit par quelqu'un que je suis, je n'en ai
+	#   pas besoin, car j'ai deja vu ce message dans mon flux
 	# - en revanche, si c'est un message provenant d'une personne que je ne
 	#   suis pas, je n'ai pas vu ce message, un partage le "remonte"
 	#   dans mon flux, à la date du partage (s.date)
+
+
 	if ($eux) {
-		$nous = sql_in('m.id_auteur', $nous);
-		$eux = sql_in('s.id_auteur', $eux);
-		if ($f = sql_allfetsel('s.id_me, UNIX_TIMESTAMP(m.date) as mdate, MIN(UNIX_TIMESTAMP(s.date)) AS sdate, IF ('.$nous.', UNIX_TIMESTAMP(m.date), MIN(UNIX_TIMESTAMP(s.date))) as date', 'spip_me_share AS s INNER JOIN spip_me AS m ON s.id_me=m.id_me', $eux.' AND m.statut="publi" AND m.id_parent=0', 's.id_me', array('date DESC'), '0,'.($debut+$max_pagination))) {
+		$nouspasauteurs = sql_in('m.id_auteur', $nous, 'NOT');
+		$euxshare = sql_in('s.id_auteur', $eux);
+		if ($f = sql_allfetsel('s.id_me, UNIX_TIMESTAMP(m.date) as mdate, MIN(UNIX_TIMESTAMP(s.date)) AS sdate, UNIX_TIMESTAMP(MIN(s.date)) as date', 'spip_me_share AS s INNER JOIN spip_me AS m ON s.id_me=m.id_me', $nouspasauteurs.' AND '.$euxshare.' AND m.statut="publi" AND m.id_parent=0', 's.id_me', array('date DESC'), '0,'.($debut+$max_pagination))) {
 			foreach ($f as $m) {
 				$me = intval($m['id_me']);
 				if (!isset($r[$me]))
