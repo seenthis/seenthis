@@ -116,7 +116,7 @@ function inc_seenthisaccueil_to_array_dist($u, $page=null) {
 
 
 /**
- * seenthisaccueil -> tableau
+ * seenthisbackend -> tableau
  * @param string $u "env"
  * @return array|bool
  */
@@ -352,6 +352,44 @@ function inc_seenthisrecherche_to_array_dist($u) {
 	return $res;
 }
 
+
+/**
+ * seenthisfollowtags -> tableau
+ * @param string $u "env"
+ * @return array|bool
+ */
+function inc_seenthisfollowtags_to_array_dist($u, $page=null) {
+
+	# page tags/ : les tags que je follow
+	$max_pagination = 300;
+	$debut = intval($env['debut_messages']);
+
+	$r = array();
+
+	$moi = intval($GLOBALS['visiteur_session']['id_auteur']);
+
+
+	if (!$moi)
+		return array();
+
+	$fav = liste_partages($moi,$debut, $max_pagination);
+	$auteurs_bloques = auteurs_bloques($moi);
+
+	$bloquer = count($auteurs_bloques)
+		? ' AND '.sql_in('id_auteur', $auteurs_bloques, 'NOT')
+		: '';
+
+	$k = liste_pointe_tags($debut, $max_pagination, $moi);
+	$p = seenthis_chercher_parents($k);
+	$where = sql_in('id_me', $p);
+
+	$r = sql_allfetsel('id_me', 'spip_me', $where.$bloquer, '', 'date DESC', $max_pagination + $debut);
+
+	return array_map('array_pop', array_splice($r,0, $max_pagination+$debut));
+
+}
+
+
 /* recherche dans les sites syndiqués, methode fulltext */
 function inc_syndicrecherche_to_array_dist($u) {
 	if (!$env = @unserialize($u))
@@ -420,20 +458,8 @@ function liste_pointe_sql($debut, $max_pagination, $moi) {
 	$pointe = array_merge($pointe, array_map('array_pop', $mentions));
 
 	# les messages qui parlent d'un sujet ou url qui m'interesse $moi
-	if ($tags = sql_allfetsel('tag', 'spip_me_follow_tag', 'id_follow='.$moi)) {
-		$tags = array_map('array_pop', $tags);
-
-		// tags stricts ?
-		# $condition = sql_in('tag', $tags);
-		// tags ou extensions du tag
-		$condition = array();
-		foreach($tags as $tag)
-			$condition[] = 'tag like '.sql_quote($tag."%");
-		$condition = '('.join(' OR ', $condition).')';
-
-		$mentions = sql_allfetsel('id_me', 'spip_me_tags', $condition, '', 'date DESC', '0,'.($debut + $max_pagination));
-
-		$pointe = array_merge($pointe, array_map('array_pop', $mentions));
+	if ($pointetags = liste_pointe_tags($debut, $max_pagination, $moi)) {
+		$pointe = array_merge($pointe, $pointetags);
 	}
 
 	# les messages auxquels j'ai repondu $moi
@@ -442,10 +468,46 @@ function liste_pointe_sql($debut, $max_pagination, $moi) {
 
 	# faut-il ajouter les messages ayant des URLs avec un tag opencalais que je suis ?
 
-	$pointe = array_unique($pointe);
+	$pointe = seenthis_chercher_parents($pointe);
 
 	if ($pointe)
 		return " OR ".sql_in('id_me', $pointe);
+}
+
+function liste_pointe_tags($debut, $max_pagination, $moi) {
+	if ($tags = sql_allfetsel('tag', 'spip_me_follow_tag', 'id_follow='.$moi)) {
+		$tags = array_map('array_pop', $tags);
+
+		// tags stricts ?
+		# $condition = sql_in('tag', $tags);
+		// tags ou extensions du tag
+		$condition = array();
+		foreach($tags as $tag) {
+			$tag = str_replace(array('%', '_'), array('\\%', '\\_'), sql_quote($tag));
+			$tag = substr($tag,0,-1)."%'";
+			$condition[] = "tag like $tag";
+		}
+		$condition = '('.join(' OR ', $condition).')';
+
+		$mentions = sql_allfetsel('id_me', 'spip_me_tags', $condition, 'date', 'date DESC', '0,'.($debut + $max_pagination));
+
+		return array_map('array_pop', $mentions);
+	}
+	return array();
+}
+
+/* chercher les parents d'une suite de messages
+ * si les messages sont leurs propres parents, ok
+ */
+function seenthis_chercher_parents($m = array(), $publie=true) {
+	$r = array();
+	$publie = $publie
+		? " AND statut='publi'"
+		: '';
+	$s = sql_query('SELECT DISTINCT(IF(id_parent>0,id_parent,id_me)) AS i FROM spip_me WHERE '. sql_in('id_me', $m).$publie);
+	while ($t = sql_fetch($s))
+		$r[] = $t['i'];
+	return $r;
 }
 
 /* quels sont les auteurs que je bloque */
