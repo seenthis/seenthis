@@ -262,6 +262,16 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 
 		else
+		if (preg_match(',/sites(/|/[?].*)?$,', $i, $r)) {
+			$g = array(
+				$args,
+				'sites',
+				null,
+				null
+			);
+		}
+
+		else
 		if (preg_match(',/all(\?.*)?$,i', $i, $r)) {
 			$args['follow'] = 'all';
 			$g = array(

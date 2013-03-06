@@ -359,6 +359,8 @@ function inc_seenthisrecherche_to_array_dist($u) {
  * @return array|bool
  */
 function inc_seenthisfollowtags_to_array_dist($u, $page=null) {
+	if (!$env = @unserialize($u))
+		return false;
 
 	# page tags/ : les tags que je follow
 	$max_pagination = 300;
@@ -379,7 +381,11 @@ function inc_seenthisfollowtags_to_array_dist($u, $page=null) {
 		? ' AND '.sql_in('id_auteur', $auteurs_bloques, 'NOT')
 		: '';
 
-	$k = liste_pointe_tags($debut, $max_pagination, $moi);
+	if ($page == 'sites')
+		$class = 'url';
+	else
+		$class = '# oc';
+	$k = liste_pointe_tags($debut, $max_pagination, $moi, $class);
 	$p = seenthis_chercher_parents($k);
 	$where = sql_in('id_me', $p);
 
@@ -474,8 +480,18 @@ function liste_pointe_sql($debut, $max_pagination, $moi) {
 		return " OR ".sql_in('id_me', $pointe);
 }
 
-function liste_pointe_tags($debut, $max_pagination, $moi) {
-	if ($tags = sql_allfetsel('tag', 'spip_me_follow_tag', 'id_follow='.$moi)) {
+/*
+ * class : '# oc' pour manuel|opencalais; 'url'; null=tout
+ */
+function liste_pointe_tags($debut, $max_pagination, $moi, $class=null) {
+	if ($class === null) {
+		$where = '';
+	} else if ($class=='url') {
+		$where = " AND tag LIKE 'http%'";
+	} else if ($class == '# oc') {
+		$where = " AND NOT (tag LIKE 'http%')";
+	}
+	if ($tags = sql_allfetsel('tag', 'spip_me_follow_tag', 'id_follow='.$moi.$where)) {
 		$tags = array_map('array_pop', $tags);
 
 		// tags stricts ?
