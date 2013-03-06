@@ -491,7 +491,7 @@ function liste_pointe_tags($debut, $max_pagination, $moi, $class=null) {
 	} else if ($class == '# oc') {
 		$where = " AND NOT (tag LIKE 'http%')";
 	}
-	if ($tags = sql_allfetsel('tag', 'spip_me_follow_tag', 'id_follow='.$moi.$where)) {
+	if ($tags = sql_allfetsel('DISTINCT(tag)', 'spip_me_follow_tag', 'id_follow='.$moi.$where)) {
 		$tags = array_map('array_pop', $tags);
 
 		// tags stricts ?
@@ -505,7 +505,7 @@ function liste_pointe_tags($debut, $max_pagination, $moi, $class=null) {
 		}
 		$condition = '('.join(' OR ', $condition).')';
 
-		$mentions = sql_allfetsel('id_me', 'spip_me_tags', $condition, 'date', 'date DESC', '0,'.($debut + $max_pagination));
+		$mentions = sql_allfetsel('id_me', 'spip_me_tags', $condition, null, 'date DESC', '0,'.($debut + $max_pagination));
 
 		return array_map('array_pop', $mentions);
 	}

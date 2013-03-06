@@ -262,7 +262,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 
 		else
-		if (preg_match(',/sites(/|/[?].*)?$,', $i, $r)) {
+		if (preg_match(',/sites/?([?].*)?$,', $i, $r)) {
 			$g = array(
 				$args,
 				'sites',
