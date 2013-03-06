@@ -138,7 +138,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			if (substr($titre,-5) == '/feed') {
 				$titre = substr($titre,0,-5);
 				$tag = substr($tag,0,-5);
-				$fond = 'backend_mot';
+				$fond = 'backend_tag';
 			}
 			$args['tag'] = $tag;
 
