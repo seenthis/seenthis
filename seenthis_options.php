@@ -287,7 +287,6 @@ function cache_auteur($id_auteur) {
 	spip_log("cache_auteur($id_auteur)", "cache");
 	supprimer_microcache($id_auteur, "noisettes/contenu_auteur");
 	supprimer_microcache($id_auteur, "noisettes/contenu_page_tags");
-	supprimer_microcache($id_auteur, "noisettes/contenu_page_sites");
 	supprimer_microcache($id_auteur, "noisettes/atom_messages_auteur");
 
 	# invalider les caches normaux de SPIP
@@ -321,12 +320,6 @@ function cache_url ($id_syndic) {
 	spip_log("cache_url ($id_syndic)", "cache");
 	supprimer_microcache($id_syndic, "noisettes/contenu_site");
 	supprimer_microcache($id_syndic, "noisettes/afficher_enfants_site");
-
-	$query = sql_select("id_follow", "spip_me_follow_url", "id_syndic=$id_syndic");
-	while ($row = sql_fetch($query)) {
-		$id_auteur = $row["id_follow"];
-		supprimer_microcache($id_auteur, "noisettes/contenu_page_sites");
-	}
 }
 
 
