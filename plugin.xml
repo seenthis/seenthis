@@ -26,6 +26,11 @@
 		<inclure>base/seenthis.php</inclure>
 	</pipeline>
 
+	<pipeline>
+		<nom>declarer_champs_extras</nom>
+		<inclure>base/seenthis.php</inclure>
+	</pipeline>
+
 	<version_base>0.9.9</version_base>
 	<install>base/seenthis.php</install>
 

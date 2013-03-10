@@ -360,6 +360,62 @@ function seenthis_install($action,$prefix,$version_cible){
 }
 
 
+// champs extras pour afficher tous les champs supplŽmentaires d'un auteur
+// dans l'espace privŽ (si on active le plugin champ_extras :
+// svn co svn://zone.spip.org/spip-zone/_plugins_/champs_extras/core/branches/v1/ champs_extras2/
+function seenthis_declarer_champs_extras($champs = array()){
+
+$champs[] = new ChampExtra(array(
+		'table' => 'auteur', // sur quelle table ?
+		'champ' => 'copyright', // nom sql
+		'label' => 'Licence', // chaine de langue 'prefix:cle'
+		'precisions' => '', // precisions sur le champ
+		'obligatoire' => false, // 'oui' ou '' (ou false)
+		'rechercher' => false, // false, ou true ou directement la valeur de ponderation (de 1 ˆ 8 generalement)
+		'type' => 'ligne', // type de saisie
+		'sql' => "varchar(10) DEFAULT 'C'", // declaration sql
+	));
+
+	$champs[] = new ChampExtra(array(
+		'table' => 'auteur', // sur quelle table ?
+		'champ' => 'rss', // nom sql
+		'label' => 'RSS', // chaine de langue 'prefix:cle'
+		'precisions' => '', // precisions sur le champ
+		'obligatoire' => false, // 'oui' ou '' (ou false)
+		'rechercher' => 1, // false, ou true ou directement la valeur de ponderation (de 1 ˆ 8 generalement)
+		'type' => 'ligne', // type de saisie
+		'sql' => "varchar(256) DEFAULT NULL", // declaration sql
+	));
+
+	foreach (explode(' ', 'mail_nouv_billet mail_rep_moi mail_rep_billet mail_rep_conv mail_suivre_moi') as $c) {
+	$champs[] = new ChampExtra(array(
+		'table' => 'auteur', // sur quelle table ?
+		'champ' => $c, // nom sql
+		'label' => $c, // chaine de langue 'prefix:cle'
+		'precisions' => '', // precisions sur le champ
+		'obligatoire' => false, // 'oui' ou '' (ou false)
+		'rechercher' => false, // false, ou true ou directement la valeur de ponderation (de 1 ˆ 8 generalement)
+		'type' => 'checkbox', // type de saisie (checkbox existe pas mais on aura essayŽ : a affiche une ligne)
+		'sql' => "tinyint(1) NOT NULL", // declaration sql
+	));
+	}
+
+	foreach (explode(' ', 'troll troll_forcer') as $c) {
+	$champs[] = new ChampExtra(array(
+		'table' => 'auteur', // sur quelle table ?
+		'champ' => $c, // nom sql
+		'label' => $c, // chaine de langue 'prefix:cle'
+		'precisions' => '', // precisions sur le champ
+		'obligatoire' => false, // 'oui' ou '' (ou false)
+		'rechercher' => false, // false, ou true ou directement la valeur de ponderation (de 1 ˆ 8 generalement)
+		'type' => 'checkbox', // type de saisie (checkbox existe pas mais on aura essayŽ : a affiche une ligne)
+		'sql' => "BIGINT(21)", // declaration sql
+	));
+	}
+	return $champs;
+}
+
+
 function seenthis_mots2tags() {
 
 	# convertir les spip_me_mot+spip_mots+spip_groupes_mots
