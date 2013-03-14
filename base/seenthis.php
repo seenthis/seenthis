@@ -100,6 +100,7 @@ function seenthis_declarer_tables_principales($tables_principales){
 		`uuid` char(36) NOT NULL,
 		`date` datetime NOT NULL,
 		`id_auteur` bigint(21) NOT NULL,
+		`titre` text NOT NULL,
 		`texte` longtext NOT NULL,
 		`troll` bigint(21) NOT NULL,
 		PRIMARY KEY (`id_me`),
@@ -279,7 +280,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	if ((!isset($GLOBALS['meta'][$nom_meta_base_version]) )
 	|| (($current_version = $GLOBALS['meta'][$nom_meta_base_version])!=$version_cible)){
 		include_spip('base/abstract_sql');
-		if (version_compare($current_version,"0.9.9",'<')){
+		if (version_compare($current_version,"1.0.1",'<')){
 			include_spip('base/serial');
 			include_spip('base/auxiliaires');
 			include_spip('base/create');
@@ -317,6 +318,10 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 				seenthis_mots2tags();
 			}
 
+			// en 1.0.1, remplir spip_me_recherche.titre
+			if (version_compare($current_version,"1.0.1",'<')){
+				seenthis_maj_recherche_titre();
+			}
 
 			ecrire_meta($nom_meta_base_version,$current_version=$version_cible,'non');
 		}
@@ -494,5 +499,12 @@ function seenthis_mots2tags() {
 
 }
 
+function seenthis_maj_recherche_titre() {
+	$s = spip_query('SELECT id_me, texte FROM spip_me_recherche WHERE NOT (titre>"")');
+	while ($t = sql_fetch($s)) {
+		$titre = seenthis_titre_me($t['texte']);
+		sql_updateq('spip_me_recherche', array('titre' => $titre), 'id_me='.$t['id_me']);
+	}
+}
 
 ?>

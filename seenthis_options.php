@@ -1136,6 +1136,13 @@ function notifier_me($id_me, $id_parent) {
 	}
 }	
 
+// titre = premiere ligne non vide, tronquer a 20 mots
+function seenthis_titre_me($texte) {
+	$titre = array_filter(array_map('trim',explode("\n", $texte)));
+	$titre = join(' ', array_slice(array_filter(explode(' ',array_shift($titre))), 0,20));
+	return $titre;
+}
+
 function indexer_me($id_ref) {
 	$query = sql_select("*", "spip_me", "(id_me=$id_ref OR id_parent=$id_ref) AND statut='publi'");
 	
@@ -1157,6 +1164,7 @@ function indexer_me($id_ref) {
 			$id_me_ref = $id_me;
 			$date_ref = $row["date"];
 			$ret .= $texte;
+			$titre_ref = seenthis_titre_me($texte);
 		}
 		
 	}
@@ -1181,6 +1189,7 @@ function indexer_me($id_ref) {
 			"id_me" => $id_me_ref,
 			"date" => $date_ref,
 			"id_auteur" => $id_auteur_ref,
+			"titre" => $titre_ref,
 			"texte" => $ret
 		)
 	);

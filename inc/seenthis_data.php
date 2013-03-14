@@ -308,6 +308,7 @@ function inc_seenthisrecherche_to_array_dist($u) {
 
 
 	# fulltext
+	$key_titre = "`titre`";
 	$key = "`texte`";
 	$r = trim(preg_replace(',\s+,', ' ', $env['recherche']));
 
@@ -322,7 +323,7 @@ function inc_seenthisrecherche_to_array_dist($u) {
 
 	$p = sql_quote(trim("$r"));
 
-	$val = $match = "MATCH($key) AGAINST ($p)";
+	$val = $match = "5 * (MATCH($key_titre) AGAINST($p)) + MATCH($key) AGAINST ($p)";
 	// Une chaine exacte rapporte plein de points
 	if ($pe)
 		$val .= "+ 2 * MATCH($key) AGAINST ($pe)";
