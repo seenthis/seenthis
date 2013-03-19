@@ -1023,9 +1023,9 @@ function notifier_me($id_me, $id_parent) {
 		}
 		
 		if ($id_parent > 0)
-			$texte = construire_texte($id_parent, $id_me);
+			$texte_mail = construire_texte($id_parent, $id_me);
 		else
-			$texte = construire_texte($id_me, $id_me);
+			$texte_mail = construire_texte($id_me, $id_me);
 		
 
 		// auteurs qui suivent l'auteur
@@ -1073,17 +1073,10 @@ function notifier_me($id_me, $id_parent) {
 
 
 		if (isset($id_dest)) { 
-			//$from = mb_encode_mimeheader($nom_auteur)." - Seenthis <no-reply@"._HOST.">\n";
 			$from = $nom_auteur." - Seenthis <no-reply@"._HOST.">\n";
-			//$headers .= 'Content-Type: text/plain; charset="utf-8"'."\n"; 
-			//$headers .= "Content-Transfer-Encoding: 8bit\n"; 
 			$headers = "Message-Id:<$id_me@"._HOST.">\n"; 
 			if ($id_parent > 0) $headers .= "In-Reply-To:<$id_parent@"._HOST.">\n"; 
 
-			//$texte = html_entity_decode($texte, null, 'UTF-8');	
-			//$titre_mail = mb_encode_mimeheader(html_entity_decode($titre_mail, null, 'UTF-8'), 'UTF-8');
-
-		
 			$id_dest = join(",", $id_dest);
 			
 			spip_log("$id_me($id_parent) : destinataires=$id_dest", 'notifier');
@@ -1119,12 +1112,9 @@ function notifier_me($id_me, $id_parent) {
 						}
 					}
 					
-//					$titre_mail = mb_encode_mimeheader($annonce);
-					
 					$lien = "\n\n---------\nPour ne plus recevoir d'alertes de Seenthis,\n vous pouvez régler vos préférences dans votre profil\nhttp://"._HOST."\n\n";
 					
-					$envoyer = "$annonce\n$url_me\n\n$texte\n\n\n\n$lien";
-					//echo "<hr /><pre>$envoyer</pre>";
+					$envoyer = "$annonce\n$url_me\n\n$texte_mail\n\n\n\n$lien";
 					$envoyer_mail = charger_fonction('envoyer_mail','inc');
 					$envoyer_mail("$email_dest", "$titre_mail", "$envoyer", $from, $headers);
 
