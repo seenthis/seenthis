@@ -28,7 +28,7 @@ function seenthis_lire_create_table($x) {
 
 
 function balise_TEXTE ($p) {
-	if ($p->type_requete == 'spip_me') {
+	if (in_array($p->type_requete, array('spip_me', 'me'))) {
 		$_id_me = champ_sql('id_me', $p);
 		$p->code = "texte_de_me($_id_me)";
 		$p->interdire_scripts = true;
