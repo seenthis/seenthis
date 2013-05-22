@@ -28,7 +28,14 @@ function _traiter_people ($regs) {
 	if ($k = sql_fetch($query)) {
 		$GLOBALS['destinataires'][] = microcache($k['id_auteur'], 'noisettes/message_logo_auteur_small');
 		$url = 'people/'.urlencode_1738_plus(mb_strtolower($k['login'],'UTF8'));
-		return "<span class='lien_people'>@<a href='$url'>$tag</a></span>";
+
+		$res = "<span class='lien_people'>@<a href='$url'>$tag</a></span>";
+
+		// echapper pour eviter la typo sur @_cym_
+		// return $res;
+		$GLOBALS["num_lien"] ++;
+		$GLOBALS["les_liens"][$GLOBALS["num_lien"]] = $res;
+		return "XXXLIEN".$GLOBALS["num_lien"]."LIENXXX";
 	}
 	else return "@$tag";
 }
