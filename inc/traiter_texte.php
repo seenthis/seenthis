@@ -93,7 +93,7 @@ function _creer_lien_riche($lien) {
 		// les images des serveurs qui controlent le referer…
 		// cf. inc/distant ligne 632
 		$a=$GLOBALS['meta']["adresse_site"];
-		$GLOBALS['meta']["adresse_site"] = $lien;
+		$GLOBALS['meta']["adresse_site"] = preg_replace(',(://.+?)/.*$,', '$1', $lien);
 		$image = afficher_miniature($lien);
 		$GLOBALS['meta']["adresse_site"] = $a;
 
