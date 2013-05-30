@@ -110,6 +110,7 @@ function inc_seenthisaccueil_to_array_dist($u, $page=null) {
 	arsort($r);
 	$r = array_keys($r);
 
+#spip_log($r, 'debug');
 	return array_splice($r,0, $max_pagination+$debut);
 
 }
