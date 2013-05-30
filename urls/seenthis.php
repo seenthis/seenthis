@@ -42,6 +42,8 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 	define('_SET_HTML_BASE',1);
 
 	if (is_numeric($i)) {
+		include_spip('base/abstract_sql');
+
 		# #URL_MOT
 		if ($entite == "mot") {
 			$k = sql_fetsel('m.titre AS titre, g.titre AS type, m.id_groupe AS id_groupe FROM spip_mots AS m LEFT JOIN spip_groupes_mots AS g ON m.id_groupe=g.id_groupe WHERE m.id_mot='.sql_quote($i));
