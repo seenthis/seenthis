@@ -213,8 +213,6 @@ function cache_me ($id_me, $id_parent = 0) {
 	if ($id_parent > 0) {
 		$id_share = $id_parent;
 		supprimer_microcache($id_parent, "noisettes/afficher_message");
-		supprimer_microcache($id_parent, "noisettes/oc_message");
-
 		cache_mot_fil ($id_parent);
 		cache_auteur_fil($id_parent);
 
@@ -223,7 +221,6 @@ function cache_me ($id_me, $id_parent = 0) {
 		cache_mot_fil ($id_me);
 		cache_auteur_fil($id_me);
 		supprimer_microcache($id_me, "noisettes/head_message");
-		supprimer_microcache($id_me, "noisettes/oc_message");
 	}
 	
 
@@ -561,96 +558,6 @@ function texte_de_me($id_me) {
 		return $GLOBALS["texte_de_id_me"]["$id_me"];
 	}
 }
-
-function OC_message($id_me) {
-	include_spip("php/opencalais");
-	
-	$query = sql_select("id_me", "spip_me", "(id_me=$id_me OR id_parent=$id_me) AND statut='publi'", "id_me");
-	while ($row = sql_fetch($query)) {
-		$texte .= " ".texte_de_me($row["id_me"]);
-		
-	}
-
-	$texte = preg_replace("/"._REG_URL."/i", " ", $texte);
-	
-	traiterOpenCalais($texte, $id_me, "id_me", "spip_me_mot");
-	cache_me($id_me);
-	//inserer_themes($id_me);
-}
-
-function OC_site($id_syndic) {
-	include_spip("php/opencalais");
-	
-	$query = sql_select("texte", "spip_syndic", "id_syndic=$id_syndic");
-	while ($row = sql_fetch($query)) {
-		$texte .= " ".$row["texte"];
-	}
-	if (strlen($texte) > 10) {
-		traiterOpenCalais($texte, $id_syndic, "id_syndic", "spip_syndic_oc");
-	}
-	supprimer_microcache($id_syndic, "noisettes/oc_site");
-	
-	$query = sql_select("id_mot", "spip_syndic_oc", "id_syndic=$id_syndic");
-	while ($row = sql_fetch($query)) {
-		$id_mot = $row["id_mot"];
-		cache_mot($id_mot);
-	}
-
-	$query_syndic = sql_select("id_me", "spip_me_syndic", "id_syndic=$id_syndic");
-	while ($row_syndic = sql_fetch($query_syndic)) {
-		$id_me = $row_syndic["id_me"];
-		//inserer_themes($id_me);
-		supprimer_microcache($id_me, "noisettes/oc_message");
-	}
-
-}
-
-/*
-function inserer_themes($id_me) {
-	return; # cette fonction ne fait rien -- a part prendre du temps !
-
-	$mots = false;
-	$update = "";
-
-	$query = sql_select("id_mot", "spip_me_mot", "id_me=$id_me");
-	while ($row = sql_fetch($query)) {
-		$mots[] = $row["id_mot"];
-	}
-	
-	
-	$query_syndic = sql_select("id_syndic", "spip_me_syndic", "id_me=$id_me");
-	while ($row_syndic = sql_fetch($query_syndic)) {
-		$id_syndic = $row_syndic["id_syndic"];
-		
-		$query = sql_select ("id_mot", "spip_syndic_oc", "id_syndic=$id_syndic");
-		while ($row = sql_fetch($query)) {
-			$mots[] = $row["id_mot"];
-		}
-	}
-	
-	
-	if (!$mots) {
-		$update = "";
-	} else {
-		
-		$mots = join(",", $mots);
-		
-		$query = sql_select("titre", "spip_mots", "id_mot IN ($mots)");
-		while ($row = sql_fetch($query)) {
-			$update .= " #".$row["titre"];
-		}
-	}
-
-	/ *
-	sql_updateq ("spip_me", 
-		array(
-			"themes" => $update
-		),
-		"id_me = '$id_me'"
-	);
-	* /
-}
-*/
 
 
 function racine_bandeau($id_auteur) {
@@ -1321,23 +1228,23 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	cache_auteur($id_auteur);
 	cache_me($id_me, $id_parent);
 
-	if ($id_parent > 0) {
+	// plugin seenthis_opencalais
+	if (function_exists('oc_thematiser_message')) {
+		oc_thematiser_message($id_me);
+	}
 
-		job_queue_add('OC_message', 'thématiser message '.$id_parent, array($id_parent));
+	// indexer le thread
+	if ($id_parent>0) {
 		// Indexer le contenu, dans une demi-heure
-
 		job_queue_add(
 			'indexer_me', 
-			'indexer message '.$id_parent, 
+			'indexer message '.$p['id_parent'], 
 			array($id_parent),
 			"",
 			true,
 			time() + (60 * 30) 
 		);
-		
-		
 	} else {
-		job_queue_add('OC_message', 'thématiser message '.$id_me, array($id_me));
 		// Indexer le contenu, dans cinq minutes
 		job_queue_add(
 			'indexer_me', 
@@ -1348,7 +1255,8 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 			time() + (60 * 5) 
 		);
 	}
-	
+
+
 	// $deja_vu pour eviter les doublons
 	
 	$deja_vu = Array();

@@ -300,7 +300,6 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 				'spip_me_share',
 				'spip_me_syndic',
 				'spip_syndic',
-				'spip_syndic_oc',
 				'spip_traductions',
 				'spip_mots',
 				'spip_me_tags'
@@ -342,7 +341,6 @@ function seenthis_vider_tables($nom_meta_base_version) {
 	sql_drop_table("spip_me_mot");
 	sql_drop_table("spip_me_share");
 	sql_drop_table("spip_me_syndic");
-	sql_drop_table("spip_syndic_oc");
 	sql_drop_table("spip_traductions");
 }
 
