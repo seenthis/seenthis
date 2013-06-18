@@ -510,8 +510,12 @@ function recuperer_contenu_site ($id_syndic, $url) {
 			cache_me($id_me);
 			supprimer_microcache($id_me, "noisettes/message_texte");
 		}
-		job_queue_add('OC_site', 'thématiser site '.$url, array($id_syndic));
-		
+
+		// plugin seenthis_opencalais
+		if (function_exists('OC_site')) {
+			job_queue_add('OC_site', 'thématiser site '.$url, array($id_syndic));
+		}
+
 		return "<h3>Langue: $lang - $dir</h3>$content";	
 	} else {
 		sql_updateq("spip_syndic", 
