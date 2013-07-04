@@ -77,7 +77,6 @@ function seenthis_declarer_tables_principales($tables_principales){
 		`statut` varchar(5) NOT NULL DEFAULT 'oui',
 		`ip` varchar(40) NOT NULL,
 		`id_dest` bigint(21) NOT NULL,
-		`id_mot` bigint(21) NOT NULL,
 		`troll` bigint(21) NOT NULL,
 		PRIMARY KEY (`id_me`),
 		KEY `uuid` (`uuid`),
@@ -139,11 +138,6 @@ function seenthis_declarer_tables_principales($tables_principales){
 	$auteurs['field']['mail_rep_conv'] = "tinyint(1) NOT NULL DEFAULT '0'";
 	$auteurs['field']['mail_suivre_moi'] = "tinyint(1) NOT NULL DEFAULT '1'";
 
-	// ajouts dans spip_mots
-	$mots = &$tables_principales['spip_mots'];
-	$mots['field']['id_parent'] = "bigint(21) NOT NULL default '0'";
-	$mots['key']['KEY id_parent'] = "id_parent";
-
 	// ajouts dans spip_syndic
 	$syndic = &$tables_principales['spip_syndic'];
 	$syndic['field']['recup'] = "int(11) NOT NULL DEFAULT '0'";
@@ -189,15 +183,6 @@ function seenthis_declarer_tables_auxiliaires($tables_auxiliaires){
   KEY `id_auteur` (`id_auteur`)
 "
 	);
-	$tables_auxiliaires['spip_me_follow_mot'] = seenthis_lire_create_table(
-	"
-  `id_mot` bigint(21) NOT NULL,
-  `id_follow` bigint(21) NOT NULL,
-  `date` datetime NOT NULL,
-  KEY `id_mot` (`id_mot`),
-  KEY `id_follow` (`id_follow`)
-"
-	);
 
 	$tables_auxiliaires['spip_me_follow_tag'] = seenthis_lire_create_table(
 	"
@@ -215,17 +200,6 @@ function seenthis_declarer_tables_auxiliaires($tables_auxiliaires){
   `date` datetime NOT NULL,
   KEY `id_syndic` (`id_syndic`),
   KEY `id_follow` (`id_follow`)
-"
-	);
-	$tables_auxiliaires['spip_me_mot'] = seenthis_lire_create_table(
-	"
-  `id_me` bigint(21) NOT NULL,
-  `id_mot` bigint(21) NOT NULL,
-  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
-  `relevance` int(11) NOT NULL,
-  `off` varchar(3) NOT NULL DEFAULT 'non',
-  KEY `id_me` (`id_me`),
-  KEY `id_mot` (`id_mot`)
 "
 	);
 
@@ -249,17 +223,6 @@ function seenthis_declarer_tables_auxiliaires($tables_auxiliaires){
   KEY `id_syndic` (`id_syndic`)
 "
 	);
-	
-	$tables_auxiliaires['spip_syndic_oc'] = seenthis_lire_create_table(
-	"
-  `id_syndic` bigint(21) NOT NULL,
-  `id_mot` bigint(21) NOT NULL,
-  `relevance` int(11) NOT NULL,
-  `off` varchar(3) NOT NULL DEFAULT 'non',
-  KEY `id_syndic` (`id_syndic`),
-  KEY `id_mot` (`id_mot`)
-"
-	);
 
 	# pour google
 	$tables_auxiliaires['spip_traductions'] = seenthis_lire_create_table(
@@ -280,7 +243,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	if ((!isset($GLOBALS['meta'][$nom_meta_base_version]) )
 	|| (($current_version = $GLOBALS['meta'][$nom_meta_base_version])!=$version_cible)){
 		include_spip('base/abstract_sql');
-		if (version_compare($current_version,"1.0.1",'<')){
+		if (version_compare($current_version,"1.0.2",'<')){
 			include_spip('base/serial');
 			include_spip('base/auxiliaires');
 			include_spip('base/create');
@@ -294,14 +257,11 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 				'spip_me_auteur',
 				'spip_me_follow',
 				'spip_me_block',
-				'spip_me_follow_mot',
 				'spip_me_follow_url',
-				'spip_me_mot',
 				'spip_me_share',
 				'spip_me_syndic',
 				'spip_syndic',
 				'spip_traductions',
-				'spip_mots',
 				'spip_me_tags'
 			));
 
@@ -322,6 +282,11 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 				seenthis_maj_recherche_titre();
 			}
 
+			// en 1.0.2, supprimer les tables de mots
+			if (version_compare($current_version,"1.0.2",'<')){
+				sql_drop_table("spip_me_follow_mot");
+				sql_drop_table("spip_me_mot");
+			}
 			ecrire_meta($nom_meta_base_version,$current_version=$version_cible,'non');
 		}
 
@@ -336,9 +301,7 @@ function seenthis_vider_tables($nom_meta_base_version) {
 	sql_drop_table("spip_me_auteur");
 	sql_drop_table("spip_me_follow");
 	sql_drop_table("spip_me_block");
-	sql_drop_table("spip_me_follow_mot");
 	sql_drop_table("spip_me_follow_url");
-	sql_drop_table("spip_me_mot");
 	sql_drop_table("spip_me_share");
 	sql_drop_table("spip_me_syndic");
 	sql_drop_table("spip_traductions");

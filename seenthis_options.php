@@ -5,11 +5,6 @@
 
 define ("_TROLL_VAL", 3000);
 
-// Définir des id_groupes de mots à exclure (par exemples les URL)
-// define('_EXCLUDE_GROUPE', '21');
-
-if (!defined("_EXCLUDE_GROUPE")) define("_EXCLUDE_GROUPE", 0);
-
 function nofollow($texte){
    $texte = str_replace("<a href","<a rel='nofollow' href",$texte);
    return $texte;
@@ -30,87 +25,6 @@ define (_REG_FIN_URL, "(\.(html?|jpg|gif|png|php|css|js)\/?$)");
 
 define('_TRANSLITTERER_URL', false);
 
-
-/* on vient d'inserer le mot id_mot dans la base, et on veut déterminer :
-   1. son id_parent
-   2. eventuellement, des mots dont il deviendrait le parent
-   
-*/
-function hierarchiser_mot($id_mot) {
-	spip_log("hierarchiser_mot($id_mot)", "cache");
-	include_spip('base/abstract_sql');
-
-	$query = sql_select("titre,id_parent", "spip_mots", "id_mot=$id_mot AND id_groupe=1");
-	if (!$row = sql_fetch($query))
-		return false;
-
-	$titre = $row['titre'];
-	$id_parent = $row['id_parent'];
-
-	spip_log("Changement de parent pour $id_mot '$titre' ?");
-
-	// le premier mot inférieur à nous est notre parent
-	// (attention on ajoute 'A' devant pour eviter les ennuis avec les tags
-	// qui commencent par des chiffres :  "SELECT 30g = 30p"
-	$l = mb_strlen($titre, 'UTF8');
-
-	// une seule lettre ? alors il n'a pas de parent, mais il peut s'inserer
-	// dans l'arbre
-	if ($l > 1)
-	while ($l-- > 0) {
-		spip_log("essaie parent '".mb_substr($titre,0,$l, 'UTF8')."'");
-		if ($a = sql_fetsel("id_mot as id_parent,titre", "spip_mots", "CONCAT('A',titre)=".sql_quote("A".mb_substr($titre,0,$l, 'UTF8'))." AND id_groupe=1")) {
-			if ($a['id_parent'] == $id_parent) {
-				spip_log("Ne change pas de parent: '$titre'($id_mot) : '$a[titre]' ($a[id_parent])");
-				return false;
-			} else {
-				spip_log("Nouveau parent pour '$titre'($id_mot) : '$a[titre]' ($a[id_parent])");
-				sql_update ("spip_mots", 
-					array(
-						"id_parent" => $a["id_parent"]
-					),
-					"id_mot = $id_mot"
-				);
-				$nouveau_parent = $a["id_parent"];
-			}
-			break;
-		}
-	}
-
-	// si on lui a trouvé un nouveau parent
-	// notre mot s'insère peut-être comme le parent
-	// de certains des mots qui avaient ce parent
-	foreach (sql_allfetsel("id_mot,titre", "spip_mots",
-	"id_parent=".intval($nouveau_parent)
-	." AND LENGTH(titre) > ".strlen($titre)
-	." AND titre LIKE ".sql_quote(
-		str_replace(array('_', '%'), array('\\_', '\\%'), $titre)
-		."%" )
-	." AND id_mot!=$id_mot"
-	." AND id_groupe=1"
-	) as $f) {
-		hierarchiser_mot($f['id_mot']);
-	}
-
-	cache_mot($id_mot);
-
-}
-
-/* utilitaire pour refaire la hierarchie des mots-cles ;
-   ne pas appeler en prod
-*/
-function tout_hier($raz=false) {
-	spip_log("Rechercher les parents... $raz");
-	include_spip('base/abstract_sql');
-	if ($raz)
-		sql_query("UPDATE spip_mots SET id_parent=0 WHERE id_groupe=1");
-	foreach(sql_allfetsel('id_mot,titre', 'spip_mots', 'id_parent=0 AND id_groupe=1') as $i) {
-		hierarchiser_mot($i['id_mot']);
-	}
-	spip_log("Fini de rechercher les parents.");
-}
-#tout_hier(false);
-#hierarchiser_mot(161876);
 
 
 function identifier_url($url, $id_parent) {
@@ -233,12 +147,7 @@ function cache_me ($id_me, $id_parent = 0) {
 
 function cache_mot_fil($id_me) {
 	spip_log("cache_mot_fil($id_me)", "cache");
-	// Supprimer le cache des mots liés
-	$query = sql_select("id_mot", "spip_me_mot", "id_me=$id_me");
-	while ($row = sql_fetch($query)) {
-		$id_mot = $row["id_mot"];
-		cache_mot($id_mot);
-	}
+
 	// Supprimer le cache des sites liés
 	$query = sql_select("id_syndic", "spip_me_syndic", "id_me=$id_me");
 	while ($row = sql_fetch($query)) {
@@ -290,28 +199,6 @@ function cache_auteur($id_auteur) {
 	include_spip('inc/invalideur');
 	suivre_invalideur('*', true);
 }
-
-function cache_mot ($id_mot) {
-	spip_log("cache_mot ($id_mot)", "cache");
-
-	supprimer_microcache($id_mot, "noisettes/contenu_mot");
-	supprimer_microcache($id_mot, "noisettes/contenu_mot_fin");
-	supprimer_microcache($id_mot, "noisettes/contenu_mot_flou");
-
-	$query = sql_select("id_follow,id_mot", "spip_me_follow_mot", "id_mot=$id_mot");
-	while ($row = sql_fetch($query)) {
-		$id_auteur = $row["id_follow"];
-		supprimer_microcache($id_auteur, "noisettes/contenu_page_tags");
-	}
-	
-	$query = sql_select("id_parent", "spip_mots", "id_mot=$id_mot");
-	while ($row = sql_fetch($query)) {
-		$id_parent = $row["id_parent"];
-		if ($id_parent > 0 AND ($id_parent!=$id_mot)) cache_mot($id_parent);
-	}
-
-}
-
 
 function cache_url ($id_syndic) {
 	spip_log("cache_url ($id_syndic)", "cache");
@@ -370,9 +257,7 @@ function supprimer_me($id_me) {
 		if ($id_parent > 0) $id_ref = $id_parent;
 		else $id_ref = $id_me;
 	}
-	
-	//	sql_query("DELETE FROM spip_me_auteur WHERE id_me=$id_me");
-	sql_query("DELETE FROM spip_me_mot WHERE id_me=$id_me");
+
 	sql_query("DELETE FROM spip_me_syndic WHERE id_me=$id_me");
 	sql_query("DELETE FROM spip_me_tags WHERE id_me=$id_me");
 	sql_query("UPDATE spip_me SET statut='supp' WHERE id_me=$id_me");
@@ -984,7 +869,7 @@ function notifier_me($id_me, $id_parent) {
 
 
 		if (isset($id_dest)) { 
-			$from = $nom_auteur." - Seenthis <no-reply@"._HOST.">\n";
+			$from = $nom_auteur." - Seenthis <no-reply@"._HOST.">";
 			$headers = "Message-Id:<$id_me@"._HOST.">\n"; 
 			if ($id_parent > 0) $headers .= "In-Reply-To:<$id_parent@"._HOST.">\n"; 
 
@@ -1072,16 +957,13 @@ function indexer_me($id_ref) {
 	
 	
 	if ($id_billets) {
-		$id_billets = join($id_billets, ",");
-		//$ret .= "<h4>$id_billets</h4>";
-		
-		$query = sql_select("spip_mots.titre", "spip_mots, spip_me_mot", "spip_me_mot.id_me IN ($id_billets) AND spip_mots.id_mot=spip_me_mot.id_mot AND spip_me_mot.off='non'");
-		while ($row = sql_fetch($query)){
-			$titre = $row["titre"];
-			
-			$ret .= "\n\n #$titre $titre";
+		foreach( sql_allfetsel("tag", "spip_me_tags", sql_in('id_me', $id_billets)." AND spip_me_tags.off='non' AND class!='url'") as $t) {
+			$tag = preg_replace(',^.*:,', '', $t['tag']);
+			if ($tag[0] == '#')
+				$ret .= "\n\n $tag ".str_replace('#', '', $tag);
+			else
+				$ret .= "\n\n $tag";
 		}
-		
 	}
 
 	sql_delete("spip_me_recherche", "id_me=$id_ref");
@@ -1156,8 +1038,6 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 				"date_modif" => "NOW()",
 				"id_auteur" => $id_auteur,
 				"id_parent" => $id_parent,
-				"id_dest" => $id_dest,
-				"id_mot" => $ze_mot,
 				"ip" => $adresse_ip,
 				"statut" => "publi",
 				"troll" => $troll
@@ -1180,8 +1060,6 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 		$query = sql_select("*", "spip_me", "id_me=$id_me");
 		if ($row = sql_fetch($query)) {
 			$id_parent = $row["id_parent"];
-			$id_dest = $row["id_dest"];
-			$ze_mot = $row["id_mot"];
 			$ip = $row["ip"];
 			$id_auteur_old = $row["id_auteur"];
 			$date_parent_old = $row["date_parent"];
@@ -1191,10 +1069,8 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 
 		cache_me($id_me, $id_parent);
 
-		$query = sql_query("DELETE FROM spip_me_mot WHERE id_me=$id_me AND id_mot!=$ze_mot");
 		$query = sql_query("DELETE FROM spip_me_syndic WHERE id_me=$id_me");
 		$query = sql_query("DELETE FROM spip_me_tags WHERE id_me=$id_me");
-		$query = sql_query("DELETE FROM spip_me_auteur WHERE id_me=$id_me AND id_auteur!=$id_dest");
 
 		if ($id_parent > 0) {
 			$query_parent = sql_select("date", "spip_me", "id_me=$id_parent");
@@ -1212,8 +1088,6 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 				"id_parent" => $id_parent,
 				"date_parent" => "$date_parent",
 				"date_modif" => "NOW()",
-				"id_dest" => $id_dest,
-				"id_mot" => $ze_mot,
 				"ip" => $adresse_ip,
 				"statut" => "publi"
 			),
@@ -1264,29 +1138,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	// $deja_vu pour eviter les doublons
 	
 	$deja_vu = Array();
-	
-	// Ajouter auteur automatique (id_dest)
-	if ($id_dest > 0 && $id_dest != $id_auteur) {
-			if (!$deja_vu["people"][$nom]) {
-			
-				$query = sql_query("SELECT id_auteur FROM spip_auteurs WHERE id_auteur = '$id_dest'");
-				if ($row = sql_fetch($query)) {
-					$dest = $row["id_auteur"];
-					
-					sql_insertq("spip_me_auteur", array(
-						"id_me" => $id_me,
-						"id_auteur" => $dest
-					));
-					
-				}
-	
-				$deja_vu["people"][$nom] = true;
-	
-			}		
-	}
-	
-	
-	
+
 	// Extraire les people et fabriquer les liens
 	preg_match_all("/"._REG_PEOPLE."/", $texte_message, $regs);
 	if ($regs) {	
@@ -1310,31 +1162,9 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	
 				$deja_vu["people"][$nom] = true;
 	
-			}		
+			}
 		}
 	}
-
-
-	// Ajouter mot automatique (ze_mot)
-	if ($ze_mot > 0) {
-			
-				$query = sql_query("SELECT id_mot, titre FROM spip_mots WHERE id_mot=$ze_mot");
-				if ($row = sql_fetch($query)) {
-					$id_mot = $row["id_mot"];			
-					$titre = $row["titre"];			
-					
-					sql_insertq("spip_me_mot", array(
-						"id_me" => $id_me,
-						"id_mot" => $id_mot
-					));
-					
-				}
-	
-				$deja_vu["mot"][$titre] = true;
-				cache_mot($id_mot);
-
-	}
-	
 
 
 	if ($id_parent > 0) $pave = $id_parent;
@@ -1384,55 +1214,8 @@ function inserer_tags_liens($id_me) {
 
 
 	if (preg_match_all("/"._REG_HASH."/ui", $message_off, $regs)) {
-		$tags = array();
-		foreach ($regs[0] as $k=>$hash) {
-
-			$tags[] = $hash;
-
-			// DEBUT MOTS-CLES OLD STYLE
-
-			$titre = substr($hash, 1);
-
-			# peut-être ce tag existe-t-il déjà
-			if ($s = sql_query('SELECT id_mot FROM spip_mots WHERE titre='.sql_quote($titre).' AND id_groupe=1')
-			AND $t = sql_fetch($s)) {
-				$id_mot = $t['id_mot'];
-			}
-			# sinon on le cree, on fabrique son URL, et on lance sa hierarchie
-			else {
-				$id_mot = sql_insertq ("spip_mots", 
-					array(
-						"titre" => $titre,
-						"id_groupe" => 1
-				));
-				$url = generer_url_entite($id_mot, 'mot');
-
-				// Hierarchiser ce mot en tache de fond
-				job_queue_add(
-					'hierarchiser_mot',
-					'hierarchiser le mot '.$id_mot, 
-					array($id_mot),
-					"",
-					true,
-					time()
-				);
-			}
-
-			sql_insertq("spip_me_mot", array(
-				"id_me" => $id_me,
-				"id_mot" => $id_mot,
-				"date" => "NOW()"
-			));
-
-			cache_mot($id_mot);
-
-			// FIN MOTS-CLES OLD STYLE
-
-		}
-
-		// tags new style (spip_me_tags)
 		sql_delete('spip_me_tags', 'uuid='.sql_quote($uuid).' AND class="#"');
-		foreach(array_unique($tags) as $tag) {
+		foreach(array_unique(array_values($regs[0])) as $tag) {
 			sql_insertq('spip_me_tags', array(
 				'id_me' => $id_me,
 				'uuid' => $uuid,

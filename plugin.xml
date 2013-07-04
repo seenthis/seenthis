@@ -1,7 +1,7 @@
 <plugin>
 	<nom>Seenthis</nom>
 	<auteur>ARNO*</auteur>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<etat>stable</etat>
 	<description>
 		Configuration de Seenthis
@@ -31,7 +31,7 @@
 		<inclure>base/seenthis.php</inclure>
 	</pipeline>
 
-	<version_base>1.0.1</version_base>
+	<version_base>1.0.2</version_base>
 	<install>base/seenthis.php</install>
 
 	<necessite id="SPIP" version="[2.1.0;]" />
