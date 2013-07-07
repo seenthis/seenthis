@@ -1,0 +1,70 @@
+** installer seenthis **
+
+
+dans les plugins:
+------------------
+svn co svn://zone.spip.org/spip-zone/_plugins_/css_imbriques
+svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/date_relative_dynamique
+svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/detecter_langue
+svn co svn://zone.spip.org/spip-zone/_plugins_/fulltext
+svn co svn://zone.spip.org/spip-zone/_plugins_/gravatar
+svn co svn://zone.spip.org/spip-zone/_plugins_/inclure-ajaxload
+svn co svn://zone.spip.org/spip-zone/_plugins_/job_queue
+svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/lazyoembed
+svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/lien_court
+svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/microcache
+svn co svn://zone.spip.org/spip-zone/_plugins_/oembed
+svn co svn://zone.spip.org/spip-zone/_plugins_/opensearch
+svn co svn://zone.spip.org/spip-zone/_plugins_/persona/trunk persona
+svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/recuperer_favicon
+svn co svn://zone.spip.org/spip-zone/_plugins_/typo_guillemets
+
+dans les plugins (nécessite mot de passe)
+------------------------------------------
+svn co svn://trac.rezo.net/seenthis/plugin_seenthis_principal seenthis_principal
+svn co svn://trac.rezo.net/seenthis/squelettes seenthis_squelettes
+svn co svn://trac.rezo.net/seenthis/plugin_arbo_anglais arbo_anglais
+
+
+dans squelettes :
+------------------
+
+créer doodle.html pour mettre son doodle d'accueil (possiblement vide)
+créer analytics.html pour mettre son propre code google analytics (ou autre tracker, ou rien).
+
+
+
+installer
+--------
+
+** spip *
+
+* la traditionnelle connexion à ecrire/ puis validation de la connexion sql
+
+* cp htaccess.txt .htaccess
+ => s'inspirer du htaccess.txt qui est a la racine du SVN de seenthis
+
+
+* ajouter tous les plugins définis ci-dessus
+
+* dans configuration > avancées
+	cocher GD2
+	choisir URLs seenthis — message/12 people/login tag/mot-clé 
+
+* ajouter ceci dans config/mes_options.php :
+
+define('_ANALYTICS', '');
+define('_HOST', 'st.domain.net'); # seenthis.net
+define('_STATIC_HOST', _HOST); # static1.seenthis.net
+define('_SHORT_HOST', 'st.domain.net/li'); # seen.li (pour les tweets)
+define('_API_HTTPS', false); # ne pas forcer https sur l'API
+
+
+dans la base :
+---------------
+
+il faut absolument créer un auteur n°3 (id_auteur = 3) sinon la css de la page d'accueil (non connecté) est pétée ; l'auteur numéro 3 est "seenthis, page officielle", ses préférences déterminent la css de la page standard
+cf. http://trac.rezo.net/trac/seenthis/browser/squelettes/bonjour.html#L22
+
+ensuite roule ma poule…
+
