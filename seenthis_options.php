@@ -624,7 +624,7 @@ function message_texte($texte) {
 }
 
 
-function extraire_titre($texte) {
+function extraire_titre($texte, $brut = false) {
 	$texte = preg_replace(",([\t\r\n\ ]+),", " ", $texte);
 	$texte = preg_replace(",\ +,", " ", $texte);
 	$texte = preg_replace("/(#|@)/", "", $texte);
@@ -644,7 +644,7 @@ function extraire_titre($texte) {
 		$texte = mb_substr($texte, 0, 100, "utf-8");
 		$pos = mb_strrpos($texte, " ", "utf-8");
 		
-		if ($pos > 5) {
+		if ($pos > 5 && !$brut) {
 			$texte = mb_substr($texte, 0, $pos, "utf-8")."…";
 		}
 	}
@@ -653,7 +653,22 @@ function extraire_titre($texte) {
 	
 	include_spip("inc/filtres");
 	include_spip("inc/texte");
-	return textebrut(typo(couper($texte,140)));
+	if (!$brut) return textebrut(typo(couper($texte,140)));
+	else return $texte;
+}
+
+function supprimer_titre($texte) {
+	$texte = preg_replace(",([\t\r\n\ ]+),", " ", $texte);
+	$texte = preg_replace(",\ +,", " ", $texte);
+	$texte = preg_replace("/(#|@)/", "", $texte);
+
+	$texte = textebrut($texte);
+	$titre = extraire_titre($texte, true);
+
+	$texte = str_replace("$titre", "", $texte);
+
+	return trim($texte);
+	
 }
 
 
