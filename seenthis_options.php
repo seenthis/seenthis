@@ -624,7 +624,7 @@ function message_texte($texte) {
 }
 
 
-function extraire_titre($texte, $brut = false) {
+function extraire_titre($texte, $long=100, $brut = false) {
 	$texte = preg_replace(",([\t\r\n\ ]+),", " ", $texte);
 	$texte = preg_replace(",\ +,", " ", $texte);
 	$texte = preg_replace("/(#|@)/", "", $texte);
@@ -640,12 +640,13 @@ function extraire_titre($texte, $brut = false) {
 	} 
 
 
-	if (mb_strlen($texte, "utf-8") > 100) {
-		$texte = mb_substr($texte, 0, 100, "utf-8");
+	if (mb_strlen($texte, "utf-8") > $long) {
+		$texte = mb_substr($texte, 0, $long, "utf-8");
 		$pos = mb_strrpos($texte, " ", "utf-8");
 		
-		if ($pos > 5 && !$brut) {
-			$texte = mb_substr($texte, 0, $pos, "utf-8")."…";
+		if ($pos > 5) {
+			$texte = mb_substr($texte, 0, $pos, "utf-8");
+			if (!$brut) $texte .= "…";
 		}
 	}
 	
@@ -657,13 +658,13 @@ function extraire_titre($texte, $brut = false) {
 	else return $texte;
 }
 
-function supprimer_titre($texte) {
+function supprimer_titre($texte, $long) {
 	$texte = preg_replace(",([\t\r\n\ ]+),", " ", $texte);
 	$texte = preg_replace(",\ +,", " ", $texte);
 	$texte = preg_replace("/(#|@)/", "", $texte);
 
 	$texte = textebrut($texte);
-	$titre = extraire_titre($texte, true);
+	$titre = extraire_titre($texte, $long, true);
 
 	$texte = str_replace("$titre", "", $texte);
 
