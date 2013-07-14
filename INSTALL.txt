@@ -44,9 +44,11 @@ svn co svn://trac.rezo.net/seenthis/plugin_seenthis_principal/ seenthis/
 svn co svn://trac.rezo.net/seenthis/squelettes/ seenthis_squelettes/
 svn co svn://zone.spip.org/spip-zone/_plugins_/textwheel/ textwheel/
 svn co svn://zone.spip.org/spip-zone/_plugins_/typo_guillemets/ typo_guillemets/
+svn co svn://zone.spip.org/spip-zone/_plugins_/champs_extras/core/branches/v1/ champs_extras2/
 
 Si tout va bien, voici la liste des plugins présents :
 arbo_anglais
+champs_extras2
 css_imbriques
 date_relative_dynamique
 detecter_langue

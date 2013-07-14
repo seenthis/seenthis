@@ -246,7 +246,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	if ((!isset($GLOBALS['meta'][$nom_meta_base_version]) )
 	|| (($current_version = $GLOBALS['meta'][$nom_meta_base_version])!=$version_cible)){
 		include_spip('base/abstract_sql');
-		if (version_compare($current_version,"1.0.2",'<')){
+		if (version_compare($current_version,"1.1.1",'<')){
 			include_spip('base/serial');
 			include_spip('base/auxiliaires');
 			include_spip('base/create');
@@ -290,6 +290,13 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 				sql_drop_table("spip_me_follow_mot");
 				sql_drop_table("spip_me_mot");
 			}
+			// en 1.1.1, ajouter champs rezosocio
+			if (version_compare($current_version,"1.1.1",'<')){
+				sql_alter("TABLE spip_auteurs ADD twitter varchar(100) DEFAULT '' NOT NULL");
+				sql_alter("TABLE spip_auteurs ADD facebook varchar(100) DEFAULT '' NOT NULL");
+				sql_alter("TABLE spip_auteurs ADD gplus varchar(100) DEFAULT '' NOT NULL");
+			}
+
 			ecrire_meta($nom_meta_base_version,$current_version=$version_cible,'non');
 		}
 
@@ -334,7 +341,7 @@ function seenthis_install($action,$prefix,$version_cible){
 // svn co svn://zone.spip.org/spip-zone/_plugins_/champs_extras/core/branches/v1/ champs_extras2/
 function seenthis_declarer_champs_extras($champs = array()){
 
-$champs[] = new ChampExtra(array(
+	$champs[] = new ChampExtra(array(
 		'table' => 'auteur', // sur quelle table ?
 		'champ' => 'copyright', // nom sql
 		'label' => 'Licence', // chaine de langue 'prefix:cle'
@@ -343,17 +350,6 @@ $champs[] = new ChampExtra(array(
 		'rechercher' => false, // false, ou true ou directement la valeur de ponderation (de 1 ˆ 8 generalement)
 		'type' => 'ligne', // type de saisie
 		'sql' => "varchar(10) DEFAULT 'C'", // declaration sql
-	));
-
-	$champs[] = new ChampExtra(array(
-		'table' => 'auteur', // sur quelle table ?
-		'champ' => 'rss', // nom sql
-		'label' => 'RSS', // chaine de langue 'prefix:cle'
-		'precisions' => '', // precisions sur le champ
-		'obligatoire' => false, // 'oui' ou '' (ou false)
-		'rechercher' => 1, // false, ou true ou directement la valeur de ponderation (de 1 ˆ 8 generalement)
-		'type' => 'ligne', // type de saisie
-		'sql' => "varchar(256) DEFAULT NULL", // declaration sql
 	));
 
 	foreach (explode(' ', 'mail_nouv_billet mail_rep_moi mail_rep_billet mail_rep_conv mail_suivre_moi') as $c) {
@@ -381,6 +377,21 @@ $champs[] = new ChampExtra(array(
 		'sql' => "BIGINT(21)", // declaration sql
 	));
 	}
+
+
+	foreach (explode(' ', 'twitter facebook gplus') as $c) {
+	$champs[] = new ChampExtra(array(
+		'table' => 'auteur', // sur quelle table ?
+		'champ' => $c, // nom sql
+		'label' => $c, // chaine de langue 'prefix:cle'
+		'precisions' => '', // precisions sur le champ
+		'obligatoire' => false, // 'oui' ou '' (ou false)
+		'rechercher' => false, // false, ou true ou directement la valeur de ponderation (de 1 ˆ 8 generalement)
+		'type' => 'ligne', // type de saisie (checkbox existe pas mais on aura essayŽ : a affiche une ligne)
+		'sql' => "VARCHAR(100) NOT NULL DEFAULT ''", // declaration sql
+	));
+	}
+
 	return $champs;
 }
 
