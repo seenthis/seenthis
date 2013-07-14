@@ -75,7 +75,7 @@ typo_guillemets
 On active alors la connexion SQL du site SPIP :
 http://localhost/seenthis/ecrire/ (entrer le mot de passe SQL, créer la base, créer le premier compte utilisateur).
 
-A noter : le compte id_auteur=3 est pris comme base pour la couleur des liens de la page d'accueil ; tant qu'il n'existe pas, le site est un peu de guingois. => créer 2 autres auteurs, et nommer "seenthis" l'auteur numéro 3.
+A noter : le compte id_auteur=3 est pris comme base pour la couleur des liens de la page d'accueil (cf. plugins/seenthis_squelettes/bonjour.html) ; tant qu'il n'existe pas, le site est un peu de guingois. => créer 2 autres auteurs, et nommer "seenthis" l'auteur numéro 3.
 
 Activer tous les plugins pré-cités, sauf :
 * OpenSearch
@@ -135,6 +135,8 @@ RewriteRule ^api/url/(.*)$       index.php?action=api_url&code=$1 [QSA,L]
 RewriteRule ^li/(.*)$       index.php?action=seenli&me=$1 [QSA,L]
 
 
+Renommer le htacccess.txt en .htaccess (cela va sans dire).
+
 Aller sur http://localhost/seenthis/?var_mode=recalcul ; vous avez un seenthis un peu bancal mais presque OK !
 
 
@@ -157,6 +159,12 @@ ALTER table spip_syndic ENGINE=MyISAM;
 ALTER TABLE spip_syndic ADD FULLTEXT tout (`url_site`,`titre`,`texte`);
 
 
+# Liens "à lire" et pied de page :
+inc/alire.html affiche les articles de la rubrique 2;
+inc/footer.html les articles de la rubrique 3
+
+
+
 # Ajout des plugins optionnels 
 
 ## seenthis_importer_flux
@@ -166,6 +174,15 @@ Ce plugin ajoute un champ 'rss' dans spip_auteurs, et une tâche cron qui charge
 ## seenthis_opencalais
 
 Ce plugin s'interface avec l'API OpenCalais (il faut demander une clé d'API), pour thématiser de façon automatique les seens.
+
+## champs_extras2
+
+permet aux admins d'éditer les préférences des auteurs depuis l'espace privé.
+
+## Palette
+(http://contrib.spip.net/Palette) ; le configurer pour activation sur les pages publiques permet d'offrir la roue chromatique dans les préférences
+
+
 
 
 # Personnalisation
