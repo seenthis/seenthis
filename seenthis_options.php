@@ -742,11 +742,12 @@ function notifier_suivre_moi ($id_auteur, $id_follow) {
 	// $id_follow => celui qui suit
 	
 	if (tester_mail_auteur($id_auteur, "mail_suivre_moi")) {
+		$seenthis = $GLOBALS['meta']['nom_site']; # "Seenthis";
 
-		$from = "Seenthis <no-reply@"._HOST.">";
+		$from = "$seenthis <no-reply@"._HOST.">";
 		//$headers .= 'Content-Type: text/plain; charset="utf-8"'."\n"; 
 		//$headers .= "Content-Transfer-Encoding: 8bit\n"; 
-		$headers = "Message-Id:<$id_auteur.$id_follow@"._HOST.">\n"; 
+		$headers = "Message-Id: <$id_auteur.$id_follow.".time()."@"._HOST.">\n"; 
 
 		$query_dest = sql_select("*", "spip_auteurs", "id_auteur = $id_follow");
 		if ($row_dest = sql_fetch($query_dest)) {
@@ -766,14 +767,14 @@ function notifier_suivre_moi ($id_auteur, $id_follow) {
 				$url_me = "http://"._HOST."/".generer_url_entite($id_follow,"auteur");
 				
 				if ($lang == "en") {				
-					$titre_mail = "$nom_aut is following you on Seenthis.";
-					$annonce = "Hi $nom_dest,\n\n$nom_aut (@$login_aut) is following you on Seenthis.";
+					$titre_mail = _L("$nom_aut is following you on $seenthis.");
+					$annonce = _L("Hi $nom_dest,\n\n$nom_aut (@$login_aut) is following you on $seenthis.");
 				} else {
-					$titre_mail = "$nom_aut vous suit sur Seenthis.";
-					$annonce = "Bonjour $nom_dest,\n\n$nom_aut (@$login_aut) vous suit sur Seenthis.";
+					$titre_mail = _L("$nom_aut vous suit sur $seenthis.");
+					$annonce = _L("Bonjour $nom_dest,\n\n$nom_aut (@$login_aut) vous suit sur $seenthis.");
 				}
 				
-				$lien = "\n\n---------\nPour ne plus recevoir d'alertes de Seenthis,\n vous pouvez régler vos préférences dans votre profil\nhttp://"._HOST."\n\n";
+				$lien = _L("\n\n---------\nPour ne plus recevoir d'alertes de $seenthis,\n vous pouvez régler vos préférences dans votre profil\nhttp://"._HOST."\n\n");
 				
 				$envoyer = "\n\n$annonce\n$url_me\n\n$lien";
 				//echo "<hr /><pre>$envoyer</pre>";
@@ -781,14 +782,13 @@ function notifier_suivre_moi ($id_auteur, $id_follow) {
 
 				//$titre_mail = mb_encode_mimeheader(html_entity_decode($titre_mail, null, 'UTF-8'), 'UTF-8');
 				$envoyer_mail = charger_fonction('envoyer_mail','inc');
-				$envoyer_mail("$email_dest", "Seenthis - $titre_mail", "$envoyer", $from, $headers);
+				$envoyer_mail("$email_dest", "$seenthis - $titre_mail", "$envoyer", $from, $headers);
 			}
 		}
-	
-		
+
 	}
-	
-}	
+
+}
 
 function notifier_me($id_me, $id_parent) {
 
@@ -885,7 +885,7 @@ function notifier_me($id_me, $id_parent) {
 
 
 		if (isset($id_dest)) { 
-			$from = $nom_auteur." - Seenthis <no-reply@"._HOST.">";
+			$from = $nom_auteur." - ".$GLOBALS['meta']['nom_site']." <no-reply@"._HOST.">";
 			$headers = "Message-Id:<$id_me@"._HOST.">\n"; 
 			if ($id_parent > 0) $headers .= "In-Reply-To:<$id_parent@"._HOST.">\n"; 
 
