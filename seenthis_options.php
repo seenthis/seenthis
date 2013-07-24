@@ -312,9 +312,22 @@ function recuperer_contenu_site ($id_syndic, $url) {
 			$html = join(file($contenu), "");
 			include_spip("inc/texte");
 
-			// quand copie_locale() qui ne transcode pas en utf8
+			// copie_locale() ne transcode pas en utf8,
+			// il faut le faire soi-meme
 			if (!is_utf8($html)) {
-				$c = mb_detect_encoding($html, "UTF-8, ISO-8859-1, ISO-8859-15");
+				// mais certains sites affichent tout de meme leur charset
+				$head = extraire_balise($html, 'head');
+				foreach (extraire_balises($head, 'meta') as $meta) {
+					if ($equiv = extraire_attribut($meta, 'http-equiv')
+					AND preg_match('/charset=(.*)/i', extraire_attribut($meta, 'content'), $r)) {
+						$c = $r[1];
+					}
+				}
+
+				if (!isset($c)) {
+					$c = mb_detect_encoding($html, "UTF-8, ISO-8859-1, ISO-8859-15");
+				}
+
 				$html = importer_charset($html, $c);
 			}
 
