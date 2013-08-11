@@ -415,7 +415,8 @@ function recuperer_contenu_site ($id_syndic, $url) {
 		// plugin seenthis_opencalais
 		pipeline('seenthis_instance_objet', array(
 			'id_syndic' => $id_syndic,
-			'url' => $url
+			'url' => $url,
+			'action' => 'create'
 		));
 
 		return "<h3>Langue: $lang - $dir</h3>$content";	
@@ -1137,7 +1138,8 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 		array(
 			'id_me' => $id_me, 'uuid' => $uuid,
 			'id_auteur' => $id_auteur, 'id_parent' => $id_parent,
-			'texte' => $texte_message
+			'texte' => $texte_message,
+			'action' => ($maj ? 'update' : 'create')
 		)
 	);
 
