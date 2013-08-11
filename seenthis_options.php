@@ -25,6 +25,9 @@ define (_REG_FIN_URL, "(\.(html?|jpg|gif|png|php|css|js)\/?$)");
 
 define('_TRANSLITTERER_URL', false);
 
+// definir ces pipelines, sans ecraser leur valeur s'ils existent
+if(!isset($GLOBALS['spip_pipeline']['seenthis_instance_objet']))
+	$GLOBALS['spip_pipeline']['seenthis_instance_objet'] = "";
 
 
 function identifier_url($url, $id_parent) {
@@ -410,9 +413,10 @@ function recuperer_contenu_site ($id_syndic, $url) {
 		}
 
 		// plugin seenthis_opencalais
-		if (function_exists('OC_site')) {
-			job_queue_add('OC_site', 'thématiser site '.$url, array($id_syndic));
-		}
+		pipeline('seenthis_instance_objet', array(
+			'id_syndic' => $id_syndic,
+			'url' => $url
+		));
 
 		return "<h3>Langue: $lang - $dir</h3>$content";	
 	} else {
@@ -1128,10 +1132,14 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	cache_auteur($id_auteur);
 	cache_me($id_me, $id_parent);
 
-	// plugin seenthis_opencalais
-	if (function_exists('oc_thematiser_message')) {
-		oc_thematiser_message($id_me);
-	}
+	// pipeline utilise notamment pour thematiser le message (open-calais)
+	pipeline('seenthis_instance_objet',
+		array(
+			'id_me' => $id_me, 'uuid' => $uuid,
+			'id_auteur' => $id_auteur, 'id_parent' => $id_parent,
+			'texte' => $texte_message
+		)
+	);
 
 	// indexer le thread
 	if ($id_parent>0) {
@@ -1227,13 +1235,12 @@ function inserer_tags_liens($id_me) {
 	$date = $t['date'];
 
 
-	// Extraire les tags et fabriquer des mots-clés
+	// Extraire les tags
 
-
-	// Virer les liens hypertexte (qui peuvent contenir une chaîne #ancre)
+	// 1. Virer les liens hypertexte (qui peuvent contenir une chaîne #ancre)
 	$message_off = preg_replace("/"._REG_URL."/ui", "", $texte_message);
 
-
+	// 2. Noter les tags dans la base
 	if (preg_match_all("/"._REG_HASH."/ui", $message_off, $regs)) {
 		sql_delete('spip_me_tags', 'uuid='.sql_quote($uuid).' AND class="#"');
 		foreach(array_unique(array_values($regs[0])) as $tag) {
