@@ -1023,17 +1023,10 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 
 	if ($id_auteur < 1) return false;
 	if ($id_me > 0) cache_me($id_me);
-	
-	$troll = afficher_troll($id_auteur);
-	
 
 	// Virer les UTM en dur dans la sauvegarde
 	$texte_message = preg_replace_callback("/"._REG_URL."/i", "sucrer_utm", $texte_message);
 	
-	# Voir config Varnish/apache 
-	# http://seenthis.net/messages/37781
-	$adresse_ip = $_SERVER["REMOTE_ADDR"];
-
 	// Valider ou creer un UUID aleatoire
 	include_spip('inc/uuid');
 	if (is_null($uuid)) {
@@ -1067,9 +1060,9 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 				"date_modif" => "NOW()",
 				"id_auteur" => $id_auteur,
 				"id_parent" => $id_parent,
-				"ip" => $adresse_ip,
+				"ip" => $GLOBALS['ip'],
 				"statut" => "publi",
-				"troll" => $troll
+				"troll" => afficher_troll($id_auteur)
 			)
 		);
 
@@ -1162,7 +1155,6 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 			time() + (60 * 5) 
 		);
 	}
-
 
 	// $deja_vu pour eviter les doublons
 	
