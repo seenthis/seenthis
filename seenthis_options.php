@@ -627,7 +627,7 @@ function message_texte($texte) {
 	
 	$texte = str_replace("<br />", "\n", $texte);
 	$texte = str_replace("►", "", $texte);
-	
+	$texte = str_replace("▻", "", $texte);
 	
 	$texte = preg_replace(",<\/?p[^>]*>,", "\n\n", $texte);
 	$texte = preg_replace(",<blockquote[^>]*>( |\n)*,", "\n\n❝", $texte);

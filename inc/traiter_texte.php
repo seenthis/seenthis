@@ -141,23 +141,24 @@ function _creer_lien_riche($lien) {
 		}
 			
 	}
-	
+
+	// Ne faire apparaître le lien_court
+	// que si plusieurs billets referencent le lien
 	if ($id_syndic) {
-		// Ne faire apparaître le lien_court
-		// que si plusieurs billets referencent le lien
-		$query_total = sql_query("SELECT spip_me.* FROM spip_me, spip_me_syndic 
-			WHERE spip_me_syndic.id_syndic=$id_syndic  AND spip_me_syndic.id_me=spip_me.id_me AND spip_me.statut='publi'
-			LIMIT 1,1");
-		if ($row = sql_fetch($query_total)) {
-			include_spip('inc/urls');
-			$url = generer_url_entite($id_syndic,'site');
-			$total = "<span class='lien_lien_total'><a href='$url'>►</a></span>";
-		}
-	} else {
+		$query_total = sql_query("SELECT count(*) as c
+			FROM spip_me
+			RIGHT JOIN spip_me_syndic ON spip_me_syndic.id_me=spip_me.id_me
+			WHERE spip_me_syndic.id_syndic=$id_syndic
+				AND spip_me.statut='publi'");
+		include_spip('inc/urls');
+		$url = generer_url_entite($id_syndic,'site');
+
+		$r = sql_fetch($query_total);
+		$triangle = ($r['c'] > 1) ? '►' : '▻';
+		$total = "<span class='lien_lien_total'><a href='$url'>$triangle</a></span>";
+	} else
 		$total = "";
-	}
-	
-	
+
 	include_spip("inc/lien_court");
 	$intitule = sucrer_utm(lien_court($lien, 45));
 
