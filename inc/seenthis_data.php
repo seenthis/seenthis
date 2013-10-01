@@ -160,9 +160,7 @@ function inc_seenthisbackend_to_array_dist($u, $variante=null) {
 			# - les mots que je suis (IN tags [liste des tags])
 			# - les URLs que je suis (…………)
 			# - j'ai répondu (replies $moi)
-			# - pointe vers moi ($pointe)
-			$pointe = liste_pointe_sql($debut, $max_pagination, $moi);
-			$where = '('.sql_in('id_auteur', $nous). $pointe.')';
+			$where = '('.sql_in('id_auteur', $nous).')';
 			$fav = liste_partages($nous,$debut, $max_pagination);
 			$auteurs_bloques = auteurs_bloques($moi);
 			break;
