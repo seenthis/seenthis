@@ -14,7 +14,7 @@ function nofollow($texte){
 define (_REG_CHARS, "a-z0-9\pN\pL\pM\'‘’°\&\+–\_");
 
 define (_REG_HASH, "(\#["._REG_CHARS."\@\.\/-]*["._REG_CHARS."])");
-define (_REG_URL, "((http|ftp)s?:\/\/["._REG_CHARS."\"#~!«»“”;:\|\.’\?=&%@!\/\,\$\(\)\[\]\\\\<>-]+["._REG_CHARS."#«»“”\/\=\(\)\[\]\\\\\$\*-])");
+define (_REG_URL, "((http|ftp)s?:\/\/["._REG_CHARS."\"#~!«»“”;:\|\.’\?=&%@!\/\,\$\(\)\[\]\\\\<>*-]+["._REG_CHARS."#«»“”\/\=\(\)\[\]\\\\\$*-])");
 //define(_REG_URL, "(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]\{\};:'\".,<>?«»“”‘’]))");
 define (_REG_PEOPLE, "\B@[a-zA-Z0-9\.\_\-]+[a-zA-Z0-9\_\-]");
 
@@ -648,11 +648,11 @@ function extraire_titre($texte, $long=100, $brut = false) {
 	$texte = preg_replace(",\ +,", " ", $texte);
 	$texte = preg_replace("/(#|@)/", "", $texte);
 
-	if (preg_match("/"._REG_URL."/i", $texte, $regs, PREG_OFFSET_CAPTURE)) {
+	if (preg_match("/"._REG_URL."/ui", $texte, $regs, PREG_OFFSET_CAPTURE)) {
 		$premier_lien = $regs[0][1];
 		if ($premier_lien > 10) $texte = substr($texte, 0, $premier_lien);
 		else {
-				$texte_alt = preg_replace("/"._REG_URL."/i", " ", $texte);
+				$texte_alt = preg_replace("/"._REG_URL."/ui", " ", $texte);
 				$texte_alt = preg_replace(",\ +,", " ", $texte_alt);
 				 $texte = $texte_alt;
 		}
@@ -1031,7 +1031,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	if ($id_me > 0) cache_me($id_me);
 
 	// Virer les UTM en dur dans la sauvegarde
-	$texte_message = preg_replace_callback("/"._REG_URL."/i", "sucrer_utm", $texte_message);
+	$texte_message = preg_replace_callback("/"._REG_URL."/ui", "sucrer_utm", $texte_message);
 	
 	// Valider ou creer un UUID aleatoire
 	include_spip('inc/uuid');
@@ -1259,7 +1259,6 @@ function inserer_tags_liens($id_me) {
 	
 	// Extraire les liens et fabriquer des spip_syndic
 	preg_match_all("/"._REG_URL."/ui", $texte_message, $regs);
-
 	if ($regs) {
 		foreach ($regs[0] as $k=>$url) {
 		
@@ -1332,6 +1331,12 @@ function inserer_tags_liens($id_me) {
 // car elle n'encode ni espaces, ni guillemets, etc.
 function urlencode_1738_plus($url) {
 	$uri = '';
+
+	# nom de domaine accentué ?
+	if (preg_match(',^https?://[^/]*,u', $url, $r)) {
+		
+	}
+
 	$l = strlen($url);
 	for ($i=0; $i < $l; $i++) {
 		$u = ord($a = $url[$i]);
