@@ -136,6 +136,10 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 					$fond = 'mot';
 					break;
 			}
+
+			# /tag/ => meme chose que tags/ = les themes que vous suivez			
+			if ($tag == '#') $fond = 'tags';
+
 			# tag/truc/feed => flux RSS du tag
 			if (substr($titre,-5) == '/feed') {
 				$titre = substr($titre,0,-5);
