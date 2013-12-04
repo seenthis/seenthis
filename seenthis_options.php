@@ -1032,7 +1032,20 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 
 	// Virer les UTM en dur dans la sauvegarde
 	$texte_message = preg_replace_callback("/"._REG_URL."/ui", "sucrer_utm", $texte_message);
-	
+
+	// anti-repetition :
+	// si le MEME texte a ete poste par le meme auteur, avec le meme id_parent
+	// et pas depuis tres longtemps, renvoyer le meme message :
+	if ($t = sql_fetsel('m.uuid', 'spip_me m
+		LEFT JOIN spip_me_texte t ON m.id_me=t.id_me',
+		'm.date>'.sql_quote(date('Y-m-d H:i:s', time()-7*24*3600))
+		.' AND m.id_auteur='.sql_quote($id_auteur)
+		.' AND t.texte='.sql_quote($texte_message)
+		.' AND m.id_parent='.sql_quote($id_parent)
+	)) {
+		$uuid = $t['uuid'];
+	}
+
 	// Valider ou creer un UUID aleatoire
 	include_spip('inc/uuid');
 	if (is_null($uuid)) {
