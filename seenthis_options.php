@@ -893,13 +893,15 @@ function notifier_me($id_me, $id_parent) {
 		include_spip('inc/traiter_texte');
 		$t = preg_replace_callback("/"._REG_URL."/ui", "_traiter_lien", $texte);
 		if (preg_match_all("/"._REG_PEOPLE."/i", $t, $people)) {
+			$logins = array();
 			foreach ($people[0] as $k=>$p) {
-				$people[$k] = mb_substr($p,1); // liste des logins cites
+				$logins[$k] = mb_substr($p,1); // liste des logins cites
 			}
-			$s = sql_query($q = 'SELECT m.id_auteur FROM spip_auteurs AS m LEFT JOIN spip_me_block AS b ON b.id_block=m.id_auteur AND b.id_auteur='.sql_quote($id_auteur_me).' WHERE '.sql_in('m.login', array_unique($people)).' AND b.id_block IS NULL');
+			$s = sql_query($q = 'SELECT m.id_auteur FROM spip_auteurs AS m LEFT JOIN spip_me_block AS b ON b.id_block=m.id_auteur AND b.id_auteur='.sql_quote($id_auteur_me).' WHERE '.sql_in('m.login', array_unique($logins)).' AND b.id_block IS NULL');
 			while($t = sql_fetch($s)) {
 				$id_dest[] = $t['id_auteur'];
 			}
+			unset($logins);
 		}
 
 
