@@ -264,7 +264,6 @@ function inc_seenthisrecherche_to_array_dist($u) {
 
 		# tout : pas de filtre
 		case 'all':
-			$wherefollow = "";
 			$auteurs_bloques = auteurs_bloques($moi);
 			break;
 
@@ -276,16 +275,19 @@ function inc_seenthisrecherche_to_array_dist($u) {
 				# $selfollow="(IN(id_auteur,$moi) OR IN(share,$moi)) as ok";
 				$elle = $elle[0]['id_auteur'];
 				$fav = liste_partages($elle,$debut, $max_pagination);
-				$wherefollow = 'AND (('.sql_in('m.id_auteur', $elle) .')'
+				$where[] = '(('.sql_in('m.id_auteur', $elle) .')'
 					. ' OR '.sql_in('m.id_me', array_keys($fav)).')';
 				$auteurs_bloques = auteurs_bloques($elle);
 			}
 			else {
-				$wherefollow = "AND 0=1";
 				$fav = array();
 			}
 			break;
 
+	}
+
+	if (count($auteurs_bloques)) {
+		$where[] = sql_in('m.id_auteur', $auteurs_bloques, 'NOT');
 	}
 
 	# tri par "time segments" :
@@ -304,12 +306,39 @@ function inc_seenthisrecherche_to_array_dist($u) {
 		.str_repeat(' END', count($segments))
 		.') AS tseg';
 
-
-
 	# fulltext
 	$key_titre = "`titre`";
 	$key = "`texte`";
 	$r = trim(preg_replace(',\s+,', ' ', $env['recherche']));
+
+	### Cas particuliers
+	# recherche d'un people ? => messages ecrits ou adresses a @people
+	if (preg_match_all("/"._REG_PEOPLE."/i", $r, $people)) {
+		foreach ($people[0] as $k=>$p) {
+			$login = mb_substr($p,1);
+			if ($t = sql_fetsel('id_auteur', 'spip_auteurs', 'login='.sql_quote($login))) {
+				$where[] = "((MATCH($key) AGAINST ('$p')) OR m.id_auteur=".$t['id_auteur'].")";
+				$r = trim(str_replace($p,'',$r));
+				# s'il ne reste plus rien, on renvoie vers people/$login
+				if (!strlen($r)) {
+					include_spip('inc/headers');
+					include_spip('inc/urls');
+					redirige_par_entete(generer_url_entite($t['id_auteur'], 'auteur'));
+				}
+			}
+		}
+	}	# recherche d'une URL ?
+	if (preg_match_all("/"._REG_URL."/ui", $r, $urls)) {
+		foreach ($urls[0] as $k=>$p) {
+			$ids = sql_allfetsel('id_me', 'spip_me_tags', 'tag LIKE '.sql_quote("$p%"));
+			$where[] = sql_in('m.id_me', $ids);
+			$r = trim(str_replace($p,'',$r));
+			if (!strlen($r)) {
+				$r = 'http*'; # hack
+			}
+		}
+	}
+	###
 
 	// si espace, ajouter la meme chaine avec des guillemets pour ameliorer la pertinence
 	$pe = (strpos($r, ' ') AND strpos($r,'"')===false)
@@ -331,11 +360,10 @@ function inc_seenthisrecherche_to_array_dist($u) {
 	if ($boolean = preg_match(', [+-><~]|\* |".*?",', " $r "))
 		$val = $match = "MATCH($key) AGAINST ($p IN BOOLEAN MODE)";
 
-	$bloquer = count($auteurs_bloques)
-		? ' AND '.sql_in('m.id_auteur', $auteurs_bloques, 'NOT')
-		: '';
+	$where[] = $match;
+	$where[] = "m.statut='publi'";
 
-	$res = sql_allfetsel("SQL_CALC_FOUND_ROWS r.id_me AS id, m.date, $val AS score, $tseg", "spip_me_recherche AS r INNER JOIN spip_me AS m ON r.id_me=m.id_me", "$match AND m.statut='publi'$wheredate$wherefollow$bloquer", null, 'tseg ASC, score DESC'
+	$res = sql_allfetsel("SQL_CALC_FOUND_ROWS r.id_me AS id, m.date, $val AS score, $tseg", "spip_me_recherche AS r INNER JOIN spip_me AS m ON r.id_me=m.id_me", $where, null, 'tseg ASC, score DESC'
 	, "$debut,$max_pagination"
 	);
 	$t = sql_fetch(mysql_query("SELECT FOUND_ROWS() as total"));
