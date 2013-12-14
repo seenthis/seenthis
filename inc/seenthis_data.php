@@ -331,6 +331,8 @@ function inc_seenthisrecherche_to_array_dist($u) {
 	if (preg_match_all("/"._REG_URL."/ui", $r, $urls)) {
 		foreach ($urls[0] as $k=>$p) {
 			$ids = sql_allfetsel('id_me', 'spip_me_tags', 'tag LIKE '.sql_quote("$p%"));
+			foreach($ids as $k=>$p)
+				$ids[$k] = $p['id_me'];
 			$where[] = sql_in('m.id_me', $ids);
 			$r = trim(str_replace($p,'',$r));
 			if (!strlen($r)) {
