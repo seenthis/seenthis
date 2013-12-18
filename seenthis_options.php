@@ -20,6 +20,7 @@ define (_REG_PEOPLE, "\B@[a-zA-Z0-9\.\_\-]+[a-zA-Z0-9\_\-]");
 
 define (_REG_DEBUT_URL, "((http|ftp)s?:\/\/(www\.)?)");
 define (_REG_FIN_URL, "(\.(html?|jpg|gif|png|php|css|js)\/?$)");
+define (_REG_CODE, '```([a-z]*\n.+?)```|`([^`\n]+)`');
 
 
 

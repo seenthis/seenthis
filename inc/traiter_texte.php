@@ -18,6 +18,28 @@ function _traiter_hash ($regs) {
 	
 }
 
+function _traiter_code($regs) {
+
+	// marquage de langage genre ```php, pour coloration syntaxique
+	if (strlen($regs[1])
+	AND preg_match('/^(.*?)\n(.*)$/ms', $regs[1], $r)) {
+		$lang = $r[1];
+		$code = $r[2];
+	} else {
+		$code = $regs[2];
+	}
+
+	$le_hash = traiter_echap_code_dist(array(null,null,null,$code));
+
+	// dirty pour recuperer un code avec des lignes alternees (pour coloration)
+	$le_hash = str_replace('<br />', '</code></div><div class="spip_code"><code>', $le_hash);
+
+	$GLOBALS["num_hash"] ++;
+	$GLOBALS["les_hashs"][$GLOBALS["num_hash"]] = $le_hash;
+
+	return "XXXHASH".$GLOBALS["num_hash"]."HASHXXX";
+}
+
 function _traiter_people ($regs) {
 	$tag = mb_substr($regs[0], 1, 1000);
 	
@@ -321,6 +343,9 @@ function _traiter_texte($texte) {
 	// mais sert aussi de ramasse miette: remplace tout de même les \r seuls.
 	$texte = preg_replace(",\r\n?,", "\n", $texte);
 
+	// Echapper le `code` et le code multiligne, syntaxe github-markdown
+	$texte = preg_replace_callback("/"._REG_CODE."/uims", "_traiter_code", $texte);
+
 	// Echapper les URL
 	// (parce que les URL peuvent contenir des «#» qui deviendraient des tags
 	$texte = preg_replace_callback("/"._REG_URL."/ui", "_traiter_lien", $texte);
@@ -372,11 +397,6 @@ function _traiter_texte($texte) {
 	$texte = typo_seenthis($texte);
 
 	$texte = str_replace("TILDE_SEENTHIS", "~", $texte);
-	
-	// Remettre les infos des liens
-	$texte = preg_replace_callback(",XXXBLOC([0-9]+)BLOCXXX,Uums", "_traiter_blocs_retablir", $texte);
-	$texte = preg_replace_callback(",XXXLIEN([0-9]+)LIENXXX,", "_traiter_lien_retablir", $texte);
-	$texte = preg_replace_callback(",XXXHASH([0-9]+)HASHXXX,", "_traiter_hash_retablir", $texte);
 
 	// Detacher les blocs du reste du texte, afin de bien fermer et ouvrir les paragraphes.
 	$texte = str_replace("<blockquote>", "\n\n<blockquote>", $texte);
@@ -390,17 +410,23 @@ function _traiter_texte($texte) {
 		$texte = preg_replace("$preg", "$1$2", $texte);
 	}
 
-	
 	$texte = preg_replace(",([[:space:]]?)\n\n+,", "</p><p>", $texte);
 	$texte = preg_replace(",<p>([[:space:]]?)<\/p>,", "", $texte);
 	$texte = preg_replace(",<p><blockquote([^>]*)>,", "<blockquote$1>", $texte);
 	$texte = preg_replace(",</blockquote>[\n\r\t\ ],", "</blockquote>", $texte);
 	$texte = str_replace("</blockquote></p>", "</blockquote>", $texte);
-	
-	
 
 	$texte = preg_replace(",([[:space:]]?)(\n|\r),", "<br />", $texte);
+
+	// Remettre les infos des liens
+	$texte = preg_replace_callback(",XXXBLOC([0-9]+)BLOCXXX,Uums", "_traiter_blocs_retablir", $texte);
+	$texte = preg_replace_callback(",XXXLIEN([0-9]+)LIENXXX,", "_traiter_lien_retablir", $texte);
+	$texte = preg_replace_callback(",XXXHASH([0-9]+)HASHXXX,", "_traiter_hash_retablir", $texte);
+
 	$texte = str_replace("<p><br />", "<p>", $texte);
+	$texte = str_replace("<p><div", "<div", $texte);
+	$texte = str_replace("</div></p>", "</div>", $texte);
+
 
 	if ($lang) $inserer = " lang=\"$lang\" dir=\"$dir\"";
 
