@@ -410,6 +410,8 @@ function _traiter_texte($texte) {
 		$texte = preg_replace("$preg", "$1$2", $texte);
 	}
 
+	$texte = preg_replace_callback(",XXXBLOC([0-9]+)BLOCXXX,Uums", "_traiter_blocs_retablir", $texte);
+
 	$texte = preg_replace(",([[:space:]]?)\n\n+,", "</p><p>", $texte);
 	$texte = preg_replace(",<p>([[:space:]]?)<\/p>,", "", $texte);
 	$texte = preg_replace(",<p><blockquote([^>]*)>,", "<blockquote$1>", $texte);
@@ -419,7 +421,6 @@ function _traiter_texte($texte) {
 	$texte = preg_replace(",([[:space:]]?)(\n|\r),", "<br />", $texte);
 
 	// Remettre les infos des liens
-	$texte = preg_replace_callback(",XXXBLOC([0-9]+)BLOCXXX,Uums", "_traiter_blocs_retablir", $texte);
 	$texte = preg_replace_callback(",XXXLIEN([0-9]+)LIENXXX,", "_traiter_lien_retablir", $texte);
 	$texte = preg_replace_callback(",XXXHASH([0-9]+)HASHXXX,", "_traiter_hash_retablir", $texte);
 
