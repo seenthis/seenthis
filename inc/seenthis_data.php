@@ -67,7 +67,7 @@ function inc_seenthisaccueil_to_array_dist($u, $page=null) {
 		# tout : pas de filtre
 		case 'all':
 			$where = "1=1";
-			$fav = liste_partages($moi,$debut, $max_pagination);
+			$fav = liste_partages($moi,$debut, $max_pagination, 'date_m');
 			$auteurs_bloques = auteurs_bloques($moi);
 			break;
 
@@ -462,7 +462,7 @@ function liste_partages($nous,$debut=0,$max_pagination=500, $datep='date_s') {
 	if ($f = sql_allfetsel('s.id_me, UNIX_TIMESTAMP(s.date) as date_s, UNIX_TIMESTAMP(m.date) as date_m', 'spip_me_share AS s INNER JOIN spip_me AS m ON s.id_me=m.id_me', 's.id_auteur='.$moi.' AND m.statut="publi" AND m.id_parent=0', 's.id_me', array("$datep DESC"), '0,'.($debut+$max_pagination))) {
 		foreach ($f as $m) {
 			$me = intval($m['id_me']);
-			if ($datep == 'date_s') $r[$me] = (int) $m[$datep];
+			$r[$me] = (int) $m[$datep];
 			$date_s[$me] = (int) $m['date_s'];
 		}
 	}
@@ -479,9 +479,7 @@ function liste_partages($nous,$debut=0,$max_pagination=500, $datep='date_s') {
 		if ($f = sql_allfetsel('s.id_me, UNIX_TIMESTAMP(m.date) as mdate, MIN(UNIX_TIMESTAMP(s.date)) AS sdate, UNIX_TIMESTAMP(MIN(s.date)) as date', 'spip_me_share AS s INNER JOIN spip_me AS m ON s.id_me=m.id_me', $nouspasauteurs.' AND '.$euxshare.' AND m.statut="publi" AND m.id_parent=0', 's.id_me', array('date DESC'), '0,'.($debut+$max_pagination))) {
 			foreach ($f as $m) {
 				$me = intval($m['id_me']);
-				if (!isset($r[$me])
-				AND (!isset($date_s[$me]) OR $m['date'] < $date_s[$me])
-				)
+				if (!isset($date_s[$me]) OR $m['date'] < $date_s[$me])
 					$r[$me] = (int) $m['date'];
 			}
 		}
