@@ -45,9 +45,12 @@ svn co svn://trac.rezo.net/seenthis/squelettes/ seenthis_squelettes/
 svn co svn://zone.spip.org/spip-zone/_plugins_/textwheel/ textwheel/
 svn co svn://zone.spip.org/spip-zone/_plugins_/typo_guillemets/ typo_guillemets/
 svn co svn://zone.spip.org/spip-zone/_plugins_/champs_extras/core/branches/v1/ champs_extras2/
+svn co svn://zone.spip.org/spip-zone/_plugins_/saisies/ saisies/
+svn co svn://zone.spip.org/spip-zone/_plugins_/cfg/branches/v1 cfg/
 
 Si tout va bien, voici la liste des plugins présents :
 arbo_anglais
+cfg
 champs_extras2
 css_imbriques
 date_relative_dynamique
@@ -63,8 +66,8 @@ microcache
 oembed
 opensearch
 recuperer_favicon
+saisies
 seenthis
-seenthis_importer_flux
 seenthis_opencalais
 seenthis_squelettes
 textwheel
@@ -150,6 +153,9 @@ http://localhost/seenthis/ecrire/?exec=config_fonctions
 => choisir GD2
 type d'urls: _seenthis_
 
+http://localhost/seenthis/ecrire/?exec=config_contenu#configurer-redacteurs
+=> choisir "Accepter les inscriptions"
+
 ## gravatar:
 http://localhost/seenthis/ecrire/?exec=configurer_gravatar
 
@@ -165,7 +171,6 @@ ALTER TABLE spip_syndic ADD FULLTEXT tout (`url_site`,`titre`,`texte`);
 # Liens "à lire" et pied de page :
 inc/alire.html affiche les articles de la rubrique 2;
 inc/footer.html les articles de la rubrique 3
-
 
 
 # Ajout des plugins optionnels 
