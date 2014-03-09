@@ -158,6 +158,7 @@ http://localhost/seenthis/ecrire/?exec=config_contenu#configurer-redacteurs
 
 ## gravatar:
 http://localhost/seenthis/ecrire/?exec=configurer_gravatar
+=> saisir 48 pour la dimension
 
 ## moteur de recherche:
 ALTER table spip_me_recherche ENGINE=MyISAM;
