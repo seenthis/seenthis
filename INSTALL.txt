@@ -41,7 +41,7 @@ svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/recuperer_favico
 svn co svn://trac.rezo.net/seenthis/seenthis_importer_flux/ seenthis_importer_flux/
 svn co svn://trac.rezo.net/seenthis/seenthis_opencalais/ seenthis_opencalais/
 svn co svn://trac.rezo.net/seenthis/plugin_seenthis_principal/ seenthis/
-svn co svn://trac.rezo.net/seenthis/squelettes/ seenthis_squelettes/
+svn co svn://trac.rezo.net/seenthis/squelettes/trunk/ seenthis_squelettes/
 svn co svn://zone.spip.org/spip-zone/_plugins_/textwheel/ textwheel/
 svn co svn://zone.spip.org/spip-zone/_plugins_/typo_guillemets/ typo_guillemets/
 svn co svn://zone.spip.org/spip-zone/_plugins_/champs_extras/core/branches/v1/ champs_extras2/
