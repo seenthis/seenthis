@@ -445,7 +445,7 @@ function sucrer_utm ($url) {
 	$url = preg_replace(",([\?\&]|\&amp;)utm\_.*,", "", $url);
 
 	# #.UQk2gR0q7bM mais pas #.jpg
-	if (!preg_match(',\.(jpe?g|png|gif|svg)$,', $url))
+	if (!preg_match(',\.(jpe?g|png|gif|svg|mp3)$,', $url))
 		$url = preg_replace(",#\..*$,", "", $url);
 
 	return $url;
