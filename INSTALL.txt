@@ -34,7 +34,6 @@ svn co svn://zone.spip.org/spip-zone/_plugins_/job_queue/ job_queue/
 svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/lien_court/branches/spip2/ lien_court/
 svn co svn://zone.spip.org/spip-zone/_plugins_/mediabox/ mediabox/
 svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/microcache/ microcache/
-svn co svn://zone.spip.org/spip-zone/_plugins_/oembed/ oembed/
 svn co svn://zone.spip.org/spip-zone/_plugins_/opensearch/ opensearch/
 svn co svn://trac.rezo.net/seenthis/plugin_arbo_anglais/ arbo_anglais/
 svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/recuperer_favicon/ recuperer_favicon/
