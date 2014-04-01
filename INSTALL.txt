@@ -22,7 +22,10 @@ svn co svn://trac.rezo.net/spip/branches/spip-2.1/ seenthis/
 
 *On ajoute ensuite les plugins suivants :*
 
-cd seenthis/; mkdir plugins; cd plugins/
+cd seenthis/; 
+svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/autoembed autoembed/
+
+mkdir plugins; cd plugins/
 svn co svn://zone.spip.org/spip-zone/_plugins_/css_imbriques/ css_imbriques/
 svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/date_relative_dynamique/ date_relative_dynamique/
 svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/detecter_langue/ detecter_langue/
