@@ -697,7 +697,7 @@ function tester_mail_auteur($id_auteur, $val) {
 	$ret = false;
 	
 	if (!(isset($GLOBALS["envoi_mail"]["$id_auteur"]))) {
-		$query = sql_select("mail_nouv_billet, mail_rep_moi, mail_rep_billet, mail_rep_conv, mail_suivre_moi", "spip_auteurs", "id_auteur=$id_auteur");
+		$query = sql_select("mail_nouv_billet, mail_rep_moi, mail_rep_billet, mail_rep_conv, mail_suivre_moi, mail_mes_billets", "spip_auteurs", "id_auteur=$id_auteur");
 		if ($row = sql_fetch($query)) {
 			$GLOBALS["envoi_mail"]["$id_auteur"] = $row;
 		}
@@ -905,7 +905,19 @@ function notifier_me($id_me, $id_parent) {
 			unset($logins);
 		}
 
+		// toutes les raisons precedentes ne doivent jamais envoyer a l'auteur
+		// lui-meme : on filtre
+		foreach($id_dest as $k=>$id) {
+			if ($id == $id_auteur_me)
+				unset($id_dest[$k]);
+		}
 
+		// Ajouter l'auteur.e du message si elle a coche la case correspondante
+		if (tester_mail_auteur($id_auteur_me, "mail_mes_billets")) {
+			$id_dest[] = $id_auteur_me;
+		}
+
+		// Envoyer
 		if (isset($id_dest)) { 
 			$from = $nom_auteur." - ".$GLOBALS['meta']['nom_site']." <no-reply@"._HOST.">";
 			$headers = "Message-Id:<$id_me@"._HOST.">\n"; 
@@ -918,9 +930,7 @@ function notifier_me($id_me, $id_parent) {
 			spip_log("$id_me($id_parent) : destinataires=$id_dest", 'notifier');
 
 
-			$query_dest = sql_select("*", "spip_auteurs", "id_auteur IN ($id_dest)
-			AND id_auteur != $id_auteur_me
-			");
+			$query_dest = sql_select("*", "spip_auteurs", "id_auteur IN ($id_dest)");
 			while ($row_dest = sql_fetch($query_dest)) {
 				$nom_dest = $row_dest["nom"];
 
