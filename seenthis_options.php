@@ -730,7 +730,7 @@ function nom_auteur($id_auteur) {
 
 
 function construire_texte($id_parent, $id_me) {
-	$query = sql_select("id_me, id_auteur", "spip_me", "(id_me=$id_me OR id_parent=$id_parent) AND statut='publi' AND id_me <= $id_me ORDER BY date");
+	$query = sql_select("id_me, id_auteur", "spip_me", "(id_me=$id_parent OR id_parent=$id_parent) AND statut='publi' AND id_me <= $id_me ORDER BY date");
 	while ($row = sql_fetch($query)) {
 		$nom_auteur = nom_auteur($row["id_auteur"]);
 		$id_c = $row["id_me"];
