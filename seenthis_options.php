@@ -730,28 +730,16 @@ function nom_auteur($id_auteur) {
 
 
 function construire_texte($id_parent, $id_ref) {
-//		$texte = message_texte(traiter_texte($texte));
-		
-	$query = sql_select("id_me, id_auteur", "spip_me", "id_me=$id_parent && statut='publi'");
-	if ($row = sql_fetch($query)) {
-		$nom_auteur = nom_auteur($row["id_auteur"]);
-		$id_me = $row["id_me"];
-		$texte = texte_de_me($id_me);
-		if ($row["id_me"] == $id_ref) $ret = message_texte(($texte))."\n";
-		else $ret = "\n> ---------\n> $nom_auteur ".trim(extraire_titre($texte));
-		
-	}
-	
-	$query = sql_select("id_me, id_auteur", "spip_me", "id_parent=$id_parent && statut='publi'");
+	$query = sql_select("id_me, id_auteur", "spip_me", "(id_me=$id_parent OR id_parent=$id_parent) AND statut='publi' AND id_me <= $id_ref ORDER BY date");
 	while ($row = sql_fetch($query)) {
 		$nom_auteur = nom_auteur($row["id_auteur"]);
 		$id_me = $row["id_me"];
 		$texte = texte_de_me($id_me);
-		if ($row["id_me"] == $id_ref) $ret = message_texte(($texte))."\n\n".$ret;
-		else $ret .= "\n> ---------\n> $nom_auteur ".trim(extraire_titre($texte));
-		
+		if ($row["id_me"] == $id_ref)
+			$ret = message_texte(($texte))."\n\n".$ret;
+		else
+			$ret .= "\n> ---------\n> $nom_auteur ".trim(extraire_titre($texte));
 	}
-	
 	return $ret;
 	
 }
@@ -956,9 +944,9 @@ function notifier_me($id_me, $id_parent) {
 						}
 					}
 					
-					$lien = "\n\n---------\nPour ne plus recevoir d'alertes de Seenthis,\n vous pouvez régler vos préférences dans votre profil\nhttp://"._HOST."\n\n";
+					$lien = "\n\n---------\nPour ne plus recevoir d'alertes de Seenthis,\n vous pouvez régler vos préférences dans votre profil\n\n";
 					
-					$envoyer = "$annonce\n$url_me\n\n$texte_mail\n\n\n\n$lien";
+					$envoyer = "$annonce\n\n$texte_mail\n\n\n\n$lien";
 					$envoyer_mail = charger_fonction('envoyer_mail','inc');
 					$envoyer_mail("$email_dest", "$titre_mail", "$envoyer", $from, $headers);
 
