@@ -664,7 +664,7 @@ function extraire_titre($texte, $long=100, $brut = false) {
 		$texte = mb_substr($texte, 0, $long, "utf-8");
 		$pos = mb_strrpos($texte, " ", "utf-8");
 		
-		if ($pos > 5) {
+		if ($pos > 5 && !$brut) {
 			$texte = mb_substr($texte, 0, $pos, "utf-8");
 			if (!$brut) $texte .= "…";
 		}
@@ -729,16 +729,15 @@ function nom_auteur($id_auteur) {
 }
 
 
-function construire_texte($id_parent, $id_ref) {
-	$query = sql_select("id_me, id_auteur", "spip_me", "(id_me=$id_parent OR id_parent=$id_parent) AND statut='publi' AND id_me <= $id_ref ORDER BY date");
+function construire_texte($id_parent, $id_me) {
+	$query = sql_select("id_me, id_auteur", "spip_me", "(id_me=$id_me OR id_parent=$id_parent) AND statut='publi' AND id_me <= $id_me ORDER BY date");
 	while ($row = sql_fetch($query)) {
 		$nom_auteur = nom_auteur($row["id_auteur"]);
-		$id_me = $row["id_me"];
-		$texte = texte_de_me($id_me);
-		if ($row["id_me"] == $id_ref)
-			$ret = message_texte(($texte))."\n\n".$ret;
-		else
-			$ret .= "\n> ---------\n> $nom_auteur ".trim(extraire_titre($texte));
+		$id_c = $row["id_me"];
+		$texte = texte_de_me($id_c);
+		$ret .= ($id_c == $id_me)
+				? "\n".message_texte(($texte))."\n"
+				: "> $nom_auteur ".trim(extraire_titre($texte))."\n> ---------\n";
 	}
 	return $ret;
 	
@@ -841,12 +840,8 @@ function notifier_me($id_me, $id_parent) {
 
 			}
 		}
-		
-		if ($id_parent > 0)
-			$texte_mail = construire_texte($id_parent, $id_me);
-		else
-			$texte_mail = construire_texte($id_me, $id_me);
-		
+
+		$texte_mail = construire_texte($id_parent, $id_me);
 
 		// auteurs qui suivent l'auteur
 		$query_follow = sql_select("id_follow", "spip_me_follow", "id_auteur=$id_auteur_me");
@@ -950,6 +945,7 @@ function notifier_me($id_me, $id_parent) {
 					$envoyer_mail = charger_fonction('envoyer_mail','inc');
 					$envoyer_mail("$email_dest", "$titre_mail", "$envoyer", $from, $headers);
 
+spip_log($envoyer, 'notifier');
 				}
 			}
 			
