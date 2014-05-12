@@ -806,16 +806,8 @@ function notifier_me($id_me, $id_parent) {
 		$texte = texte_de_me($id_me);
 		$titre_mail = trim(extraire_titre($texte));
 
-		if ($id_parent == 0) {		
-			$url_me = "http://"._HOST."/messages/$id_me";
-		} else {
-			$url_me = "http://"._HOST."/messages/$id_parent#message$id_me";
-		}
-		
-		
 		$nom_auteur = nom_auteur($id_auteur_me);
-		
-		
+
 		if ($id_parent > 0) {
 			$query_auteur = sql_select("id_auteur", "spip_me", "id_me=$id_parent");
 			if ($row_auteur = sql_fetch($query_auteur)) {
@@ -842,6 +834,9 @@ function notifier_me($id_me, $id_parent) {
 		}
 
 		$texte_mail = construire_texte($id_parent, $id_me);
+		$texte_mail .= ($id_parent > 0)
+			? "http://"._HOST."/messages/$id_parent#message$id_me"
+			: "http://"._HOST."/messages/$id_me";
 
 		// auteurs qui suivent l'auteur
 		$query_follow = sql_select("id_follow", "spip_me_follow", "id_auteur=$id_auteur_me");
