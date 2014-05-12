@@ -835,8 +835,8 @@ function notifier_me($id_me, $id_parent) {
 
 		$texte_mail = construire_texte($id_parent, $id_me);
 		$texte_mail .= ($id_parent > 0)
-			? "http://"._HOST."/messages/$id_parent#message$id_me"
-			: "http://"._HOST."/messages/$id_me";
+			? "\n\nhttp://"._HOST."/messages/$id_parent#message$id_me"
+			: "\n\nhttp://"._HOST."/messages/$id_me";
 
 		// auteurs qui suivent l'auteur
 		$query_follow = sql_select("id_follow", "spip_me_follow", "id_auteur=$id_auteur_me");
@@ -920,27 +920,26 @@ function notifier_me($id_me, $id_parent) {
 					
 					if ($lang == "en") {				
 						if ($id_parent == 0) {
-							$annonce = "$nom_auteur has posted a new message";
+							$annonce = _L("$nom_auteur has posted a new message");
 						} else {
-							if ($nom_auteur == $nom_auteur_init ) $annonce = "$nom_auteur has answered his/her own message";
-							else $annonce = "$nom_auteur has answered to $nom_auteur_init";
+							if ($nom_auteur == $nom_auteur_init ) $annonce = _L("$nom_auteur has answered his/her own message");
+							else $annonce = _L("$nom_auteur has answered to $nom_auteur_init");
 						}
 					} else {
 						if ($id_parent == 0) {
-							$annonce = "$nom_auteur a posté un nouveau billet";
+							$annonce = _L("$nom_auteur a posté un nouveau billet");
 						} else {
-							if ($nom_auteur == $nom_auteur_init ) $annonce = "$nom_auteur a répondu à un de ses billets";
-							else $annonce = "$nom_auteur a répondu à un billet de $nom_auteur_init";
+							if ($nom_auteur == $nom_auteur_init ) $annonce = _L("$nom_auteur a répondu à un de ses billets");
+							else $annonce = _L("$nom_auteur a répondu à un billet de $nom_auteur_init");
 						}
 					}
 					
-					$lien = "\n\n---------\nPour ne plus recevoir d'alertes de Seenthis,\n vous pouvez régler vos préférences dans votre profil\n\n";
+					$lien = _L("\n---------\nPour ne plus recevoir d'alertes de Seenthis,\nvous pouvez régler vos préférences dans votre profil\n\n");
 					
 					$envoyer = "$annonce\n\n$texte_mail\n\n\n\n$lien";
 					$envoyer_mail = charger_fonction('envoyer_mail','inc');
 					$envoyer_mail("$email_dest", "$titre_mail", "$envoyer", $from, $headers);
 
-spip_log($envoyer, 'notifier');
 				}
 			}
 			
