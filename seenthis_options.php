@@ -1361,5 +1361,35 @@ function erreur_405($texte, $err405 = 405) {
  	die("<html><body><h1>error $err405</h1><h2>$texte</h2></body></html>");
 }
 
+function seenthis_affichage_final($t) {
+
+	if ($GLOBALS['html']
+	AND is_array($GLOBALS['visiteur_session'])
+	AND isset($GLOBALS['visiteur_session']['id_auteur'])) {
+		$id_auteur = $GLOBALS['visiteur_session']['id_auteur'];
+
+		preg_match_all('/class="([^"]+ |)auteur(\d+)/', $t, $m);
+		if ($m = @array_diff(array_unique($m[2]), array($id_auteur))) {
+			include_spip('base/abstract_sql');
+			foreach(sql_allfetsel('id_auteur', 'spip_me_follow', 'id_follow='.sql_quote($id_auteur) .' AND '.sql_in('id_auteur', $m) ) as $followed)
+				$m = array_diff($m, $followed);
+
+			$t = preg_replace(',// FOLLOW_PLACEHOLDER\s+-->,',
+				'var auteur_follow = ['.join(',',$m).'];'."\n"
+				. '$(function() {
+					$.each(auteur_follow, function(i,e) {
+						// alert(e+","+i);
+						$(".auteur"+e)
+						.addClass("follow");
+					});
+				});'
+				. "\n-->", $t);
+		}
+		$t = "<style>.follow { border: solid 1px red; }</style>\n".$t;
+	}
+
+	return $t;
+}
+
 
 ?>

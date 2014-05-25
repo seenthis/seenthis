@@ -119,7 +119,8 @@ function seenthis_declarer_tables_principales($tables_principales){
 		`off` char(3) NOT NULL DEFAULT 'non',
 		KEY (`id_me`), # pas de primary
 		KEY `uuid` (`uuid`),
-		KEY `date` (`date`)"
+		KEY `date` (`date`),
+		KEY `id_me` (`id_me`)"
 	## SPIP 2.1 n'accepte pas les KEY avec (60)
 	## on l'ajoute a la main plus bas
 	#		KEY `tag` (`tag`(60)),
@@ -247,7 +248,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	if ((!isset($GLOBALS['meta'][$nom_meta_base_version]) )
 	|| (($current_version = $GLOBALS['meta'][$nom_meta_base_version])!=$version_cible)){
 		include_spip('base/abstract_sql');
-		if (version_compare($current_version,"1.1.2",'<')){
+		if (version_compare($current_version,"1.1.3",'<')){
 			include_spip('base/serial');
 			include_spip('base/auxiliaires');
 			include_spip('base/create');
@@ -299,6 +300,9 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 			}
 			// en 1.1.2, ajouter l'option "mail a mes propres billets"
 			// gere par maj_tables()
+			#if (version_compare($current_version,"1.1.2",'<')){}
+
+			// en 1.1.3, ajouter la key(id_me) sur spip_me_tags
 			#if (version_compare($current_version,"1.1.2",'<')){}
 			ecrire_meta($nom_meta_base_version,$current_version=$version_cible,'non');
 		}
