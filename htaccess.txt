@@ -22,7 +22,7 @@ RewriteEngine On
 # Chez la plupart des hebergeurs il faut indiquer "RewriteBase /"
 # sinon modifiez cette ligne
 
-# RewriteBase /
+RewriteBase /
 
 
 # SPIP version 'php' - si vous avez d'anciennes adresses en '.php[3]',
@@ -39,34 +39,44 @@ RewriteEngine On
 ################ REGLAGES PERSONNALISES ######################
 # Inscrivez ci-dessous vos reglages supplementaires
 
+## blocage par IP, moins necessaire si /etc/fail2ban/filters.d/apache-kiddies fonctionne
+order allow,deny
+#deny from 180.215.198.133
+#deny from 123.151.39.39
+#deny from 173.44.37.226
+allow from all
+
+
 RewriteCond %{HTTP_HOST} seen.li
 RewriteRule ^/?$      http://seenthis.net [R=301,L]
 RewriteCond %{HTTP_HOST} seen.li
 RewriteRule (.*) http://seenthis.net/index.php?action=seenli&me=$1 [R=301,L]
 
+# nimportequoi.seenthis.net => seenthis.net
+RewriteCond %{HTTP_HOST} !^((www|static[123])\.)?seenthis\.net$ [NC]
+RewriteRule .* http://seenthis.net/$0 [R=301,L]
 
 
-
-RewriteRule ^messages/([0-9]+)$     spip.php?page=message&id_me=$1 [QSA,L]
+RewriteRule ^message/([0-9]+)$     spip.php?page=message&id_me=$1 [QSA,L]
 RewriteRule ^sites/([0-9]+)$        spip.php?page=site&id_syndic=$1 [QSA,L]
 
 RewriteRule ^people/?$    spip.php?page=people [QSA,L]
 RewriteRule ^tags/?$      spip.php?page=tags [QSA,L]
-RewriteRule ^sites/?$      spip.php?page=sites [QSA,L]
 
-RewriteRule ^(people/[^/]*)/feed$    $1?page=backend [QSA,L]
-RewriteRule ^(people/[^/]*)/feed_tw$    $1?page=backend_tw [QSA,L]
-RewriteRule ^(people/[^/]*)/follow/feed$    $1?page=backend_auteur_follow [QSA,L]
+RewriteRule ^recherche/?$	spip.php?page=sphinx [QSA,L]
 
-
-
-RewriteRule ^(tags?/.*)\$$     $1?page=mot_fin [QSA,L]
-RewriteRule ^(tags?/.*)\*$     $1?page=mot_flou [QSA,L]
+RewriteRule ^(tags/.*)\$$     $1?page=mot_fin [QSA,L]
+RewriteRule ^(tags/.*)\*$     $1?page=mot_flou [QSA,L]
+RewriteRule ^(tag/.*)$     spip.php [QSA,L]
 
 RewriteRule ^(api/messages.*)$     index.php?action=api [QSA,L]
 RewriteRule ^(api/people.*)$       index.php?action=api_auteur [QSA,L]
 RewriteRule ^api/url/(.*)$       index.php?action=api_url&code=$1 [QSA,L]
+RewriteRule ^li/(.*)$       index.php?action=seenli&me=$1 [QSA,L]
 
+
+# test seenthis.webapp pour firefoxos
+AddType application/x-web-app-manifest+json .webapp
 
 ################ GESTIONS DES URLS SPIP #######################
 
