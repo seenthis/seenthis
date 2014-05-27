@@ -1,4 +1,5 @@
 # Structure du code et des données
+
 Seenthis fonctionne comme un site SPIP classique, avec une base de données de type MySQL, des scripts en PHP et des squelettes SPIP.
 
 Les utilisateurs sont enregistrés dans la table normale des auteurs de SPIP ; quelques champs supplémentaires permettent de conserver leurs informations de configuration.
@@ -17,11 +18,14 @@ Une table enregistre les partages : spip_me_share.
 # Télécharger les composants :
 
 # On commence par installer SPIP en version 2.1
+```
 cd www/
 svn co svn://trac.rezo.net/spip/branches/spip-2.1/ seenthis/
+```
 
 *On ajoute ensuite les plugins suivants :*
 
+```
 cd seenthis/; 
 svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/autoembed autoembed/
 
@@ -38,19 +42,23 @@ svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/lien_court/branc
 svn co svn://zone.spip.org/spip-zone/_plugins_/mediabox/ mediabox/
 svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/microcache/ microcache/
 svn co svn://zone.spip.org/spip-zone/_plugins_/opensearch/ opensearch/
-svn co svn://trac.rezo.net/seenthis/plugin_arbo_anglais/ arbo_anglais/
 svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/recuperer_favicon/ recuperer_favicon/
-svn co svn://trac.rezo.net/seenthis/seenthis_importer_flux/ seenthis_importer_flux/
-svn co svn://trac.rezo.net/seenthis/seenthis_opencalais/ seenthis_opencalais/
-svn co svn://trac.rezo.net/seenthis/plugin_seenthis_principal/ seenthis/
-svn co svn://trac.rezo.net/seenthis/squelettes/trunk/ seenthis_squelettes/
 svn co svn://zone.spip.org/spip-zone/_plugins_/textwheel/ textwheel/
 svn co svn://zone.spip.org/spip-zone/_plugins_/typo_guillemets/ typo_guillemets/
 svn co svn://zone.spip.org/spip-zone/_plugins_/champs_extras/core/branches/v1/ champs_extras2/
 svn co svn://zone.spip.org/spip-zone/_plugins_/saisies/ saisies/
 svn co svn://zone.spip.org/spip-zone/_plugins_/cfg/branches/v1 cfg/
 
+svn co https://github.com/seenthis/seenthis_arbo_anglais/trunk/ arbo_anglais/
+svn co https://github.com/seenthis/seenthis_importer_flux/trunk/ seenthis_importer_flux/
+svn co https://github.com/seenthis/seenthis_opencalais/trunk/ seenthis_opencalais/
+svn co https://github.com/seenthis/seenthis/trunk/ seenthis/
+svn co https://github.com/seenthis/seenthis_squelettes/trunk/ seenthis_squelettes/
+```
+
+
 Si tout va bien, voici la liste des plugins présents :
+```
 arbo_anglais
 cfg
 champs_extras2
@@ -74,6 +82,8 @@ seenthis_opencalais
 seenthis_squelettes
 textwheel
 typo_guillemets
+```
+
 
 # Activation du site
 
@@ -87,8 +97,9 @@ Activer tous les plugins pré-cités, sauf :
 * option = activer seenthis_opencalais
 * option = activer seenthis_importer_flux
 
-Créer un fichier config/mes_options.php :
+Créer un fichier `config/mes_options.php` :
 
+```
 <?php
 
 // localhost/seenthis
@@ -119,28 +130,9 @@ define('_LOGIN_TROP_COURT', 2);
 #define('_STATIC_HOST', 'static%s.'._HOST);
 
 ?>
+```
 
-Prendre le htaccess de SPIP et rajouter le bloc suivant dans la partie “REGLAGES PERSONNALISES”
-
-RewriteCond %{HTTP_HOST} seen.li
-RewriteRule ^/?$      http://seenthis.net [R=301,L]
-RewriteCond %{HTTP_HOST} seen.li
-RewriteRule (.*) http://seenthis.net/index.php?action=seenli&me=$1 [R=301,L]
-
-RewriteRule ^message/([0-9]+)$     spip.php?page=message&id_me=$1 [QSA,L]
-RewriteRule ^sites/([0-9]+)$        spip.php?page=site&id_syndic=$1 [QSA,L]
-
-RewriteRule ^people/?$    spip.php?page=people [QSA,L]
-RewriteRule ^tags/?$      spip.php?page=tags [QSA,L]
-
-RewriteRule ^(tags/.*)\$$     $1?page=mot_fin [QSA,L]
-RewriteRule ^(tags/.*)\*$     $1?page=mot_flou [QSA,L]
-RewriteRule ^(tag/.*)$     spip.php [QSA,L]
-
-RewriteRule ^(api/messages.*)$     index.php?action=api [QSA,L]
-RewriteRule ^(api/people.*)$       index.php?action=api_auteur [QSA,L]
-RewriteRule ^api/url/(.*)$       index.php?action=api_url&code=$1 [QSA,L]
-RewriteRule ^li/(.*)$       index.php?action=seenli&me=$1 [QSA,L]
+Créer un fichier `.htaccess` à la racine du site, en prenant comme exemple `plugins/seenthis/htaccess.txt`
 
 
 Renommer le htacccess.txt en .htaccess (cela va sans dire).
@@ -162,18 +154,20 @@ http://localhost/seenthis/ecrire/?exec=config_contenu#configurer-redacteurs
 http://localhost/seenthis/ecrire/?exec=configurer_gravatar
 => saisir 48 pour la dimension
 
-## moteur de recherche:
+## moteur de recherche fulltext:
+```
 ALTER table spip_me_recherche ENGINE=MyISAM;
 ALTER TABLE spip_me_recherche ADD FULLTEXT titre (`titre`);
 ALTER TABLE spip_me_recherche ADD FULLTEXT texte (`texte`);
 
 ALTER table spip_syndic ENGINE=MyISAM;
 ALTER TABLE spip_syndic ADD FULLTEXT tout (`url_site`,`titre`,`texte`);
+```
 
 
 # Liens "à lire" et pied de page :
-inc/alire.html affiche les articles de la rubrique 2;
-inc/footer.html les articles de la rubrique 3
+`inc/alire.html` affiche les articles de la rubrique 2;
+`inc/footer.html` les articles de la rubrique 3
 
 
 # Ajout des plugins optionnels 
@@ -191,12 +185,22 @@ Ce plugin s'interface avec l'API OpenCalais (il faut demander une clé d'API), p
 permet aux admins d'éditer les préférences des auteurs depuis l'espace privé.
 
 ## Palette
+
 (http://contrib.spip.net/Palette) ; le configurer pour activation sur les pages publiques permet d'offrir la roue chromatique dans les préférences
+
+## Sphinx
+
+Pour avoir le moteur de recherche basé sur sphinx, installer d'abord Sphinx, puis ajouter deux plugins :
+```
+svn co https://github.com/seenthis/seenthis_sphinx/trunk/ seenthis_sphinx/
+svn co svn://zone.spip.org/spip-zone/_plugins_/indexer/trunk indexer/
+```
 
 
 
 
 # Personnalisation
+
 Voilà ; vous pouvez commencer à personnaliser les squelettes en les recopiant dans squelettes/
 
-À noter : “microcache”, le cache de seenthis, est très agressif, et tout ce qui est de l'ordre du CSS ou javascript est parfois difficile à recalculer : en cas de doute, ne pas hésiter à purger le répertoire local/microcache/
+À noter : “microcache”, le cache de seenthis, est très agressif, et tout ce qui est de l'ordre du CSS ou javascript est parfois difficile à recalculer : en cas de doute, ne pas hésiter à purger le répertoire `local/microcache/`
