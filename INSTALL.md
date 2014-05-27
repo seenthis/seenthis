@@ -1,4 +1,6 @@
-# Structure du code et des données
+# Installer seenthis
+
+## Structure du code et des données
 
 Seenthis fonctionne comme un site SPIP classique, avec une base de données de type MySQL, des scripts en PHP et des squelettes SPIP.
 
