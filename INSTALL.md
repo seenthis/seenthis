@@ -51,9 +51,6 @@ svn co svn://zone.spip.org/spip-zone/_plugins_/champs_extras/core/branches/v1/ c
 svn co svn://zone.spip.org/spip-zone/_plugins_/saisies/ saisies/
 svn co svn://zone.spip.org/spip-zone/_plugins_/cfg/branches/v1 cfg/
 
-svn co https://github.com/seenthis/seenthis_arbo_anglais/trunk/ arbo_anglais/
-svn co https://github.com/seenthis/seenthis_importer_flux/trunk/ seenthis_importer_flux/
-svn co https://github.com/seenthis/seenthis_opencalais/trunk/ seenthis_opencalais/
 svn co https://github.com/seenthis/seenthis/trunk/ seenthis/
 svn co https://github.com/seenthis/seenthis_squelettes/trunk/ seenthis_squelettes/
 ```
@@ -61,7 +58,6 @@ svn co https://github.com/seenthis/seenthis_squelettes/trunk/ seenthis_squelette
 
 Si tout va bien, voici la liste des plugins présents :
 ```
-arbo_anglais
 cfg
 champs_extras2
 css_imbriques
@@ -80,7 +76,6 @@ opensearch
 recuperer_favicon
 saisies
 seenthis
-seenthis_opencalais
 seenthis_squelettes
 textwheel
 typo_guillemets
@@ -177,10 +172,17 @@ ALTER TABLE spip_syndic ADD FULLTEXT tout (`url_site`,`titre`,`texte`);
 ## seenthis_importer_flux
 
 Ce plugin ajoute un champ 'rss' dans spip_auteurs, et une tâche cron qui charge ce RSS et le transforme en seens (et en partages si l'URL est déjà mentionnée dans un autre seen).
+```
+svn co https://github.com/seenthis/seenthis_importer_flux/trunk/ seenthis_importer_flux/
+```
+
 
 ## seenthis_opencalais
 
 Ce plugin s'interface avec l'API OpenCalais (il faut demander une clé d'API), pour thématiser de façon automatique les seens.
+```
+svn co https://github.com/seenthis/seenthis_opencalais/trunk/ seenthis_opencalais/
+````
 
 ## champs_extras2
 
@@ -190,14 +192,21 @@ permet aux admins d'éditer les préférences des auteurs depuis l'espace privé
 
 (http://contrib.spip.net/Palette) ; le configurer pour activation sur les pages publiques permet d'offrir la roue chromatique dans les préférences
 
+## seenthis_arbo_anglais
+```
+svn co https://github.com/seenthis/seenthis_arbo_anglais/trunk/ seenthis_arbo_anglais/
+```
+un plugin bidouille pour les URLs des articles (et pas des messages) de seenthis.net
+à priori ce n'est pas indispensable
+
 ## Sphinx
 
-Pour avoir le moteur de recherche basé sur sphinx, installer d'abord Sphinx, puis ajouter deux plugins :
+Pour avoir le moteur de recherche basé sur sphinx, installer d'abord Sphinx (http://sphinxsearch.com/ - version 2.2.3 minimum!), puis ajouter deux plugins :
 ```
 svn co https://github.com/seenthis/seenthis_sphinx/trunk/ seenthis_sphinx/
 svn co svn://zone.spip.org/spip-zone/_plugins_/indexer/trunk indexer/
 ```
-
+(voir la doc détaillée sur le plugin indexer)
 
 
 
