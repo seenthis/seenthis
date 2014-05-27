@@ -1362,6 +1362,7 @@ function erreur_405($texte, $err405 = 405) {
 }
 
 function seenthis_affichage_final($t) {
+	return $t; // code prématuré
 
 	if ($GLOBALS['html']
 	AND is_array($GLOBALS['visiteur_session'])
