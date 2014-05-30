@@ -249,9 +249,6 @@ function supprimer_me($id_me) {
 	// Les messages supprimés changent seulement de statut.
 	// Garder le lien vers son auteur, et changer son statut en "supp"
 	
-	
-	cache_me($id_me);
-	
 	$query = sql_select("id_auteur, id_parent", "spip_me", "id_me = $id_me");
 	while ($row = sql_fetch($query)) {
 		$id_parent = $row["id_parent"];
@@ -268,7 +265,6 @@ function supprimer_me($id_me) {
 
 	if ($id_parent == 0) sql_delete("spip_me_recherche", "id_me=$id_ref");
 
-	
 	$query = sql_select("id_me, id_auteur", "spip_me", "id_parent = $id_me");
 	while ($row = sql_fetch($query)) {
 		$id_enfant = $row["id_me"];
@@ -276,8 +272,9 @@ function supprimer_me($id_me) {
 		$id_auteur = $row["id_auteur"];
 		cache_auteur($id_auteur);
 	}
-	
-	
+
+	cache_me($id_me);
+
 }
 
 function allonger_url($url) {
