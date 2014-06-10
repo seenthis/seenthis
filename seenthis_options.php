@@ -147,6 +147,8 @@ function cache_me ($id_me, $id_parent = 0) {
 		$id_auteur = $row_share["id_auteur"];
 		cache_auteur($id_auteur);
 	}
+
+	pipeline('cache_me', $id_me);
 }
 
 function cache_mot_fil($id_me) {
