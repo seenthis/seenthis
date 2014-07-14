@@ -621,7 +621,7 @@ function ajouter_embed($texte) {
 
 
 
-
+/* retransformer la version HTML d'un message en un texte utilisable sous ATOM (atom_me.html) ou par email (seenthis_notifier.php) */
 function message_texte($texte) {
 	$texte = liens_absolus($texte);
 	
@@ -725,22 +725,6 @@ function nom_auteur($id_auteur) {
 
 	$GLOBALS["nom_auteur"]["$id_auteur"] = "$nom_auteur (@$login_auteur)";
 	return $GLOBALS["nom_auteur"]["$id_auteur"];
-}
-
-
-function construire_texte($id_parent, $id_me) {
-	if (!$id_parent) $id_parent = $id_me;
-	$query = sql_select("id_me, id_auteur", "spip_me", "(id_me=$id_parent OR id_parent=$id_parent) AND statut='publi' AND id_me <= $id_me ORDER BY date");
-	while ($row = sql_fetch($query)) {
-		$nom_auteur = nom_auteur($row["id_auteur"]);
-		$id_c = $row["id_me"];
-		$texte = texte_de_me($id_c);
-		$ret .= ($id_c == $id_me)
-				? "\n".message_texte(($texte))."\n"
-				: "> $nom_auteur ".trim(extraire_titre($texte))."\n> ---------\n";
-	}
-	return $ret;
-	
 }
 
 
