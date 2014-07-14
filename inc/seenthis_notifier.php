@@ -231,7 +231,7 @@ function notifier_construire_texte($id_parent, $id_me) {
 			$id_c = $row["id_me"];
 			$texte = texte_de_me($id_c);
 			$ret .= ($id_c == $id_me)
-					? "\n $nom_auteur ".message_texte(($texte))."\n\n"
+					? "\n$nom_auteur ".message_texte(($texte))."\n\n"
 					: "> $nom_auteur ".trim(extraire_titre($texte))."\n> ---------\n";
 		} else {
 			$ret .= $blabla;
