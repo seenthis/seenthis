@@ -5,6 +5,13 @@ function notifier_suivre_moi ($id_auteur, $id_follow) {
 	// $id_auteur => celui qui est suivi => celui à prévenir
 	// $id_follow => celui qui suit
 
+	// verifier que l'on est bien suivi (cas à éviter : je clique par erreur
+	// sur "suivre @machin", puis je reclique pour ne plus le suivre)
+	if (!sql_countsel('spip_me_follow', 'id_follow='.sql_quote($id_follow).' AND id_auteur='.sql_quote($id_auteur))) {
+		spip_log('pas de notification pour un auteur non suivi', 'suivre');
+		return;
+	}
+
 	if (tester_mail_auteur($id_auteur, "mail_suivre_moi")) {
 		$seenthis = $GLOBALS['meta']['nom_site']; # "Seenthis";
 
@@ -49,6 +56,9 @@ function notifier_suivre_moi ($id_auteur, $id_follow) {
 				//$titre_mail = mb_encode_mimeheader(html_entity_decode($titre_mail, null, 'UTF-8'), 'UTF-8');
 				$envoyer_mail = charger_fonction('envoyer_mail','inc');
 				$envoyer_mail("$email_dest", "$seenthis - $titre_mail", "$envoyer", $from, $headers);
+
+				spip_log("notification: @$login_aut suit @".$row_dest['login'], 'suivre');
+
 			}
 		}
 	}
