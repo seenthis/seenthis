@@ -60,15 +60,15 @@ function inc_seenthisaccueil_to_array_dist($u, $page=null) {
 			# - pointe vers moi ($pointe)
 			$pointe = liste_pointe_sql($debut, $max_pagination, $moi);
 			$where = '('.sql_in('id_auteur', $nous). $pointe.')';
-			$fav = liste_partages($nous,$debut, $max_pagination, 'date_m');
 			$auteurs_bloques = auteurs_bloques($moi);
+			$fav = liste_partages($nous,$debut, $max_pagination, 'date_m', $auteurs_bloques);
 			break;
 
-		# tout : pas de filtre
+		# tout : pas de filtre (sauf les bloques)
 		case 'all':
 			$where = "1=1";
-			$fav = liste_partages($moi,$debut, $max_pagination, 'date_m');
 			$auteurs_bloques = auteurs_bloques($moi);
+			$fav = liste_partages($moi,$debut, $max_pagination, 'date_m', $auteurs_bloques);
 			break;
 
 		# $moi ou une autre
@@ -78,9 +78,9 @@ function inc_seenthisaccueil_to_array_dist($u, $page=null) {
 			if ($elle = sql_allfetsel('id_auteur', 'spip_auteurs', '(login='.sql_quote($env['follow'])." OR id_auteur=".intval($env['id']).") AND statut!='5poubelle'")) {
 				# $selfollow="(IN(id_auteur,$moi) OR IN(share,$moi)) as ok";
 				$elle = $elle[0]['id_auteur'];
-				$fav = liste_partages($elle, $debut, $max_pagination);
-				$where = '('.sql_in('id_auteur', $elle) .')';
 				$auteurs_bloques = auteurs_bloques($elle);
+				$fav = liste_partages($elle, $debut, $max_pagination, 'date_s', $auteurs_bloques);
+				$where = '('.sql_in('id_auteur', $elle) .')';
 			}
 			else {
 				$where = "0=1";
@@ -93,7 +93,6 @@ function inc_seenthisaccueil_to_array_dist($u, $page=null) {
 
 	# requete triee par date, avec des dates remises en fonction des favoris
 	$r = $fav;
-
 	$bloquer = count($auteurs_bloques)
 		? ' AND '.sql_in('id_auteur', $auteurs_bloques, 'NOT')
 		: '';
@@ -162,8 +161,8 @@ function inc_seenthisbackend_to_array_dist($u, $variante=null) {
 			# - les URLs que je suis (…………)
 			# - j'ai répondu (replies $moi)
 			$where = '('.sql_in('id_auteur', $nous).')';
-			$fav = liste_partages($nous,$debut, $max_pagination);
 			$auteurs_bloques = auteurs_bloques($moi);
+			$fav = liste_partages($nous,$debut, $max_pagination, 'date_s', $auteurs_bloques);
 			break;
 
 		# /LOGIN/all/feed
@@ -181,8 +180,8 @@ function inc_seenthisbackend_to_array_dist($u, $variante=null) {
 			# - pointe vers moi ($pointe)
 			$pointe = liste_pointe_sql($debut, $max_pagination, $moi);
 			$where = '('.sql_in('id_auteur', $nous). $pointe.')';
-			$fav = liste_partages($nous,$debut, $max_pagination);
 			$auteurs_bloques = auteurs_bloques($moi);
+			$fav = liste_partages($nous,$debut, $max_pagination, 'date_s', $auteurs_bloques);
 			break;
 
 		# /LOGIN/feed
@@ -191,7 +190,8 @@ function inc_seenthisbackend_to_array_dist($u, $variante=null) {
 			# ensuite on va faire notre selection de tout ce que :
 			# - j'ai envoyé + partagé (share $moi)
 			$where = 'id_auteur='.$moi;
-			$fav = liste_partages($moi,$debut, $max_pagination);
+			$auteurs_bloques = auteurs_bloques($moi);
+			$fav = liste_partages($moi,$debut, $max_pagination, 'date_s', $auteurs_bloques);
 			break;
 
 	}
@@ -257,10 +257,10 @@ function inc_seenthisrecherche_to_array_dist($u) {
 			# - pointe vers moi ($pointe)
 			$pointe = str_replace('id_me', 'm.id_me',
 				liste_pointe_sql($debut, $max_pagination, $moi));
-			$fav = liste_partages($nous,$debut, $max_pagination);
+			$auteurs_bloques = auteurs_bloques($moi);
+			$fav = liste_partages($nous,$debut, $max_pagination, 'date_s', $auteurs_bloques);
 			$wherefollow = ' AND ('.sql_in('m.id_auteur', $nous). $pointe
 				. ' OR '.sql_in('m.id_me', array_keys($fav)).')';
-			$auteurs_bloques = auteurs_bloques($moi);
 			break;
 
 		# tout : pas de filtre
@@ -275,10 +275,10 @@ function inc_seenthisrecherche_to_array_dist($u) {
 			if ($elle = sql_allfetsel('id_auteur', 'spip_auteurs', '(login='.sql_quote($env['follow'])." OR id_auteur=".intval($env['id']).") AND statut!='5poubelle'")) {
 				# $selfollow="(IN(id_auteur,$moi) OR IN(share,$moi)) as ok";
 				$elle = $elle[0]['id_auteur'];
-				$fav = liste_partages($elle,$debut, $max_pagination);
+				$auteurs_bloques = auteurs_bloques($elle);
+				$fav = liste_partages($elle,$debut, $max_pagination, 'date_s', $auteurs_bloques);
 				$where[] = '(('.sql_in('m.id_auteur', $elle) .')'
 					. ' OR '.sql_in('m.id_me', array_keys($fav)).')';
-				$auteurs_bloques = auteurs_bloques($elle);
 			}
 			else {
 				$fav = array();
@@ -405,8 +405,8 @@ function inc_seenthisfollowtags_to_array_dist($u, $page=null) {
 	if (!$moi)
 		return array();
 
-	$fav = liste_partages($moi,$debut, $max_pagination);
 	$auteurs_bloques = auteurs_bloques($moi);
+	$fav = liste_partages($moi,$debut, $max_pagination, 'date_s', $auteurs_bloques);
 
 	$bloquer = count($auteurs_bloques)
 		? ' AND '.sql_in('id_auteur', $auteurs_bloques, 'NOT')
@@ -444,11 +444,15 @@ function inc_syndicrecherche_to_array_dist($u) {
 	return $res;
 }
 
-function liste_partages($nous,$debut=0,$max_pagination=500, $datep='date_s') {
+function liste_partages($nous,$debut=0,$max_pagination=500, $datep='date_s', $auteurs_bloques=array()) {
 	$r = array();
 
 	if (!is_array($nous))
 		$nous = array($nous);
+
+	$bloquer = count($auteurs_bloques)
+		? ' AND '.sql_in('m.id_auteur', $auteurs_bloques, 'NOT')
+		: '';
 
 	# en deux temps, car je cherche en priorité la date de mes fav,
 	# puis celle de mes amis
@@ -476,7 +480,7 @@ function liste_partages($nous,$debut=0,$max_pagination=500, $datep='date_s') {
 	if ($eux) {
 		$nouspasauteurs = sql_in('m.id_auteur', $nous, 'NOT');
 		$euxshare = sql_in('s.id_auteur', $eux);
-		if ($f = sql_allfetsel('s.id_me, UNIX_TIMESTAMP(m.date) as mdate, MIN(UNIX_TIMESTAMP(s.date)) AS sdate, UNIX_TIMESTAMP(MIN(s.date)) as date', 'spip_me_share AS s INNER JOIN spip_me AS m ON s.id_me=m.id_me', $nouspasauteurs.' AND '.$euxshare.' AND m.statut="publi" AND m.id_parent=0', 's.id_me', array('date DESC'), '0,'.($debut+$max_pagination))) {
+		if ($f = sql_allfetsel('s.id_me, UNIX_TIMESTAMP(m.date) as mdate, MIN(UNIX_TIMESTAMP(s.date)) AS sdate, UNIX_TIMESTAMP(MIN(s.date)) as date', 'spip_me_share AS s INNER JOIN spip_me AS m ON s.id_me=m.id_me', $nouspasauteurs.' AND '.$euxshare.' AND m.statut="publi" AND m.id_parent=0'.$bloquer, 's.id_me', array('date DESC'), '0,'.($debut+$max_pagination))) {
 			foreach ($f as $m) {
 				$me = intval($m['id_me']);
 				if (!isset($date_s[$me]) OR $m['date'] < $date_s[$me])
