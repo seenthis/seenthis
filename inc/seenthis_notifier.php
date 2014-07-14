@@ -1,60 +1,58 @@
 <?php
 
-
 function notifier_suivre_moi ($id_auteur, $id_follow) {
 	//mail_suivre_moi
 	// $id_auteur => celui qui est suivi => celui à prévenir
 	// $id_follow => celui qui suit
-	
+
 	if (tester_mail_auteur($id_auteur, "mail_suivre_moi")) {
 		$seenthis = $GLOBALS['meta']['nom_site']; # "Seenthis";
 
 		$from = "$seenthis <no-reply@"._HOST.">";
-		//$headers .= 'Content-Type: text/plain; charset="utf-8"'."\n"; 
-		//$headers .= "Content-Transfer-Encoding: 8bit\n"; 
-		$headers = "Message-Id: <$id_auteur.$id_follow.".time()."@"._HOST.">\n"; 
+		//$headers .= 'Content-Type: text/plain; charset="utf-8"'."\n";
+
+		//$headers .= "Content-Transfer-Encoding: 8bit\n";
+
+		$headers = "Message-Id: <$id_auteur.$id_follow.".time()."@"._HOST.">\n";
 
 		$query_dest = sql_select("*", "spip_auteurs", "id_auteur = $id_follow");
 		if ($row_dest = sql_fetch($query_dest)) {
 			$nom_aut = $row_dest["nom"];
 			$login_aut = $row_dest["login"];
 		}
-					
+
 		$query_dest = sql_select("*", "spip_auteurs", "id_auteur = $id_auteur");
 		if ($row_dest = sql_fetch($query_dest)) {
 			$nom_dest = $row_dest["nom"];
 			$email_dest = $row_dest["email"];
 			$lang = $row_dest["lang"];
-			
+
 			if (strlen(trim($email_dest)) > 3) {
-				
+
 				include_spip("inc/filtres_mini");
 				$url_me = "http://"._HOST."/".generer_url_entite($id_follow,"auteur");
-				
-				if ($lang == "en") {				
+
+				if ($lang == "en") {
+
 					$titre_mail = _L("$nom_aut is following you on $seenthis.");
 					$annonce = _L("Hi $nom_dest,\n\n$nom_aut (@$login_aut) is following you on $seenthis.");
 				} else {
 					$titre_mail = _L("$nom_aut vous suit sur $seenthis.");
 					$annonce = _L("Bonjour $nom_dest,\n\n$nom_aut (@$login_aut) vous suit sur $seenthis.");
 				}
-				
+
 				$lien = _L("\n\n---------\nPour ne plus recevoir d'alertes de $seenthis,\n vous pouvez régler vos préférences dans votre profil\nhttp://"._HOST."\n\n");
-				
+
 				$envoyer = "\n\n$annonce\n$url_me\n\n$lien";
 				//echo "<hr /><pre>$envoyer</pre>";
-
 
 				//$titre_mail = mb_encode_mimeheader(html_entity_decode($titre_mail, null, 'UTF-8'), 'UTF-8');
 				$envoyer_mail = charger_fonction('envoyer_mail','inc');
 				$envoyer_mail("$email_dest", "$seenthis - $titre_mail", "$envoyer", $from, $headers);
 			}
 		}
-
 	}
-
 }
-
 
 function notifier_me($id_me, $id_parent) {
 
@@ -77,17 +75,16 @@ function notifier_me($id_me, $id_parent) {
 				if (tester_mail_auteur($id_auteur, "mail_rep_moi")) {
 					$id_dest[] = $id_auteur;
 				}
-				
+
 				// alerte reponse a un billet favori
 				$query_fav = sql_select("id_auteur", "spip_me_share", "id_me=$id_parent");
 				while ($row_fav = sql_fetch($query_fav)) {
 					$id_auteur = $row_fav["id_auteur"];
-	
+
 					if (tester_mail_auteur($id_auteur, "mail_rep_moi")) {
 						$id_dest[] = $id_auteur;
 					}
 				}
-				
 
 			}
 		}
@@ -100,8 +97,8 @@ function notifier_me($id_me, $id_parent) {
 		// auteurs qui suivent l'auteur
 		$query_follow = sql_select("id_follow", "spip_me_follow", "id_auteur=$id_auteur_me");
 		while ($row_follow = sql_fetch($query_follow)) {
-			$id_follow = $row_follow["id_follow"];		
-			
+			$id_follow = $row_follow["id_follow"];
+
 			if($id_parent == 0) {
 				// alerte nouveau mail interessant
 				if (tester_mail_auteur($id_follow, "mail_nouv_billet")) {
@@ -113,13 +110,13 @@ function notifier_me($id_me, $id_parent) {
 				}
 			}
 		}
-		
+
 		// auteurs qui ont participé à la discussion
 		if ($id_parent > 0) {
 			$query = sql_select("id_auteur", "spip_me", "id_parent=$id_parent AND id_me!=$id_me");
 			while ($row = sql_fetch($query)) {
-				$id_auteur = $row["id_auteur"];		
-				
+				$id_auteur = $row["id_auteur"];
+
 				// alerte nouveau mail interessant
 				if (tester_mail_auteur($id_auteur, "mail_rep_conv")) {
 					$id_dest[] = $id_auteur;
@@ -155,17 +152,18 @@ function notifier_me($id_me, $id_parent) {
 		}
 
 		// Envoyer
-		if (isset($id_dest)) { 
+		if (isset($id_dest)) {
+
 			$from = $nom_auteur." - ".$GLOBALS['meta']['nom_site']." <no-reply@"._HOST.">";
-			$headers = "Message-Id:<$id_me@"._HOST.">\n"; 
-			if ($id_parent > 0) $headers .= "In-Reply-To:<$id_parent@"._HOST.">\n"; 
+			$headers = "Message-Id:<$id_me@"._HOST.">\n";
+
+			if ($id_parent > 0) $headers .= "In-Reply-To:<$id_parent@"._HOST.">\n";
 
 			$id_dest = join(",", $id_dest);
-			
-			spip_log("$id_me($id_parent) : destinataires=$id_dest", 'notifier');
 
 			spip_log("$id_me($id_parent) : destinataires=$id_dest", 'notifier');
 
+			spip_log("$id_me($id_parent) : destinataires=$id_dest", 'notifier');
 
 			$query_dest = sql_select("*", "spip_auteurs", "id_auteur IN ($id_dest)");
 			while ($row_dest = sql_fetch($query_dest)) {
@@ -176,8 +174,8 @@ function notifier_me($id_me, $id_parent) {
 				spip_log("notifier $id_me($id_parent) a $email_dest", 'notifier');
 
 				if (strlen(trim($email_dest)) > 3) {
-					
-					if ($lang == "en") {				
+
+					if ($lang == "en") {
 						if ($id_parent == 0) {
 							$annonce = _L("$nom_auteur has posted a new message");
 						} else {
@@ -192,17 +190,17 @@ function notifier_me($id_me, $id_parent) {
 							else $annonce = _L("$nom_auteur a répondu à un billet de $nom_auteur_init");
 						}
 					}
-					
+
 					$lien = _L("\n---------\nPour ne plus recevoir d'alertes de Seenthis,\nvous pouvez régler vos préférences dans votre profil\n\n");
-					
+
 					$envoyer = "$annonce\n\n$texte_mail\n\n\n\n$lien";
 					$envoyer_mail = charger_fonction('envoyer_mail','inc');
 					$envoyer_mail("$email_dest", "$titre_mail", "$envoyer", $from, $headers);
 
 				}
 			}
-			
+
 		}
-	
+
 	}
-}	
+}
