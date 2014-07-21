@@ -75,6 +75,8 @@ function notifier_me($id_me, $id_parent) {
 
 		$nom_auteur = nom_auteur($id_auteur_me);
 
+		$id_dest = array();
+
 		if ($id_parent > 0) {
 			$query_auteur = sql_select("id_auteur", "spip_me", "id_me=$id_parent");
 			if ($row_auteur = sql_fetch($query_auteur)) {
