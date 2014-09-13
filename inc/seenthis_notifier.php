@@ -78,7 +78,7 @@ function notifier_me($id_me, $id_parent) {
 		$id_dest = array();
 
 		if ($id_parent > 0) {
-			$query_auteur = sql_select("id_auteur", "spip_me", "id_me=$id_parent");
+			$query_auteur = sql_select("id_auteur", "spip_me", "id_me=$id_parent AND statut='publi'");
 			if ($row_auteur = sql_fetch($query_auteur)) {
 				$id_auteur = $row_auteur["id_auteur"];
 				$nom_auteur_init = nom_auteur($id_auteur);
