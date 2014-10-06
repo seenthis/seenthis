@@ -108,8 +108,8 @@ function hierarchier_url($id_syndic) {
 // Effacer le microcache d'un message
 // - effacer message lui-même
 // - effacer le parent (c-a-dire fil de messages)
-function cache_me ($id_me, $id_parent = 0) {
-	spip_log("cache_me ($id_me, $id_parent)", "cache");
+function cache_message ($id_me, $id_parent = 0) {
+	spip_log("cache_message ($id_me, $id_parent)", "cache");
 	
 	// Si on connait deja l'id_parent, pas besoin de boucle.
 	if ($id_parent < 1) {
@@ -148,7 +148,7 @@ function cache_me ($id_me, $id_parent = 0) {
 		cache_auteur($id_auteur);
 	}
 
-	pipeline('cache_me', $id_me);
+	pipeline('cache_message', $id_me);
 }
 
 function cache_mot_fil($id_me) {
@@ -227,7 +227,7 @@ function nettoyer_nom_auteur($id_auteur) {
 	$query = sql_select("id_me", "spip_me", "id_auteur=$id_auteur");
 	while ($row = sql_fetch($query)) {
 		$id_me = $row["id_me"];
-		cache_me($id_me);
+		cache_message($id_me);
 	}
 }
 
@@ -241,7 +241,7 @@ function nettoyer_logo_auteur($id_auteur) {
 	$query = sql_select("id_me", "spip_me", "id_auteur=$id_auteur");
 	while ($row = sql_fetch($query)) {
 		$id_me = $row["id_me"];
-		cache_me($id_me);
+		cache_message($id_me);
 	}
 }
 
@@ -275,7 +275,7 @@ function supprimer_me($id_me) {
 		cache_auteur($id_auteur);
 	}
 
-	cache_me($id_me);
+	cache_message($id_me);
 
 }
 
@@ -408,7 +408,7 @@ function recuperer_contenu_site ($id_syndic, $url) {
 		while ($row = sql_fetch($query)) {
 		
 			$id_me = $row ["id_me"];
-			cache_me($id_me);
+			cache_message($id_me);
 			supprimer_microcache($id_me, "noisettes/message_texte");
 		}
 
@@ -799,7 +799,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	include_spip('base/abstract_sql');
 
 	if ($id_auteur < 1) return false;
-	if ($id_me > 0) cache_me($id_me);
+	if ($id_me > 0) cache_message($id_me);
 
 	// Virer les UTM en dur dans la sauvegarde
 	$texte_message = preg_replace_callback("/"._REG_URL."/ui", "sucrer_utm", $texte_message);
@@ -879,7 +879,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 		
 		if ($id_auteur_old != $id_auteur) die ("Forbidden");
 
-		cache_me($id_me, $id_parent);
+		cache_message($id_me, $id_parent);
 
 		$query = sql_query("DELETE FROM spip_me_syndic WHERE id_me=$id_me");
 		$query = sql_query("DELETE FROM spip_me_tags WHERE id_me=$id_me");
@@ -916,7 +916,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 	}
 
 	cache_auteur($id_auteur);
-	cache_me($id_me, $id_parent);
+	cache_message($id_me, $id_parent);
 
 	// pipeline utilise notamment pour thematiser le message (open-calais)
 	pipeline('seenthis_instance_objet',
@@ -1071,7 +1071,7 @@ function inserer_tags_liens($id_me) {
 							$id_me_supp = $row_total["id_me_supp"];
 							$id_parent_supp = $row_total["id_parent_supp"];
 							$id_auteur_supp = $row_total["id_auteur_supp"];
-							cache_me($id_me_supp, $id_parent_supp);
+							cache_message($id_me_supp, $id_parent_supp);
 							cache_auteur($id_auteur_supp);
 						}
 					}
