@@ -168,7 +168,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
 		# la page /people/
 		else if (preg_match(',/people/?([?].*)?$,', $i)) {
-			$g = array(array(), 'people');
+			$g = array($args, 'people');
 		}
 		# la page people/xxx/follow/feed => ramener sur people/xxx
 		else if (
