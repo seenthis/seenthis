@@ -57,37 +57,34 @@ svn co https://github.com/seenthis/seenthis_squelettes/trunk/ seenthis_squelette
 
 
 Si tout va bien, voici la liste des plugins présents :
-```
-cfg
-champs_extras2
-css_imbriques
-date_relative_dynamique
-detecter_langue
-fulltext
-gravatar
-inclure-ajaxload
-iterateurs
-job_queue
-lien_court
-mediabox
-microcache
-oembed
-opensearch
-recuperer_favicon
-saisies
-seenthis
-seenthis_squelettes
-textwheel
-typo_guillemets
-```
-
+* cfg
+* champs_extras2
+* css_imbriques
+* date_relative_dynamique
+* detecter_langue
+* fulltext
+* gravatar
+* inclure-ajaxload
+* iterateurs
+* job_queue
+* lien_court
+* mediabox
+* microcache
+* oembed
+* opensearch
+* recuperer_favicon
+* saisies
+* seenthis
+* seenthis_squelettes
+* textwheel
+* typo_guillemets
 
 # Activation du site
 
 On active alors la connexion SQL du site SPIP :
-http://localhost/seenthis/ecrire/ (entrer le mot de passe SQL, créer la base, créer le premier compte utilisateur).
+[http://localhost/seenthis/ecrire/](http://localhost/seenthis/ecrire/) (entrer le mot de passe SQL, créer la base, créer le premier compte utilisateur).
 
-A noter : le compte id_auteur=3 est pris comme base pour la couleur des liens de la page d'accueil (cf. plugins/seenthis_squelettes/bonjour.html) ; tant qu'il n'existe pas, le site est un peu de guingois. => créer 2 autres auteurs, et nommer "seenthis" l'auteur numéro 3.
+À noter : le compte id_auteur=3 est pris comme base pour la couleur des liens de la page d'accueil (cf. plugins/seenthis_squelettes/bonjour.html) ; tant qu'il n'existe pas, le site est un peu de guingois. => créer 2 autres auteurs, et nommer "seenthis" l'auteur numéro 3.
 
 Activer tous les plugins pré-cités, sauf :
 * OpenSearch
@@ -96,7 +93,7 @@ Activer tous les plugins pré-cités, sauf :
 
 Créer un fichier `config/mes_options.php` :
 
-```
+```php
 <?php
 
 // localhost/seenthis
@@ -140,15 +137,15 @@ Aller sur http://localhost/seenthis/?var_mode=recalcul ; vous avez un seenthis u
 
 # Configuration
 ## SPIP
-http://localhost/seenthis/ecrire/?exec=config_fonctions
+[http://localhost/seenthis/ecrire/?exec=config_fonctions](http://localhost/seenthis/ecrire/?exec=config_fonctions)
 => choisir GD2
 type d'urls: _seenthis_
 
-http://localhost/seenthis/ecrire/?exec=config_contenu#configurer-redacteurs
+[http://localhost/seenthis/ecrire/?exec=config_contenu#configurer-redacteurs](http://localhost/seenthis/ecrire/?exec=config_contenu#configurer-redacteurs)
 => choisir "Accepter les inscriptions"
 
 ## gravatar:
-http://localhost/seenthis/ecrire/?exec=configurer_gravatar
+[http://localhost/seenthis/ecrire/?exec=configurer_gravatar](http://localhost/seenthis/ecrire/?exec=configurer_gravatar)
 => saisir 48 pour la dimension
 
 ## moteur de recherche fulltext:
