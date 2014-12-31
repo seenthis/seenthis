@@ -84,6 +84,8 @@ Si tout va bien, voici la liste des plugins présents :
 On active alors la connexion SQL du site SPIP :
 [http://localhost/seenthis/ecrire/](http://localhost/seenthis/ecrire/) (entrer le mot de passe SQL, créer la base, créer le premier compte utilisateur).
 
+**Important**: ne pas modifier le préfixe des tables (laisser la valeur par défaut `spip`).
+
 À noter : le compte id_auteur=3 est pris comme base pour la couleur des liens de la page d'accueil (cf. plugins/seenthis_squelettes/bonjour.html) ; tant qu'il n'existe pas, le site est un peu de guingois. => créer 2 autres auteurs, et nommer "seenthis" l'auteur numéro 3.
 
 Activer tous les plugins pré-cités, sauf :
