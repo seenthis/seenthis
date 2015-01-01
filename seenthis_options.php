@@ -108,7 +108,7 @@ function hierarchier_url($id_syndic) {
 // Effacer le microcache d'un message
 // - effacer message lui-même
 // - effacer le parent (c-a-dire fil de messages)
-function cache_message ($id_me, $id_parent = 0) {
+function cache_message($id_me, $id_parent = 0) {
 	spip_log("cache_message($id_me, $id_parent)", "cache");
 	
 	// Si on connait deja l'id_parent, pas besoin de boucle.
@@ -206,7 +206,7 @@ function cache_auteur($id_auteur) {
 	suivre_invalideur('*', true);
 }
 
-function cache_url ($id_syndic) {
+function cache_url($id_syndic) {
 	spip_log("cache_url ($id_syndic)", "cache");
 	supprimer_microcache($id_syndic, "noisettes/contenu_site");
 	supprimer_microcache($id_syndic, "noisettes/afficher_enfants_site");
@@ -299,14 +299,12 @@ function allonger_url($url) {
 	return $l;
 }
 
-function recuperer_contenu_site ($id_syndic, $url) {
+function recuperer_contenu_site($id_syndic, $url) {
 	include_spip("inc/distant");
 
 	// D'abord tester le nom du (futur) fichier local
 	// ce qui permet de ne travailler que sur le HTML
 	$local = fichier_copie_locale($url);
-	$recup = 0;
-	
 	if (!preg_match(",html$,", $local)) {
 		$recup = 2;
 	} else {
@@ -374,18 +372,13 @@ function recuperer_contenu_site ($id_syndic, $url) {
 
 				$recup = 1;
 
-				
 //				return "<h3>Langue: $lang - $dir</h3>$content";
 			} else {
 				$recup = 2;
 			}			
-			
-			
-			
 		} else {
 			$recup = 2;
 		}
-		
 	}
 
 	if ($recup == 1) {
@@ -429,12 +422,11 @@ function recuperer_contenu_site ($id_syndic, $url) {
 		);
 		return false;
 	} 
-	
 }
 
 
 /* cf sucrer_utm dans seenthis.js */
-function sucrer_utm ($url) {
+function sucrer_utm($url) {
 	if (is_array($url)) $url = $url[0];
 	
 	# twitter/#!/truc
