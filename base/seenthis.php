@@ -343,8 +343,8 @@ function seenthis_install($action,$prefix,$version_cible){
 }
 
 
-// champs extras pour afficher tous les champs supplŽmentaires d'un auteur
-// dans l'espace privŽ (si on active le plugin champ_extras :
+// champs extras pour afficher tous les champs supplÃ©mentaires d'un auteur
+// dans l'espace privÃ© (si on active le plugin champ_extras :
 // svn co svn://zone.spip.org/spip-zone/_plugins_/champs_extras/core/branches/v1/ champs_extras2/
 function seenthis_declarer_champs_extras($champs = array()){
 
@@ -354,7 +354,7 @@ function seenthis_declarer_champs_extras($champs = array()){
 		'label' => 'Licence', // chaine de langue 'prefix:cle'
 		'precisions' => '', // precisions sur le champ
 		'obligatoire' => false, // 'oui' ou '' (ou false)
-		'rechercher' => false, // false, ou true ou directement la valeur de ponderation (de 1 ˆ 8 generalement)
+		'rechercher' => false, // false, ou true ou directement la valeur de ponderation (de 1 Ã  8 generalement)
 		'type' => 'ligne', // type de saisie
 		'sql' => "varchar(10) DEFAULT 'C'", // declaration sql
 	));
@@ -366,8 +366,8 @@ function seenthis_declarer_champs_extras($champs = array()){
 		'label' => $c, // chaine de langue 'prefix:cle'
 		'precisions' => '', // precisions sur le champ
 		'obligatoire' => false, // 'oui' ou '' (ou false)
-		'rechercher' => false, // false, ou true ou directement la valeur de ponderation (de 1 ˆ 8 generalement)
-		'type' => 'checkbox', // type de saisie (checkbox existe pas mais on aura essayŽ : a affiche une ligne)
+		'rechercher' => false, // false, ou true ou directement la valeur de ponderation (de 1 Ã  8 generalement)
+		'type' => 'checkbox', // type de saisie (checkbox existe pas mais on aura essayÃ© : Ã§a affiche une ligne)
 		'sql' => "tinyint(1) NOT NULL", // declaration sql
 	));
 	}
@@ -379,8 +379,8 @@ function seenthis_declarer_champs_extras($champs = array()){
 		'label' => $c, // chaine de langue 'prefix:cle'
 		'precisions' => '', // precisions sur le champ
 		'obligatoire' => false, // 'oui' ou '' (ou false)
-		'rechercher' => false, // false, ou true ou directement la valeur de ponderation (de 1 ˆ 8 generalement)
-		'type' => 'checkbox', // type de saisie (checkbox existe pas mais on aura essayŽ : a affiche une ligne)
+		'rechercher' => false, // false, ou true ou directement la valeur de ponderation (de 1 Ã  8 generalement)
+		'type' => 'checkbox', // type de saisie (checkbox existe pas mais on aura essayÃ© : Ã§a affiche une ligne)
 		'sql' => "BIGINT(21)", // declaration sql
 	));
 	}
@@ -393,8 +393,8 @@ function seenthis_declarer_champs_extras($champs = array()){
 		'label' => $c, // chaine de langue 'prefix:cle'
 		'precisions' => '', // precisions sur le champ
 		'obligatoire' => false, // 'oui' ou '' (ou false)
-		'rechercher' => false, // false, ou true ou directement la valeur de ponderation (de 1 ˆ 8 generalement)
-		'type' => 'ligne', // type de saisie (checkbox existe pas mais on aura essayŽ : a affiche une ligne)
+		'rechercher' => false, // false, ou true ou directement la valeur de ponderation (de 1 Ã  8 generalement)
+		'type' => 'ligne', // type de saisie (checkbox existe pas mais on aura essayÃ© : Ã§a affiche une ligne)
 		'sql' => "VARCHAR(100) NOT NULL DEFAULT ''", // declaration sql
 	));
 	}
