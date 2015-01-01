@@ -1,10 +1,11 @@
 <?php
 
+/**
+ * Notifier appelé quand un auteur en suit un autre
+ * @param $id_auteur celui qui est suivi => celui à prévenir
+ * @param $id_follow celui qui suit
+ */
 function notifier_suivre_moi ($id_auteur, $id_follow) {
-	//mail_suivre_moi
-	// $id_auteur => celui qui est suivi => celui à prévenir
-	// $id_follow => celui qui suit
-
 	// verifier que l'on est bien suivi (cas à éviter : je clique par erreur
 	// sur "suivre @machin", puis je reclique pour ne plus le suivre)
 	if (!sql_countsel('spip_me_follow', 'id_follow='.sql_quote($id_follow).' AND id_auteur='.sql_quote($id_auteur))) {
@@ -64,8 +65,12 @@ function notifier_suivre_moi ($id_auteur, $id_follow) {
 	}
 }
 
+/**
+ * Notifier appelé quand un message a été modifié
+ * @param $id_me l'identifiant du message
+ * @param $id_parent l'identifiant du parent du message
+ */
 function notifier_me($id_me, $id_parent) {
-
 	$query = sql_select("id_auteur", "spip_me", "id_me=$id_me AND statut='publi'");
 	if ($row = sql_fetch($query)) {
 		$id_auteur_me = $row["id_auteur"];
@@ -172,8 +177,6 @@ function notifier_me($id_me, $id_parent) {
 			if ($id_parent > 0) $headers .= "In-Reply-To:<$id_parent@"._HOST.">\n";
 
 			$id_dest = join(",", $id_dest);
-
-			spip_log("$id_me($id_parent) : destinataires=$id_dest", 'notifier');
 
 			spip_log("$id_me($id_parent) : destinataires=$id_dest", 'notifier');
 

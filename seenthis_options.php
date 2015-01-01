@@ -109,7 +109,7 @@ function hierarchier_url($id_syndic) {
 // - effacer message lui-même
 // - effacer le parent (c-a-dire fil de messages)
 function cache_message ($id_me, $id_parent = 0) {
-	spip_log("cache_message ($id_me, $id_parent)", "cache");
+	spip_log("cache_message($id_me, $id_parent)", "cache");
 	
 	// Si on connait deja l'id_parent, pas besoin de boucle.
 	if ($id_parent < 1) {
@@ -691,25 +691,22 @@ function supprimer_titre($texte, $long) {
 	
 }
 
-
+/**
+ * Teste si un une option d'envo de mail est activé pour un auteur.
+ * Passe par un cache pour l'ensemble des valeurs.
+ * @param $id_auteur l'id de l'auteur
+ * @param $val le nom du paramètre
+ * @return un booléen qui indique le statut de l'option
+ */
 function tester_mail_auteur($id_auteur, $val) {
-	$ret = false;
-	
 	if (!(isset($GLOBALS["envoi_mail"]["$id_auteur"]))) {
 		$query = sql_select("mail_nouv_billet, mail_rep_moi, mail_rep_billet, mail_rep_conv, mail_suivre_moi, mail_mes_billets", "spip_auteurs", "id_auteur=$id_auteur");
 		if ($row = sql_fetch($query)) {
 			$GLOBALS["envoi_mail"]["$id_auteur"] = $row;
 		}
 	}
-	
 	$reponse = $GLOBALS["envoi_mail"]["$id_auteur"]["$val"];
-	
-	if ($reponse == 1)
-		$ret = true;
-	else
-		$ret = false;
-
-	return $ret;
+	return ($reponse == 1);
 }
 
 
@@ -795,7 +792,7 @@ function supprimer_background_favicon($texte) {
 }	
 
 // insertion ou modification en base d'un message
-function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0, $time="NOW()", $uuid=null){
+function instance_me($id_auteur = 0, $texte_message="", $id_me=0, $id_parent=0, $time="NOW()", $uuid=null){
 	include_spip('base/abstract_sql');
 
 	if ($id_auteur < 1) return false;
@@ -868,7 +865,6 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 		
 		$maj = 1;
 
-		
 		$query = sql_select("*", "spip_me", "id_me=$id_me");
 		if ($row = sql_fetch($query)) {
 			$id_parent = $row["id_parent"];
@@ -1005,7 +1001,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 			array($id_me, $id_parent),
 			"inc/seenthis_notifier",
 			true,
-			time() + (60 * 5) 
+			time() + (60 * 5)
 		);
 	}
 	
@@ -1013,7 +1009,7 @@ function instance_me ($id_auteur = 0, $texte_message="",  $id_me=0, $id_parent=0
 }
 
 function inserer_tags_liens($id_me) {
-	spip_log("inserer_tags_liens $id_me");
+	spip_log("inserer_tags_liens($id_me)");
 
 	$texte_message = texte_de_me($id_me);
 
