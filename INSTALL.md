@@ -42,6 +42,7 @@ svn co svn://zone.spip.org/spip-zone/_plugins_/iterateurs/ iterateurs/
 svn co svn://zone.spip.org/spip-zone/_plugins_/job_queue/ job_queue/
 svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/lien_court/branches/spip2/ lien_court/
 svn co svn://zone.spip.org/spip-zone/_plugins_/mediabox/ mediabox/
+svn co svn://zone.spip.org/spip-zone/_plugins_/memoization/ memoization/
 svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/microcache/ microcache/
 svn co svn://zone.spip.org/spip-zone/_plugins_/opensearch/ opensearch/
 svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/recuperer_favicon/ recuperer_favicon/
@@ -69,6 +70,7 @@ Si tout va bien, voici la liste des plugins présents :
 * job_queue
 * lien_court
 * mediabox
+* memoization
 * microcache
 * oembed
 * opensearch
