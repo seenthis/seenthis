@@ -229,7 +229,7 @@ function notifier_construire_texte($id_parent, $id_me) {
 		$max = 10000;
 
 	$blabla = "\n(... ".(count($conversation) - $max - 1)." messages...)\n\n";
-
+	$ret = '';
 	foreach ($conversation as $i=>$row) {
 		if ($i == 0 OR $i >= count($conversation) - $max) {
 			$nom_auteur = nom_auteur($row["id_auteur"]);

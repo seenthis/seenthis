@@ -188,8 +188,8 @@ function cache_auteur_fil($id_me) {
 	$query = sql_select("id_auteur, id_parent", "spip_me", "id_me=$id_me");
 	while ($row = sql_fetch($query)) {
 		$id_auteur = $row["id_auteur"];
+		$id_parent = $row["id_parent"];
 		cache_auteur($id_auteur);
-		
 		if ($id_parent > 0) cache_auteur_fil($id_parent);
 	}
 
@@ -305,8 +305,7 @@ function recuperer_contenu_site ($id_syndic, $url) {
 	// D'abord tester le nom du (futur) fichier local
 	// ce qui permet de ne travailler que sur le HTML
 	$local = fichier_copie_locale($url);
-	$recup = 0;
-	
+
 	if (!preg_match(",html$,", $local)) {
 		$recup = 2;
 	} else {
@@ -379,9 +378,7 @@ function recuperer_contenu_site ($id_syndic, $url) {
 			} else {
 				$recup = 2;
 			}			
-			
-			
-			
+
 		} else {
 			$recup = 2;
 		}
@@ -518,7 +515,6 @@ function fichier_logo_auteur($id_auteur, $avec_date = true) {
 
 
 
-
 function calculer_troll($id_auteur, $reseau = false) {
 	$troll_forcer = 0;
 	$query = sql_select("troll_forcer", "spip_auteurs", "id_auteur=$id_auteur");
@@ -528,6 +524,7 @@ function calculer_troll($id_auteur, $reseau = false) {
 	if ($troll_forcer >0) {
 		$total = $troll_forcer;
 	} else {
+		$total = 0;
 		$query = sql_select("auteur.id_auteur, auteur.troll, auteur.troll_forcer", "spip_auteurs as auteur LEFT JOIN spip_me_follow as follow ON follow.id_follow=auteur.id_auteur", "follow.id_auteur=$id_auteur");
 		while ($row = sql_fetch($query)) {
 			$id_follow = $row["id_auteur"];
@@ -539,8 +536,7 @@ function calculer_troll($id_auteur, $reseau = false) {
 			
 			$troll = max(70, ($troll - _TROLL_VAL)/20 );
 			
-			$total = $total + ($troll);
-			
+			$total += $troll;
 		}
 		
 		//$total = max(0, $total);
@@ -550,17 +546,11 @@ function calculer_troll($id_auteur, $reseau = false) {
 		while ($row = sql_fetch($query)) {
 			$id_blockeur = $row["id_auteur"];
 			$troll = afficher_troll($id_blockeur);
-			
 			$troll = max(70, ($troll - _TROLL_VAL)/20 );
-			
-			$total = $total - $troll;
-			
+			$total -= $troll;
 		}
-		
 
-		
 		$total = round($total);
-		
 		$total = max(0, $total);
 		$total = min($total, 6000);
 	}
@@ -654,7 +644,7 @@ function extraire_titre($texte, $long=100, $brut = false) {
 		else {
 				$texte_alt = preg_replace("/"._REG_URL."/ui", " ", $texte);
 				$texte_alt = preg_replace(",\ +,", " ", $texte_alt);
-				 $texte = $texte_alt;
+				$texte = $texte_alt;
 		}
 	} 
 
@@ -736,6 +726,7 @@ function indexer_me($id_ref) {
 	$query = sql_select("*", "spip_me", "(id_me=$id_ref OR id_parent=$id_ref) AND statut='publi'");
 	
 	$id_billets = false;
+	$ret = '';
 	
 	while($row = sql_fetch($query)) {
 		$id_me = $row["id_me"];
@@ -757,8 +748,7 @@ function indexer_me($id_ref) {
 		}
 		
 	}
-	
-	
+
 	if ($id_billets) {
 		foreach( sql_allfetsel("tag", "spip_me_tags", sql_in('id_me', $id_billets)." AND spip_me_tags.off='non' AND class!='url'") as $t) {
 			$tag = preg_replace(',^.*:,', '', $t['tag']);
@@ -779,9 +769,7 @@ function indexer_me($id_ref) {
 			"texte" => $ret
 		)
 	);
-		
-	
-	
+
 	return $id_ref;
 }
 
@@ -877,9 +865,6 @@ function instance_me($id_auteur = 0, $texte_message="", $id_me=0, $id_parent=0, 
 
 		cache_message($id_me, $id_parent);
 
-		$query = sql_query("DELETE FROM spip_me_syndic WHERE id_me=$id_me");
-		$query = sql_query("DELETE FROM spip_me_tags WHERE id_me=$id_me");
-
 		if ($id_parent > 0) {
 			$query_parent = sql_select("date", "spip_me", "id_me=$id_parent");
 			if ($row_parent= sql_fetch($query_parent)) {
@@ -896,7 +881,7 @@ function instance_me($id_auteur = 0, $texte_message="", $id_me=0, $id_parent=0, 
 				"id_parent" => $id_parent,
 				"date_parent" => "$date_parent",
 				"date_modif" => "NOW()",
-				"ip" => $adresse_ip,
+				"ip" => $ip,
 				"statut" => "publi"
 			),
 			"id_me=$id_me"
@@ -929,7 +914,7 @@ function instance_me($id_auteur = 0, $texte_message="", $id_me=0, $id_parent=0, 
 		// Indexer le contenu, dans une demi-heure
 		job_queue_add(
 			'indexer_me', 
-			'indexer message '.$p['id_parent'], 
+			'indexer message '.$id_parent,
 			array($id_parent),
 			"",
 			true,
@@ -979,18 +964,13 @@ function instance_me($id_auteur = 0, $texte_message="", $id_me=0, $id_parent=0, 
 	}
 
 
-	if ($id_parent > 0) $pave = $id_parent;
-	else $pave = $id_me;
-
 	// inserer_themes($id_me);
 
 	// indexer tout de suite
 	indexer_me($id_parent ? $id_parent : $id_me);
 
-
 	// inserer les tags
 	inserer_tags_liens($id_me);
-
 
 	// notifications 
 	// uniquement si nouveau message, et si ça n'est pas une «archive» (delicious notamment)
@@ -1016,7 +996,6 @@ function inserer_tags_liens($id_me) {
 	$t = sql_fetsel('uuid,date', 'spip_me', 'id_me='.$id_me);
 	$uuid = $t['uuid'];
 	$date = $t['date'];
-
 
 	// Extraire les tags
 
