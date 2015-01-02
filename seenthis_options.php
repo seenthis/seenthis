@@ -448,13 +448,13 @@ function sucrer_utm ($url) {
 	
 }
 
-
+/**
+ * Aller chercher le texte d'un id_me dans la table spip_me_texte
+ * Stocker le résultat, parce qu'utilisé plusieurs fois dans le même script.
+ * @param $id_me string l'id du message
+ * @return string le texte du message
+ */
 function texte_de_me($id_me) {
-	// Aller chercher le texte d'un id_me
-	// dans la table spip_me_texte
-	// 
-	// Stocker le résultat, parce qu'utilisé plusieurs fois dans le même script
-
 	if ($GLOBALS["texte_de_id_me"]["$id_me"]) return $GLOBALS["texte_de_id_me"]["$id_me"];
 
 	$query = sql_select("texte", "spip_me_texte", "id_me=$id_me");
@@ -682,11 +682,11 @@ function supprimer_titre($texte, $long) {
 }
 
 /**
- * Teste si un une option d'envo de mail est activé pour un auteur.
+ * Teste si un une option d'envoi de mail est activée pour un auteur
  * Passe par un cache pour l'ensemble des valeurs.
- * @param $id_auteur l'id de l'auteur
- * @param $val le nom du paramètre
- * @return un booléen qui indique le statut de l'option
+ * @param $id_auteur string l'id de l'auteur
+ * @param $val string le nom du paramètre
+ * @return boolean le statut de l'option
  */
 function tester_mail_auteur($id_auteur, $val) {
 	if (!(isset($GLOBALS["envoi_mail"]["$id_auteur"]))) {
@@ -701,6 +701,12 @@ function tester_mail_auteur($id_auteur, $val) {
 
 
 $GLOBALS["nom_auteur"] = array();
+
+/**
+ * Récupère le nom formatté d'un auteur en utilisant un cache
+ * @param $id_auteur string l'id de l'auteur
+ * @return string le nom de l'auteur
+ */
 function nom_auteur($id_auteur) {
 	if ($GLOBALS["nom_auteur"]["$id_auteur"]) return $GLOBALS["nom_auteur"]["$id_auteur"];
 	
@@ -708,14 +714,19 @@ function nom_auteur($id_auteur) {
 	if ($row_auteur = sql_fetch($query_auteur)) {
 		$nom_auteur = trim($row_auteur["nom"]);
 		$login_auteur = trim($row_auteur["login"]);
+		$GLOBALS["nom_auteur"]["$id_auteur"] = "$nom_auteur (@$login_auteur)";
+	} else {
+		$GLOBALS["nom_auteur"]["$id_auteur"] = "<INCONNU>";
 	}
-
-	$GLOBALS["nom_auteur"]["$id_auteur"] = "$nom_auteur (@$login_auteur)";
 	return $GLOBALS["nom_auteur"]["$id_auteur"];
 }
 
 
-// titre = premiere ligne non vide, tronquer a 20 mots
+/**
+ * Extrait le titre d'un message, premiere ligne non vide, tronquer a 20 mots
+ * @param $texte string le texte du message
+ * @return string le titre
+ */
 function seenthis_titre_me($texte) {
 	$titre = array_filter(array_map('trim',explode("\n", $texte)));
 	$titre = join(' ', array_slice(array_filter(explode(' ',array_shift($titre))), 0,20));
