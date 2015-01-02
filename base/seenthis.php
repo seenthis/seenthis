@@ -134,7 +134,9 @@ function seenthis_declarer_tables_principales($tables_principales){
 	$auteurs['field']['troll_forcer'] = "bigint(21) DEFAULT NULL";
 	$auteurs['field']['copyright'] = "varchar(10) NOT NULL DEFAULT 'C'";
 	$auteurs['field']['mail_nouv_billet'] = "tinyint(1) NOT NULL DEFAULT '1'";
+	$auteurs['field']['mail_partage'] = "tinyint(1) NOT NULL DEFAULT '0'";
 	$auteurs['field']['mail_rep_moi'] = "tinyint(1) NOT NULL DEFAULT '1'";
+	$auteurs['field']['mail_rep_partage'] = "tinyint(1) NOT NULL DEFAULT '1'";
 	$auteurs['field']['mail_rep_billet'] = "tinyint(1) NOT NULL DEFAULT '0'";
 	$auteurs['field']['mail_rep_conv'] = "tinyint(1) NOT NULL DEFAULT '0'";
 	$auteurs['field']['mail_suivre_moi'] = "tinyint(1) NOT NULL DEFAULT '1'";
@@ -305,6 +307,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 			// en 1.1.3, ajouter la key(id_me) sur spip_me_tags
 			#if (version_compare($current_version,"1.1.2",'<')){}
 			ecrire_meta($nom_meta_base_version,$current_version=$version_cible,'non');
+
 		}
 
 	}
@@ -359,7 +362,7 @@ function seenthis_declarer_champs_extras($champs = array()){
 		'sql' => "varchar(10) DEFAULT 'C'", // declaration sql
 	));
 
-	foreach (explode(' ', 'mail_nouv_billet mail_rep_moi mail_rep_billet mail_rep_conv mail_suivre_moi mail_mes_billets') as $c) {
+	foreach (explode(' ', 'mail_nouv_billet mail_partage mail_rep_moi mail_rep_partage mail_rep_billet mail_rep_conv mail_suivre_moi mail_mes_billets') as $c) {
 	$champs[] = new ChampExtra(array(
 		'table' => 'auteur', // sur quelle table ?
 		'champ' => $c, // nom sql

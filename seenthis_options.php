@@ -613,9 +613,9 @@ function ajouter_embed($texte) {
 
 /* retransformer la version HTML d'un message en un texte utilisable sous ATOM (atom_me.html) ou par email (seenthis_notifier.php) */
 function message_texte($texte) {
+	include_spip("inc/filtres_mini");
 	$texte = liens_absolus($texte);
-	
-	
+
 	$texte = str_replace("<br />", "\n", $texte);
 	$texte = str_replace("►", "", $texte);
 	$texte = str_replace("▻", "", $texte);
@@ -690,7 +690,10 @@ function supprimer_titre($texte, $long) {
  */
 function tester_mail_auteur($id_auteur, $val) {
 	if (!(isset($GLOBALS["envoi_mail"]["$id_auteur"]))) {
-		$query = sql_select("mail_nouv_billet, mail_rep_moi, mail_rep_billet, mail_rep_conv, mail_suivre_moi, mail_mes_billets", "spip_auteurs", "id_auteur=$id_auteur");
+		$query = sql_select(
+			"mail_nouv_billet, mail_partage, mail_rep_moi, mail_rep_partage, mail_rep_billet, mail_rep_conv, mail_suivre_moi, mail_mes_billets",
+			"spip_auteurs",
+			"id_auteur=$id_auteur");
 		if ($row = sql_fetch($query)) {
 			$GLOBALS["envoi_mail"]["$id_auteur"] = $row;
 		}
