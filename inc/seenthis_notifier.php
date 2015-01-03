@@ -55,7 +55,7 @@ function notifier_partage($id_auteur_partage, $id_me) {
 
 	if ($lang == "en") {
 		$titre_mail = _L("$nom_aut_partage (@$login_aut_partage) has shared one of your posts on $seenthis.");
-		$annonce = _L("Hi $nom_dest,\n\n$nom_aut_partage (@$login_aut_partage) has shared oe of your posts on $seenthis.");
+		$annonce = _L("Hi $nom_dest,\n\n$nom_aut_partage (@$login_aut_partage) has shared one of your posts on $seenthis.");
 	} else {
 		$titre_mail = _L("$nom_aut_partage (@$login_aut_partage) a partagé un de vos billets sur $seenthis.");
 		$annonce = _L("Bonjour $nom_dest,\n\n$nom_aut_partage (@$login_aut_partage) a partagé un de vos billets sur $seenthis.");
