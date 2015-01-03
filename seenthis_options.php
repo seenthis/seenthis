@@ -1014,11 +1014,12 @@ function inserer_tags_liens($id_me) {
 	// Extraire les tags
 
 	// 1. Virer les liens hypertexte (qui peuvent contenir une chaîne #ancre)
+	//    et nettoyer les anciens tags
 	$message_off = preg_replace("/"._REG_URL."/ui", "", $texte_message);
+	sql_delete('spip_me_tags', 'uuid='.sql_quote($uuid).' AND class IN ("#","url")');
 
-	// 2. Noter les tags dans la base
+	// 2. Noter les #tags dans la base
 	if (preg_match_all("/"._REG_HASH."/ui", $message_off, $regs)) {
-		sql_delete('spip_me_tags', 'uuid='.sql_quote($uuid).' AND class="#"');
 		foreach(array_unique(array_values($regs[0])) as $tag) {
 			sql_insertq('spip_me_tags', array(
 				'id_me' => $id_me,
@@ -1031,20 +1032,24 @@ function inserer_tags_liens($id_me) {
 	}
 	
 	// Extraire les liens et fabriquer des spip_syndic
-	preg_match_all("/"._REG_URL."/ui", $texte_message, $regs);
-	if ($regs) {
+	if (preg_match_all("/"._REG_URL."/ui", $texte_message, $regs)) {
 		foreach ($regs[0] as $k=>$url) {
 		
 			// Supprimer parenthese fermante finale si pas de parenthese ouvrante dans l'URL
 			if (preg_match(",\)$,", $url) && !preg_match(",\(,", $url)) {
 				$url = preg_replace(",\)$,", "", $url);
 			}
-		
 			$url = preg_replace(",/$,", "", $url);
-						
-		
-			if (!$deja_vu["url"][$url]) {
 
+			sql_insertq("spip_me_tags", array(
+				"id_me" => $id_me,
+				'uuid' => $uuid,
+				"tag" => $url,
+				"class" => 'url',
+				"date" => $date
+			));
+
+			if (!$deja_vu["url"][$url]) {
 
 				$query = sql_query($a = "SELECT id_syndic FROM spip_syndic WHERE url_site=".sql_quote($url));
 				if ($row = sql_fetch($query)) {
@@ -1081,13 +1086,6 @@ function inserer_tags_liens($id_me) {
 				sql_insertq("spip_me_syndic", array(
 					"id_me" => $id_me,
 					"id_syndic" => $id_syndic
-				));
-				sql_insertq("spip_me_tags", array(
-					"id_me" => $id_me,
-					'uuid' => $uuid,
-					"tag" => $url,
-					"class" => 'url',
-					"date" => 'NOW()'
 				));
 				// Hierarchiser l'URL
 				hierarchier_url($id_syndic);
