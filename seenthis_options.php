@@ -1017,6 +1017,9 @@ function inserer_tags_liens($id_me) {
 	//    et nettoyer les anciens tags
 	$message_off = preg_replace("/"._REG_URL."/ui", "", $texte_message);
 	sql_delete('spip_me_tags', 'uuid='.sql_quote($uuid).' AND class IN ("#","url")');
+	sql_delete("spip_me_syndic",
+		"id_me=".sql_quote($id_me) . " AND id_syndic=" . sql_quote($id_syndic)
+	);
 
 	// 2. Noter les #tags dans la base
 	if (preg_match_all("/"._REG_HASH."/ui", $message_off, $regs)) {
@@ -1081,14 +1084,18 @@ function inserer_tags_liens($id_me) {
 							"date" => "NOW()"
 					));
 					job_queue_add('recuperer_contenu_site', 'récupérer_contenu_site '.$url, array($id_syndic, "$url"));
+
+					// Hierarchiser l'URL
+					hierarchier_url($id_syndic);
 				}
+
 				// echo "<li>$id_syndic - $url</li>";
 				sql_insertq("spip_me_syndic", array(
 					"id_me" => $id_me,
-					"id_syndic" => $id_syndic
+					"id_syndic" => $id_syndic,
+					"date" => 'NOW()'
 				));
-				// Hierarchiser l'URL
-				hierarchier_url($id_syndic);
+
 				$deja_vu["url"][$url] = true;
 			}
 		}
