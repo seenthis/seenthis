@@ -1017,9 +1017,7 @@ function inserer_tags_liens($id_me) {
 	//    et nettoyer les anciens tags
 	$message_off = preg_replace("/"._REG_URL."/ui", "", $texte_message);
 	sql_delete('spip_me_tags', 'uuid='.sql_quote($uuid).' AND class IN ("#","url")');
-	sql_delete("spip_me_syndic",
-		"id_me=".sql_quote($id_me) . " AND id_syndic=" . sql_quote($id_syndic)
-	);
+	sql_delete("spip_me_syndic", "id_me=".sql_quote($id_me));
 
 	// 2. Noter les #tags dans la base
 	if (preg_match_all("/"._REG_HASH."/ui", $message_off, $regs)) {
