@@ -134,7 +134,9 @@ function seenthis_declarer_tables_principales($tables_principales){
 	$auteurs['field']['troll_forcer'] = "bigint(21) DEFAULT NULL";
 	$auteurs['field']['copyright'] = "varchar(10) NOT NULL DEFAULT 'C'";
 	$auteurs['field']['mail_nouv_billet'] = "tinyint(1) NOT NULL DEFAULT '1'";
+	$auteurs['field']['mail_partage'] = "tinyint(1) NOT NULL DEFAULT '0'";
 	$auteurs['field']['mail_rep_moi'] = "tinyint(1) NOT NULL DEFAULT '1'";
+	$auteurs['field']['mail_rep_partage'] = "tinyint(1) NOT NULL DEFAULT '1'";
 	$auteurs['field']['mail_rep_billet'] = "tinyint(1) NOT NULL DEFAULT '0'";
 	$auteurs['field']['mail_rep_conv'] = "tinyint(1) NOT NULL DEFAULT '0'";
 	$auteurs['field']['mail_suivre_moi'] = "tinyint(1) NOT NULL DEFAULT '1'";
@@ -248,7 +250,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	if ((!isset($GLOBALS['meta'][$nom_meta_base_version]) )
 	|| (($current_version = $GLOBALS['meta'][$nom_meta_base_version])!=$version_cible)){
 		include_spip('base/abstract_sql');
-		if (version_compare($current_version,"1.1.3",'<')){
+		if (version_compare($current_version,"1.1.4",'<')){
 			include_spip('base/serial');
 			include_spip('base/auxiliaires');
 			include_spip('base/create');
@@ -303,8 +305,16 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 			#if (version_compare($current_version,"1.1.2",'<')){}
 
 			// en 1.1.3, ajouter la key(id_me) sur spip_me_tags
-			#if (version_compare($current_version,"1.1.2",'<')){}
+			#if (version_compare($current_version,"1.1.3",'<')){}
+
+			// en 1.1.4, poser mail_partage=0 (c'est nouveau)
+			// et mail_rep_partage = mail_rep_moi (c'était confondu)
+			// cf. https://github.com/seenthis/seenthis/pull/7
+			if (version_compare($current_version,"1.1.4",'<')){
+				sql_query("UPDATE spip_auteurs SET mail_partage=0, mail_rep_partage = mail_rep_moi");
+			}
 			ecrire_meta($nom_meta_base_version,$current_version=$version_cible,'non');
+
 		}
 
 	}
@@ -359,7 +369,7 @@ function seenthis_declarer_champs_extras($champs = array()){
 		'sql' => "varchar(10) DEFAULT 'C'", // declaration sql
 	));
 
-	foreach (explode(' ', 'mail_nouv_billet mail_rep_moi mail_rep_billet mail_rep_conv mail_suivre_moi mail_mes_billets') as $c) {
+	foreach (explode(' ', 'mail_nouv_billet mail_partage mail_rep_moi mail_rep_partage mail_rep_billet mail_rep_conv mail_suivre_moi mail_mes_billets') as $c) {
 	$champs[] = new ChampExtra(array(
 		'table' => 'auteur', // sur quelle table ?
 		'champ' => $c, // nom sql
