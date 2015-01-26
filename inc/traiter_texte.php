@@ -219,6 +219,10 @@ function _traiter_lien ($regs) {
 	}
 
 	
+	# urls inacceptables : numeriques, localhost
+	if (preg_match(',^(ftp|https?)://((\d+\.)*\d+|localhost)(/.*)?$,i', $lien))
+		return $lien;
+
 	$le_lien = _creer_lien_riche($lien);
 	
 	$GLOBALS["num_lien"] ++;
