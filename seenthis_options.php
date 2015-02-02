@@ -632,53 +632,78 @@ function message_texte($texte) {
 	return trim($texte);
 }
 
-
-function extraire_titre($texte, $long=100, $brut = false) {
+/**
+ * Extrait un morceau de texte
+ * @param string $texte le texte du message
+ * @param int $longueur_titre longueur du titre
+ * @param int $longueur_cible longueur cible de l'extrait
+ * @param $avant boolean si on veut le texte avant ou après
+ * @return string
+ */
+function extraire_morceau_texte($texte, $longueur_titre = 100, $longueur_cible, $avant = true) {
 	$texte = preg_replace(",([\t\r\n\ ]+),", " ", $texte);
 	$texte = preg_replace(",\ +,", " ", $texte);
+	// vire les hash et les @
 	$texte = preg_replace("/(#|@)/", "", $texte);
 
-	if (preg_match("/"._REG_URL."/ui", $texte, $regs, PREG_OFFSET_CAPTURE)) {
+	if (preg_match("/" . _REG_URL . "/ui", $texte, $regs, PREG_OFFSET_CAPTURE)) {
 		$premier_lien = $regs[0][1];
-		if ($premier_lien > 10) $texte = substr($texte, 0, $premier_lien);
-		else {
-				$texte_alt = preg_replace("/"._REG_URL."/ui", " ", $texte);
-				$texte_alt = preg_replace(",\ +,", " ", $texte_alt);
-				$texte = $texte_alt;
-		}
-	} 
-
-
-	if (mb_strlen($texte, "utf-8") > $long) {
-		$texte = mb_substr($texte, 0, $long, "utf-8");
-		$pos = mb_strrpos($texte, " ", "utf-8");
-		
-		if ($pos > 5 && !$brut) {
-			$texte = mb_substr($texte, 0, $pos, "utf-8");
-			if (!$brut) $texte .= "…";
+		if ($premier_lien > 10) {
+			$texte = substr($texte, 0, $premier_lien);
+		} else {
+			$texte_alt = preg_replace("/" . _REG_URL . "/ui", " ", $texte);
+			$texte_alt = preg_replace(",\ +,", " ", $texte_alt);
+			$texte = $texte_alt;
 		}
 	}
-	
-	
-	
+
+	if (mb_strlen($texte, "utf-8") > $longueur_titre) {
+		$texte_coupe = mb_substr($texte, 0, $longueur_titre, "utf-8");
+		$position_dernier_espace = mb_strrpos($texte_coupe, " ", "utf-8");
+		if ($position_dernier_espace > 5) {
+			if ($avant) {
+				$texte_extrait = mb_substr($texte, 0, $position_dernier_espace, "utf-8") . "…";
+			} else {
+				$texte_extrait = mb_substr($texte, $position_dernier_espace, null, "utf-8");
+			}
+		} else {
+			if ($avant) {
+				$texte_extrait = $texte_coupe;
+			} else {
+				$texte_extrait = mb_substr($texte, $longueur_titre, null, "utf-8");
+			}
+		}
+	} else {
+		if ($avant) {
+			$texte_extrait = $texte;
+		} else {
+			$texte_extrait = "";
+		}
+	}
 	include_spip("inc/filtres");
 	include_spip("inc/texte");
-	if (!$brut) return textebrut(typo(couper($texte,140)));
-	else return $texte;
+	return textebrut(typo(couper($texte_extrait, $longueur_cible)));
 }
 
-function supprimer_titre($texte, $long) {
-	$texte = preg_replace(",([\t\r\n\ ]+),", " ", $texte);
-	$texte = preg_replace(",\ +,", " ", $texte);
-	$texte = preg_replace("/(#|@)/", "", $texte);
+/**
+ * Extrait le titre d'un texte
+ * @param string $texte le texte initial
+ * @param int $longueur la taille à récupérer
+ * @return string le contenu extrait
+ */
+function extraire_titre($texte, $longueur=100) {
+	return extraire_morceau_texte($texte, $longueur, 140, true);
+}
 
-	$texte = textebrut($texte);
-	$titre = extraire_titre($texte, $long, true);
-
-	$texte = str_replace("$titre", "", $texte);
-
-	return trim($texte);
-	
+/**
+ * Supprimer le titre d'un texte
+ * @param string $texte le texte initial
+ * @param int $longueur_titre la longueur du titre
+ * @param int $longueur_cible la longueur du texte à extraire
+ * @return string le résultat
+ */
+function supprimer_titre($texte, $longueur_titre = 100, $longueur_cible = 256) {
+	return extraire_morceau_texte($texte, $longueur_titre, $longueur_cible, false);
 }
 
 /**
