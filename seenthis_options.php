@@ -197,6 +197,7 @@ function cache_auteur_fil($id_me) {
 
 function cache_auteur($id_auteur) {
 	spip_log("cache_auteur($id_auteur)", "cache");
+    supprimer_microcache($id_auteur, "noisettes/afficher_un_auteur");
 	supprimer_microcache($id_auteur, "noisettes/contenu_auteur");
 	supprimer_microcache($id_auteur, "noisettes/contenu_page_tags");
 	supprimer_microcache($id_auteur, "noisettes/atom_messages_auteur");
@@ -234,6 +235,8 @@ function nettoyer_nom_auteur($id_auteur) {
 function nettoyer_logo_auteur($id_auteur) {
 	cache_auteur($id_auteur);
 
+	supprimer_microcache($id_auteur, "noisettes/image_logo_auteur");
+	supprimer_microcache($id_auteur, "noisettes/image_logo_auteur_small");
 	supprimer_microcache($id_auteur, "noisettes/message_logo_auteur");
 	supprimer_microcache($id_auteur, "noisettes/message_logo_auteur_small");
 	supprimer_microcache($id_auteur, "noisettes/message_logo_auteur_small_nofollow");
