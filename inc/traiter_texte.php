@@ -48,7 +48,7 @@ function _traiter_people ($regs) {
 		WHERE login=".sql_quote(mb_strtolower($tag,'UTF8'))
 			." AND statut!='5poubelle'");
 	if ($k = sql_fetch($query)) {
-		$GLOBALS['destinataires'][] = microcache($k['id_auteur'], 'noisettes/message_logo_auteur_small');
+		$GLOBALS['destinataires'][] = microcache($k['id_auteur'], 'noisettes/logo_auteur/message_logo_auteur_small');
 		$url = 'people/'.urlencode_1738_plus(mb_strtolower($k['login'],'UTF8'));
 
 		$res = "<span class='lien_people'>@<a href='$url'>$tag</a></span>";

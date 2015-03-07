@@ -119,18 +119,18 @@ function cache_message($id_me, $id_parent = 0) {
 		}
 	}
 
-	supprimer_microcache($id_me, "noisettes/atom_me");
+	supprimer_microcache($id_me, "noisettes/atom/atom_me");
 	supprimer_microcache($id_me, "noisettes/afficher_me_xml");
-	supprimer_microcache($id_me, "noisettes/atom_me_tw");
+	supprimer_microcache($id_me, "noisettes/atom/atom_me_tw");
 
-	supprimer_microcache($id_me, "noisettes/afficher_message");
+	supprimer_microcache($id_me, "noisettes/message/afficher_message");
 	supprimer_microcache($id_me, "noisettes/message_texte");
 
 
 	// Pas de noisettes pour id_parent 0.
 	if ($id_parent > 0) {
 		$id_share = $id_parent;
-		supprimer_microcache($id_parent, "noisettes/afficher_message");
+		supprimer_microcache($id_parent, "noisettes/message/afficher_message");
 		cache_mot_fil ($id_parent);
 		cache_auteur_fil($id_parent);
 
@@ -198,9 +198,9 @@ function cache_auteur_fil($id_me) {
 function cache_auteur($id_auteur) {
 	spip_log("cache_auteur($id_auteur)", "cache");
     supprimer_microcache($id_auteur, "noisettes/afficher_un_auteur");
-	supprimer_microcache($id_auteur, "noisettes/contenu_auteur");
-	supprimer_microcache($id_auteur, "noisettes/contenu_page_tags");
-	supprimer_microcache($id_auteur, "noisettes/atom_messages_auteur");
+	supprimer_microcache($id_auteur, "noisettes/contenu/contenu_auteur");
+	supprimer_microcache($id_auteur, "noisettes/contenu/contenu_page_tags");
+	supprimer_microcache($id_auteur, "noisettes/atom/atom_messages_auteur");
 
 	# invalider les caches normaux de SPIP
 	include_spip('inc/invalideur');
@@ -209,7 +209,7 @@ function cache_auteur($id_auteur) {
 
 function cache_url($id_syndic) {
 	spip_log("cache_url ($id_syndic)", "cache");
-	supprimer_microcache($id_syndic, "noisettes/contenu_site");
+	supprimer_microcache($id_syndic, "noisettes/contenu/contenu_site");
 	supprimer_microcache($id_syndic, "noisettes/afficher_enfants_site");
 }
 
@@ -235,11 +235,11 @@ function nettoyer_nom_auteur($id_auteur) {
 function nettoyer_logo_auteur($id_auteur) {
 	cache_auteur($id_auteur);
 
-	supprimer_microcache($id_auteur, "noisettes/image_logo_auteur");
-	supprimer_microcache($id_auteur, "noisettes/image_logo_auteur_small");
-	supprimer_microcache($id_auteur, "noisettes/message_logo_auteur");
-	supprimer_microcache($id_auteur, "noisettes/message_logo_auteur_small");
-	supprimer_microcache($id_auteur, "noisettes/message_logo_auteur_small_nofollow");
+	supprimer_microcache($id_auteur, "noisettes/logo_auteur/image_logo_auteur");
+	supprimer_microcache($id_auteur, "noisettes/logo_auteur/image_logo_auteur_small");
+	supprimer_microcache($id_auteur, "noisettes/logo_auteur/message_logo_auteur");
+	supprimer_microcache($id_auteur, "noisettes/logo_auteur/message_logo_auteur_small");
+	supprimer_microcache($id_auteur, "noisettes/logo_auteur/message_logo_auteur_small_nofollow");
 	
 	$query = sql_select("id_me", "spip_me", "id_auteur=$id_auteur");
 	while ($row = sql_fetch($query)) {
