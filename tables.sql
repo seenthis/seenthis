@@ -429,6 +429,7 @@ CREATE TABLE IF NOT EXISTS `spip_me_share` (
   `id_me` bigint(20) NOT NULL,
   `id_auteur` bigint(20) NOT NULL,
   `date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  UNIQUE KEY `spip_me_share_unique` (`id_me`,`id_auteur`),
   KEY `id_me` (`id_me`),
   KEY `id_auteur` (`id_auteur`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
