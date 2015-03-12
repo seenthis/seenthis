@@ -318,6 +318,11 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 			if (version_compare($current_version,"1.1.5",'<')){
 				sql_query("ALTER IGNORE TABLE spip_me_share ADD UNIQUE INDEX spip_me_share_unique (id_me, id_auteur)");
 			}
+
+			// en 1.1.6, ajouter une clé sur spip_me_tags
+			if (version_compare($current_version,"1.1.6",'<')){
+				sql_query("ALTER TABLE spip_me_tags ADD INDEX spip_me_tags_index_tags (class, tag(255))");
+			}
 			ecrire_meta($nom_meta_base_version,$current_version=$version_cible,'non');
 
 		}
