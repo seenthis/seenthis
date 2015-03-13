@@ -250,7 +250,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	if ((!isset($GLOBALS['meta'][$nom_meta_base_version]) )
 	|| (($current_version = $GLOBALS['meta'][$nom_meta_base_version])!=$version_cible)){
 		include_spip('base/abstract_sql');
-		if (version_compare($current_version,"1.1.5",'<')){
+		if (version_compare($current_version,"1.1.6",'<')){
 			include_spip('base/serial');
 			include_spip('base/auxiliaires');
 			include_spip('base/create');
@@ -317,6 +317,11 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 			// en 1.1.5, ajouter une clé unique sur spip_me_share en supprimant les doublons
 			if (version_compare($current_version,"1.1.5",'<')){
 				sql_query("ALTER IGNORE TABLE spip_me_share ADD UNIQUE INDEX spip_me_share_unique (id_me, id_auteur)");
+			}
+
+			// en 1.1.6, ajouter une clé sur spip_me_tags
+			if (version_compare($current_version,"1.1.6",'<')){
+				sql_query("ALTER TABLE spip_me_tags ADD INDEX spip_me_tags_index_tags (class, tag(255))");
 			}
 			ecrire_meta($nom_meta_base_version,$current_version=$version_cible,'non');
 

@@ -452,6 +452,27 @@ CREATE TABLE IF NOT EXISTS `spip_me_syndic` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `spip_me_tags`
+--
+
+CREATE TABLE `spip_me_tags` (
+  `id_me` bigint(21) NOT NULL DEFAULT '0',
+  `uuid` char(36) NOT NULL DEFAULT '',
+  `tag` text NOT NULL,
+  `class` char(6) NOT NULL DEFAULT '',
+  `date` datetime NOT NULL default '0000-00-00 00:00:00' on update CURRENT_TIMESTAMP,
+  `relevance` int(11) NOT NULL,
+  `off` char(3) NOT NULL DEFAULT 'non',
+  KEY `uuid` (`uuid`),
+  KEY `date` (`date`),
+  KEY `id_me` (`id_me`),
+  KEY `tag` (`tag`(60)),
+  KEY `spip_me_tags_index_tags` (`class`,`tag`(255))
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `spip_mots`
 --
 
