@@ -324,13 +324,14 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 			if (version_compare($current_version,"1.1.6",'<')){
 				sql_query("ALTER TABLE spip_me_tags ADD INDEX spip_me_tags_index_tags (class, tag(255))");
 			}
-			ecrire_meta($nom_meta_base_version,$current_version=$version_cible,'non');
 
 			// en 1.1.7, ajouter une colonne liens_partage
 			if (version_compare($current_version,"1.1.7",'<')){
-				sql_query("ALTER TABLE spip_auteurs ADD COLUMN liens_partage tinyint(1) NOT NULL default '0'");
 				sql_query("UPDATE spip_auteurs SET liens_partage = 1");
 			}
+
+			ecrire_meta($nom_meta_base_version,$current_version=$version_cible,'non');
+
 		}
 
 	}
