@@ -144,7 +144,8 @@ function seenthis_declarer_tables_principales($tables_principales){
 	$auteurs['field']['twitter'] = "varchar(100) NOT NULL DEFAULT ''";
 	$auteurs['field']['facebook'] = "varchar(100) NOT NULL DEFAULT ''";
 	$auteurs['field']['gplus'] = "varchar(100) NOT NULL DEFAULT ''";
-	$auteurs['field']['liens_partage'] = "tinyint(1) NOT NULL DEFAULT '0'";
+	$auteurs['field']['liens_partage_fb'] = "tinyint(1) NOT NULL DEFAULT '0'";
+	$auteurs['field']['liens_partage_tw'] = "tinyint(1) NOT NULL DEFAULT '0'";
 
 	// ajouts dans spip_syndic
 	$syndic = &$tables_principales['spip_syndic'];
@@ -325,9 +326,9 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 				sql_query("ALTER TABLE spip_me_tags ADD INDEX spip_me_tags_index_tags (class, tag(255))");
 			}
 
-			// en 1.1.7, ajouter une colonne liens_partage
+			// en 1.1.7, ajouter les colonne liens_partage_fb et liens_partage_tw
 			if (version_compare($current_version,"1.1.7",'<')){
-				sql_query("UPDATE spip_auteurs SET liens_partage = 1");
+				sql_query("UPDATE spip_auteurs SET liens_partage_fb = 1, liens_partage_tw = 1");
 			}
 
 			ecrire_meta($nom_meta_base_version,$current_version=$version_cible,'non');
@@ -386,7 +387,7 @@ function seenthis_declarer_champs_extras($champs = array()){
 		'sql' => "varchar(10) DEFAULT 'C'", // declaration sql
 	));
 
-	foreach (explode(' ', 'mail_nouv_billet mail_partage mail_rep_moi mail_rep_partage mail_rep_billet mail_rep_conv mail_suivre_moi mail_mes_billets liens_partage') as $c) {
+	foreach (explode(' ', 'mail_nouv_billet mail_partage mail_rep_moi mail_rep_partage mail_rep_billet mail_rep_conv mail_suivre_moi mail_mes_billets liens_partage_fb liens_partage_tw') as $c) {
 	$champs[] = new ChampExtra(array(
 		'table' => 'auteur', // sur quelle table ?
 		'champ' => $c, // nom sql
