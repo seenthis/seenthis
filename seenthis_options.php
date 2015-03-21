@@ -435,20 +435,27 @@ function recuperer_contenu_site($id_syndic, $url) {
 
 /* cf sucrer_utm dans seenthis.js */
 function sucrer_utm($url) {
-	if (is_array($url)) $url = $url[0];
+	if (is_array($url)) {
+		$url = $url[0];
+	}
 	
 	# twitter/#!/truc
 	$url = preg_replace(",https?://twitter.com/#!/,", "http://twitter.com/", $url);
 
-	# utm_xxx =
+	# &utm_xxx =
 	$url = preg_replace(",([\?\&]|\&amp;)utm\_.*,", "", $url);
 
 	# #.UQk2gR0q7bM mais pas #.jpg
-	if (!preg_match(',\.(jpe?g|png|gif|svg|mp3)$,', $url))
+	if (!preg_match(',\.(jpe?g|png|gif|svg|mp3)$,', $url)){
 		$url = preg_replace(",#\..*$,", "", $url);
+	}
+
+	# remplace les points à la fin par des %2E
+	if(preg_match('/^(.+?)(\.+)$/', $url, $matches)) {
+		$url = $matches[1] . str_repeat('%2E', strlen($matches[2]));
+	}
 
 	return $url;
-	
 }
 
 /**
