@@ -185,9 +185,13 @@ function _creer_lien_riche($lien) {
 	$intitule = sucrer_utm(lien_court($lien, 45));
 
 	if (function_exists('recuperer_favicon')) {
-		$favicon = recuperer_favicon($lien_or);
+		$favicon_file_path = recuperer_favicon($lien_or);
 		// Si modif, penser à modifier aussi la fonction supprimer_background_favicon
-		if ($favicon) $style = " style='background-image:url($favicon);'";
+		if ($favicon_file_path) {
+			$favicon_type = pathinfo($favicon_file_path, PATHINFO_EXTENSION);
+			$favicon_data = base64_encode(file_get_contents($favicon_file_path));
+			$style = " style='background-image:url(data:image/$favicon_type;base64,$favicon_data);'";
+		}
 	}
 
 	$lien_or = urlencode_1738_plus($lien_or);
@@ -203,9 +207,9 @@ function _creer_lien_riche($lien) {
 
 
 function _supprimer_background_favicon($texte) {
-	//background-image:url(local/cache-favicon/cran-ch-05d83b3285753a7704da06a45e842561.png);
+	//background-image:url(data:image/png;base64,iVBO...gg==);');
 	
-	return preg_replace(",style=\'background-image:url\(local/cache-favicon/[^\)]+\);\',","",$texte);
+	return preg_replace("style=\'background-image:url\(data:image/[^)]+\);\'","",$texte);
 }
 
 function _traiter_lien ($regs) {
@@ -235,7 +239,7 @@ function _traiter_lien ($regs) {
 
 function _traiter_lien_retablir($regs) {
 	$num = $regs[1];
-	
+
 	return $GLOBALS["les_liens"][$num];
 }
 function _traiter_blocs_retablir($regs) {
