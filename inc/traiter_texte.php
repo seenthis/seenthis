@@ -209,7 +209,7 @@ function _creer_lien_riche($lien) {
 function _supprimer_background_favicon($texte) {
 	//background-image:url(data:image/png;base64,iVBO...gg==);');
 	
-	return preg_replace("style=\'background-image:url\(data:image/[^)]+\);\'","",$texte);
+	return preg_replace(", style=\'background-image:url\(data:image/[^)]+\);\',","",$texte);
 }
 
 function _traiter_lien ($regs) {
