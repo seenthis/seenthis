@@ -110,8 +110,11 @@ $GLOBALS['table_titre']['auteurs'] = 'login';
 define('_URL_SEENTHIS', 'http://localhost/seenthis/');  # adresse de l'API
 define('_SVG2PNG_SERVER','http://rezo.net/svg2png.php'); # convertisseur de SVG
 
-define('_OPENCALAIS_APIKEY', "xxxxxxxxxxxx");
-define('_GOOGLETRANSLATE_APIKEY', "xxxxxxxxxxxxx");
+// systeme pour les traductions
+#define('_OPENCALAIS_APIKEY', "xxxxxxxxxxxx");
+#define('_GOOGLETRANSLATE_APIKEY', "xxxxxxxxxxxxx");
+# translate-shell
+define('_TRANSLATESHELL_CMD', 'trans'); // /usr/local/bin/trans
 
 // autoriser charger une copie locale des gros fichiers
 // exemple http://localhost/seenthis/messages/96
