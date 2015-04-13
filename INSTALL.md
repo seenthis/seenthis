@@ -188,8 +188,10 @@ svn co https://github.com/seenthis/seenthis_opencalais/trunk/ seenthis_opencalai
 permet aux admins d'éditer les préférences des auteurs depuis l'espace privé.
 
 ## Palette
-
-(http://contrib.spip.net/Palette) ; le configurer pour activation sur les pages publiques permet d'offrir la roue chromatique dans les préférences
+```
+svn co svn://zone.spip.org/spip-zone/_plugins_/palette/trunk/ palette/
+```
+le configurer pour activation sur les pages publiques permet d'offrir la roue chromatique dans les préférences (http://contrib.spip.net/Palette)
 
 ## seenthis_arbo_anglais
 ```
