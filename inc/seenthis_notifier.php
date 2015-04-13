@@ -259,11 +259,15 @@ function notifier_me($id_me, $id_parent) {
 	// Envoyer si besoin
 	if (isset($id_dest)) {
 		$seenthis = $GLOBALS['meta']['nom_site'];
-		$from = "no-reply@" . _HOST;
-		$headers = "From: " . mb_encode_mimeheader($nom_auteur, "UTF-7", "Q") . " <$from>\n";
-		$headers .= "Message-Id: <$id_me@" . _HOST . ">\n";
+		$from = mb_encode_mimeheader(str_replace('@', '', $nom_auteur).' - '. lire_meta('nom_site'), "UTF-7", "Q")
+			. " <no-reply@" . _HOST .">";
 
-		if ($id_parent > 0) $headers .= "In-Reply-To: <$id_parent@" . _HOST . ">\n";
+		$headers = "Message-Id: <$id_me" . _HOST . ">\n";
+
+		if ($id_parent > 0) {
+			$headers = "Message-Id: <$id_me.". md5($nom_auteur)."@" . _HOST . ">\n"
+				. "In-Reply-To: <$id_parent@" . _HOST . ">\n";
+		}
 
 		$id_dest = join(",", $id_dest);
 		spip_log("$id_me($id_parent) : destinataires=$id_dest", 'notifier');
