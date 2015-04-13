@@ -260,7 +260,7 @@ function notifier_me($id_me, $id_parent) {
 	if (isset($id_dest)) {
 		$seenthis = $GLOBALS['meta']['nom_site'];
 		$from = "no-reply@" . _HOST;
-		$headers = "From: " . mb_encode_mimeheader($nom_auteur, "UTF-7", "Q") . "<$from>\n";
+		$headers = "From: " . mb_encode_mimeheader($nom_auteur, "UTF-7", "Q") . " <$from>\n";
 		$headers .= "Message-Id: <$id_me@" . _HOST . ">\n";
 
 		if ($id_parent > 0) $headers .= "In-Reply-To: <$id_parent@" . _HOST . ">\n";
