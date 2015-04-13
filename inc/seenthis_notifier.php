@@ -259,10 +259,12 @@ function notifier_me($id_me, $id_parent) {
 	// Envoyer si besoin
 	if (isset($id_dest)) {
 		$seenthis = $GLOBALS['meta']['nom_site'];
-		$from = $nom_auteur . " - " . $seenthis . " <no-reply@" . _HOST . ">";
-		$headers = "Message-Id:<$id_me@" . _HOST . ">\n";
+		// les ( < et @ sont interdites dans le $from
+		$from = preg_replace('/[(<].*/', '', $nom_auteur);
+		$from .= " - " . $seenthis . " <no-reply@" . _HOST . ">";
+		$headers = "Message-Id: <$id_me@" . _HOST . ">\n";
 
-		if ($id_parent > 0) $headers .= "In-Reply-To:<$id_parent@" . _HOST . ">\n";
+		if ($id_parent > 0) $headers .= "In-Reply-To: <$id_parent@" . _HOST . ">\n";
 
 		$id_dest = join(",", $id_dest);
 		spip_log("$id_me($id_parent) : destinataires=$id_dest", 'notifier');
