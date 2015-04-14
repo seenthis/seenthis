@@ -79,6 +79,7 @@ Si tout va bien, voici la liste des plugins présents :
 * saisies
 * seenthis
 * seenthis_squelettes
+* soundmanager
 * textwheel
 * typo_guillemets
 
