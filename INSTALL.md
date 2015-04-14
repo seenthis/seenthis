@@ -51,6 +51,7 @@ svn co svn://zone.spip.org/spip-zone/_plugins_/typo_guillemets/ typo_guillemets/
 svn co svn://zone.spip.org/spip-zone/_plugins_/champs_extras/core/branches/v1/ champs_extras2/
 svn co svn://zone.spip.org/spip-zone/_plugins_/saisies/ saisies/
 svn co svn://zone.spip.org/spip-zone/_plugins_/cfg/branches/v1 cfg/
+svn co svn://zone.spip.org/spip-zone/_plugins_/soundmanager/ soundmanager/
 
 svn co https://github.com/seenthis/seenthis/trunk/ seenthis/
 svn co https://github.com/seenthis/seenthis_squelettes/trunk/ seenthis_squelettes/
