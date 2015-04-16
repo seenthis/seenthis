@@ -323,7 +323,7 @@ function notifier_construire_texte($id_parent, $id_me) {
 			$ret .= ($id_c == $id_me)
 				? "\n$nom_auteur " . message_texte(($texte)) . "\n\n"
 				: "> "
-					. seenthis_mb_wordwrap( $nom_auteur . ' ' . trim(extraire_titre($texte)), 70, "\n")
+					. seenthis_email_quote( $nom_auteur . ' ' . trim(extraire_titre($texte)) )
 					. "\n> ---------\n";
 		} else {
 			$ret .= $blabla;
@@ -333,6 +333,11 @@ function notifier_construire_texte($id_parent, $id_me) {
 
 	return $ret;
 
+}
+
+function seenthis_email_quote($t) {
+	return trim(join("\n> ", explode("\n", trim(seenthis_mb_wordwrap(
+	"> ".$t, 65, "\n")))));
 }
 
 
@@ -366,3 +371,4 @@ function seenthis_mb_wordwrap ($str, $width = 75, $break = "\n", $cut = false) {
 	}
 	return implode($break, $lines);
 }
+
