@@ -92,7 +92,6 @@ function seenthis_message_footer($lang, $seenthis) {
  */
 function seenthis_envoyer_mail($email_dest, $titre_mail, $corps_mail, $from, $headers) {
 	$envoyer_mail = charger_fonction('envoyer_mail', 'inc');
-spip_log([$email_dest, $titre_mail, $corps_mail, $from, $headers], 'notifier');
 	$envoyer_mail($email_dest, $titre_mail, $corps_mail, $from, $headers);
 }
 
@@ -337,7 +336,7 @@ function notifier_construire_texte($id_parent, $id_me) {
 }
 
 
-
+// http://stackoverflow.com/questions/3825226/multi-byte-safe-wordwrap-function-for-utf-8
 function seenthis_mb_wordwrap ($str, $width = 75, $break = "\n", $cut = false) {
 	$lines = explode($break, $str);
 	foreach ($lines as &$line) {
