@@ -323,7 +323,7 @@ function notifier_construire_texte($id_parent, $id_me) {
 			$ret .= ($id_c == $id_me)
 				? "\n$nom_auteur " . message_texte(($texte)) . "\n\n"
 				: "> "
-					. mb_wordwrap( $nom_auteur . ' ' . trim(extraire_titre($texte)), 70, "\n")
+					. seenthis_mb_wordwrap( $nom_auteur . ' ' . trim(extraire_titre($texte)), 70, "\n")
 					. "\n> ---------\n";
 		} else {
 			$ret .= $blabla;
