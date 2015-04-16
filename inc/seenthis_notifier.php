@@ -92,6 +92,7 @@ function seenthis_message_footer($lang, $seenthis) {
  */
 function seenthis_envoyer_mail($email_dest, $titre_mail, $corps_mail, $from, $headers) {
 	$envoyer_mail = charger_fonction('envoyer_mail', 'inc');
+spip_log([$email_dest, $titre_mail, $corps_mail, $from, $headers], 'notifier');
 	$envoyer_mail($email_dest, $titre_mail, $corps_mail, $from, $headers);
 }
 
@@ -322,7 +323,9 @@ function notifier_construire_texte($id_parent, $id_me) {
 			$texte = texte_de_me($id_c);
 			$ret .= ($id_c == $id_me)
 				? "\n$nom_auteur " . message_texte(($texte)) . "\n\n"
-				: "> $nom_auteur " . trim(extraire_titre($texte)) . "\n> ---------\n";
+				: "> "
+					. mb_wordwrap( $nom_auteur . ' ' . trim(extraire_titre($texte)), 70, "\n")
+					. "\n> ---------\n";
 		} else {
 			$ret .= $blabla;
 			$blabla = '';
@@ -334,3 +337,33 @@ function notifier_construire_texte($id_parent, $id_me) {
 }
 
 
+
+function seenthis_mb_wordwrap ($str, $width = 75, $break = "\n", $cut = false) {
+	$lines = explode($break, $str);
+	foreach ($lines as &$line) {
+		$line = rtrim($line);
+		if (mb_strlen($line) <= $width)
+			continue;
+		$words = explode(' ', $line);
+		$line = '';
+		$actual = '';
+		foreach ($words as $word) {
+			if (mb_strlen($actual.$word) <= $width)
+				$actual .= $word.' ';
+			else {
+				if ($actual != '')
+					$line .= rtrim($actual).$break;
+				$actual = $word;
+				if ($cut) {
+					while (mb_strlen($actual) > $width) {
+						$line .= mb_substr($actual, 0, $width).$break;
+						$actual = mb_substr($actual, $width);
+					}
+				}
+				$actual .= ' ';
+			}
+		}
+		$line .= trim($actual);
+	}
+	return implode($break, $lines);
+}
