@@ -259,7 +259,8 @@ function notifier_me($id_me, $id_parent) {
 	// Envoyer si besoin
 	if (isset($id_dest)) {
 		$seenthis = $GLOBALS['meta']['nom_site'];
-		$from = mb_encode_mimeheader(str_replace('@', '', $nom_auteur).' - '. lire_meta('nom_site'), "UTF-7", "Q")
+		mb_internal_encoding("UTF-8");
+		$from = mb_encode_mimeheader(str_replace('@', '', $nom_auteur).' - '. lire_meta('nom_site'), "UTF-8", "Q")
 			. " <no-reply@" . _HOST .">";
 
 		$headers = "Message-Id: <$id_me" . _HOST . ">\n";
