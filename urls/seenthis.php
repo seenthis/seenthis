@@ -172,43 +172,35 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 		# la page people/xxx/follow/feed => ramener sur people/xxx
 		else if (
-			preg_match(',^.*(/people/([^?/]+))((/follow|/only|/all)?/feed)(_tw)?([?].*)?$,', $i, $r)
-		OR
-			preg_match(',^.*(/people/([^?/]+)),', $i, $r)
+			preg_match(',^.*(/people/([^?/]+))(/follow|/only|/all)?((/feed)(_tw)?)?([?].*)?$,', $i, $r)
 		) {
 			if ($f = sql_fetsel('id_auteur', 'spip_auteurs', 'login='.sql_quote($r[2]))) {
 				$args['id_auteur'] = $f['id_auteur'];
 				$g = array(
 					$args
 				);
-				$twitter = $r[5] ? '_tw' : '';
+				$feed = $r[5] ? true : false;
+				if ($feed) {
+					$g[1] = "backend_auteur";
+					$g['0']['twitter'] = $r[6];
+				}
+				else {
+					$g[1] = "auteur";
+				}
 
 				switch ($r[3]) {
-					case '/follow/feed':
-						$g[1] = "backend_auteur";
+					case '/follow':
 						$g['0']['variante'] = 'follow';
-						$g['0']['twitter'] = $twitter;
 						break;
-					case '/only/feed':
-						$g[1] = "backend_auteur";
+					case '/only':
 						$g['0']['variante'] = 'only';
-						$g['0']['twitter'] = $twitter;
 						break;
-					case '/all/feed':
-						$g[1] = "backend_auteur";
+					case '/all':
 						$g['0']['variante'] = 'all';
-						$g['0']['twitter'] = $twitter;
-						break;
-					case '/feed':
-						$g[1] = "backend_auteur";
-						$g['0']['variante'] = '';
-						$g['0']['twitter'] = $twitter;
 						break;
 					case null:
-						$g[1] = "auteur";
+						$g['0']['variante'] = '';
 						break;
-					default:
-						echo "ERREUR";
 				}
 			}
 		}

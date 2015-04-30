@@ -29,6 +29,8 @@ function inc_seenthisaccueil_to_array_dist($u, $page=null) {
 	# pour reinjecter leurs dates de partage à la place des dates de publi
 	$max_pagination = 300;
 	$debut = intval($env['debut_messages']);
+	$variante = $env['variante']; // '', 'only', 'all', 'follow'
+
 
 	$r = array();
 
@@ -79,7 +81,12 @@ function inc_seenthisaccueil_to_array_dist($u, $page=null) {
 				# $selfollow="(IN(id_auteur,$moi) OR IN(share,$moi)) as ok";
 				$elle = $elle[0]['id_auteur'];
 				$auteurs_bloques = auteurs_bloques($elle);
-				$fav = liste_partages($elle, $debut, $max_pagination, 'date_s', $auteurs_bloques);
+
+				if ($variante == 'only')
+					$fav = array();
+				else
+					$fav = liste_partages($elle, $debut, $max_pagination, 'date_s', $auteurs_bloques);
+
 				$where = '('.sql_in('id_auteur', $elle) .')';
 			}
 			else {
