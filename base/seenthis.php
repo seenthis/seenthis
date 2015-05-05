@@ -131,7 +131,7 @@ function seenthis_declarer_tables_principales($tables_principales){
 	$auteurs = &$tables_principales['spip_auteurs'];
 	$auteurs['field']['couleur'] = "varchar(6) NOT NULL DEFAULT '24b8dd'";
 	$auteurs['field']['troll'] = "bigint(21) DEFAULT NULL";
-	$auteurs['field']['troll_forcer'] = "bigint(21) DEFAULT NULL";
+	$auteurs['field']['troll_forcer'] = "bigint(21) NOT NULL DEFAULT '0'";
 	$auteurs['field']['copyright'] = "varchar(10) NOT NULL DEFAULT 'C'";
 	$auteurs['field']['mail_nouv_billet'] = "tinyint(1) NOT NULL DEFAULT '1'";
 	$auteurs['field']['mail_partage'] = "tinyint(1) NOT NULL DEFAULT '0'";
@@ -252,7 +252,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	if ((!isset($GLOBALS['meta'][$nom_meta_base_version]) )
 	|| (($current_version = $GLOBALS['meta'][$nom_meta_base_version])!=$version_cible)){
 		include_spip('base/abstract_sql');
-		if (version_compare($current_version,"1.1.7",'<')){
+		if (version_compare($current_version,"1.1.8",'<')){
 			include_spip('base/serial');
 			include_spip('base/auxiliaires');
 			include_spip('base/create');
@@ -329,6 +329,11 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 			// en 1.1.7, ajouter les colonne liens_partage_fb et liens_partage_tw
 			if (version_compare($current_version,"1.1.7",'<')){
 				sql_query("UPDATE spip_auteurs SET liens_partage_fb = 1, liens_partage_tw = 1");
+			}
+
+			// en 1.1.8, appliquer troll_forcer=0 pour les troll_forcer IS NULL
+			if (version_compare($current_version,"1.1.8",'<')){
+				sql_query("UPDATE spip_auteurs SET troll_forcer = 0 where troll_forcer IS NULL");
 			}
 
 			ecrire_meta($nom_meta_base_version,$current_version=$version_cible,'non');
