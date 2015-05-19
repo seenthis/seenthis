@@ -216,16 +216,16 @@ svn co svn://zone.spip.org/spip-zone/_plugins_/indexer/trunk indexer/
 
 Par défaut le nom de la base sphinx est `seenthis`, on peut le personnaliser avec
 ```
-define('_SPHINXQL_INDEX', 'zinc');
-define('SPHINX_DEFAULT_INDEX', 'zinc'); // ne me demandez pas pourquoi on a les deux notations (todo)
-define('SPHINX_SERVER_PORT', 19306);
+define('_SPHINXQL_INDEX', 'seenthis');
+define('SPHINX_DEFAULT_INDEX', 'seenthis'); // ne me demandez pas pourquoi on a les deux notations (todo)
+define('SPHINX_SERVER_PORT', 9306);
 ```
 
 Configurer cet index, par exemple dans le fichier `/var/local/sphinx/conf/sites/seenthis.cf`
 ajouter :
 
 ```
-index zinc
+index seenthis
 {
         type = rt
         path = /var/local/sphinx/data/seenthis
