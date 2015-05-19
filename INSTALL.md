@@ -245,6 +245,8 @@ index seenthis
 }
 ```
 
+et réindexer le contenu existant :
+`php cli_indexer.php tout`
 
 
 # Personnalisation
