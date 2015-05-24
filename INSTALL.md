@@ -52,6 +52,7 @@ svn co svn://zone.spip.org/spip-zone/_plugins_/champs_extras/core/branches/v1/ c
 svn co svn://zone.spip.org/spip-zone/_plugins_/saisies/ saisies/
 svn co svn://zone.spip.org/spip-zone/_plugins_/cfg/branches/v1 cfg/
 svn co svn://zone.spip.org/spip-zone/_plugins_/soundmanager/ soundmanager/
+svn co svn://zone.spip.org/spip-zone/_plugins_/photoswipe/trunk/ photoswipe/
 
 svn co https://github.com/seenthis/seenthis/trunk/ seenthis/
 svn co https://github.com/seenthis/seenthis_squelettes/trunk/ seenthis_squelettes/
@@ -75,6 +76,7 @@ Si tout va bien, voici la liste des plugins présents :
 * microcache
 * oembed
 * opensearch
+* photoswipe
 * recuperer_favicon
 * saisies
 * seenthis
