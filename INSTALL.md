@@ -198,7 +198,7 @@ permet aux admins d'éditer les préférences des auteurs depuis l'espace privé
 ```
 svn co svn://zone.spip.org/spip-zone/_plugins_/palette/branches/1_3/ palette/
 ```
-le configurer pour activation sur les pages publiques permet d'offrir la roue chromatique dans les préférences (http://contrib.spip.net/Palette)
+le configurer pour activation sur les pages publiques permet d'offrir la roue chromatique dans les préférences (http://contrib.spip.net/Palette) ; attention, palette nécessite l'activation de cfg.
 
 ## seenthis_arbo_anglais
 ```
