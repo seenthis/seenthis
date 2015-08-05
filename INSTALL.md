@@ -196,7 +196,7 @@ permet aux admins d'éditer les préférences des auteurs depuis l'espace privé
 
 ## Palette
 ```
-svn co svn://zone.spip.org/spip-zone/_plugins_/palette/trunk/ palette/
+svn co svn://zone.spip.org/spip-zone/_plugins_/palette/branches/1_3/ palette/
 ```
 le configurer pour activation sur les pages publiques permet d'offrir la roue chromatique dans les préférences (http://contrib.spip.net/Palette)
 
