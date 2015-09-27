@@ -11,7 +11,7 @@ function nofollow($texte){
 } 
 
 
-define (_REG_CHARS, "a-z0-9\pN\pL\pM\'‘’°\&\+–\_•·");
+define (_REG_CHARS, "a-z0-9\pN\pL\pM\'‘’°\&\+–\_•·⋅");
 
 define (_REG_HASH, "(\#["._REG_CHARS."\@\.\/-]*["._REG_CHARS."])");
 define (_REG_URL, "((http|ftp)s?:\/\/["._REG_CHARS."\"#~!«»“”;:\|\.’\?=&%@!\/\,\$\(\)\[\]\\\\<>*-]+["._REG_CHARS."#«»“”\/\=\(\)\[\]\\\\\$*-])");
