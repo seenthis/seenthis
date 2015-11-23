@@ -1173,6 +1173,6 @@ function seenthis_affichage_final($t) {
 	return $t;
 }
 
-define('_HTTPS', _SERVER["HTTPS"] == 'on' ? 'https' : 'http');
+define('_HTTPS', ($_SERVER["HTTPS"] == 'on') ? 'https' : 'http');
 
 ?>
