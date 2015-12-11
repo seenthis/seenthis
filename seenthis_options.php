@@ -365,7 +365,19 @@ function recuperer_contenu_site($id_syndic, $url) {
 				$content = preg_replace(",^.*<body.*>,Uims", "", $content);
 				$content = str_replace("</body></html></div>", "", $content);
 				$content = preg_replace(", readability=\"[0-9]*\.[0-9]*\",", "", $content);
-								
+
+				// on parse le contenu sous forme de DOM pour extraire le texte
+				$dom = new DOMDocument();
+				// force l'encodage
+				$dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'));;
+				$content = $dom->textContent;
+
+				// espaces non sécables
+				$content = preg_replace('~\x{00a0}~siu', ' ', $content);
+				// blancs consécutifs
+				$content = preg_replace("/[[:blank:]]+/", " ", $content);
+				// espaces en début et fin
+				$content = trim($content);
 				include_spip("php/detecter_langue_fonctions");
 				
 				//$titre = interdire_scripts($titre, true);
