@@ -111,11 +111,16 @@ function _creer_lien_riche($lien) {
 		// Gérer les images en lien dropbox (remplacer www par dl)
 		$lien = preg_replace("/^(https\:\/\/)(www)(\.dropbox\.com\/.*\/.*\/.*)$/", '\1dl\3', $lien);
 
+		// liens vers des ressources github (ajouter ?raw=true)
+		if (preg_match(",^https://(github\.com/[^/]+/[^/]+)/blob/(.*)$,",
+		$lien)) {
+			$lien = parametre_url($lien, 'raw', 'true');
+		}
 
 		// hacker temporairement adresse_site de maniere a obtenir
 		// les images des serveurs qui controlent le referer…
 		// cf. inc/distant ligne 632
-		$a=$GLOBALS['meta']["adresse_site"];
+		$a = $GLOBALS['meta']["adresse_site"];
 		$GLOBALS['meta']["adresse_site"] = preg_replace(',(://.+?)/.*$,', '$1', $lien);
 		$image = afficher_miniature($lien);
 		$GLOBALS['meta']["adresse_site"] = $a;
