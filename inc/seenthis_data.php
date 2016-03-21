@@ -370,12 +370,13 @@ function inc_seenthisrecherche_to_array_dist($u) {
 	if ($boolean = preg_match(', [+-><~]|\* |".*?",', " $r "))
 		$val = $match = "MATCH($key) AGAINST ($p IN BOOLEAN MODE)";
 
-	$where[] = $match;
+	$where[] = "($match) > 0";
 	$where[] = "m.statut='publi'";
 
 	$res = sql_allfetsel("SQL_CALC_FOUND_ROWS r.id_me AS id, m.date, $val AS score, $tseg", "spip_me_recherche AS r INNER JOIN spip_me AS m ON r.id_me=m.id_me", $where, null, 'tseg ASC, score DESC'
 	, "$debut,$max_pagination"
 	);
+
 	$t = sql_fetch(mysql_query("SELECT FOUND_ROWS() as total"));
 	# remplir avant debut, avec du vide
 	for ($i=0; $i< $debut; $i++) {
