@@ -515,7 +515,7 @@ function liste_pointe_sql($debut, $max_pagination, $moi) {
 	}
 
 	# les messages auxquels j'ai repondu $moi
-	$mentions = sql_allfetsel('DISTINCT(id_parent) as id', 'spip_me', "id_auteur=$moi AND id_parent>0 AND statut='publi'", '', 'date DESC', '0,'.($debut + $max_pagination));
+	$mentions = sql_allfetsel('DISTINCT(id_parent) as id, date', 'spip_me', "id_auteur=$moi AND id_parent>0 AND statut='publi'", '', 'date DESC', '0,'.($debut + $max_pagination));
 	$pointe = array_merge($pointe, array_map('array_pop', $mentions));
 
 	# faut-il ajouter les messages ayant des URLs avec un tag opencalais que je suis ?
