@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `spip_articles` (
   KEY `id_trad` (`id_trad`),
   KEY `lang` (`lang`),
   KEY `statut` (`statut`,`date`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `spip_auteurs` (
   FULLTEXT KEY `nom` (`nom`),
   FULLTEXT KEY `nom_2` (`nom`,`bio`),
   FULLTEXT KEY `nom_3` (`nom`,`bio`,`nom_site`,`url_site`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=345 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -169,7 +169,7 @@ CREATE TABLE IF NOT EXISTS `spip_breves` (
   `extra` longtext,
   PRIMARY KEY  (`id_breve`),
   KEY `id_rubrique` (`id_rubrique`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -197,7 +197,7 @@ CREATE TABLE IF NOT EXISTS `spip_documents` (
   KEY `id_vignette` (`id_vignette`),
   KEY `mode` (`mode`),
   KEY `extension` (`extension`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -246,7 +246,7 @@ CREATE TABLE IF NOT EXISTS `spip_forum` (
   KEY `id_parent` (`id_parent`),
   KEY `id_thread` (`id_thread`),
   KEY `optimal` (`statut`,`id_parent`,`id_article`,`date_heure`,`id_breve`,`id_syndic`,`id_rubrique`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -267,7 +267,7 @@ CREATE TABLE IF NOT EXISTS `spip_groupes_mots` (
   `forum` varchar(3) NOT NULL default '',
   `maj` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id_groupe`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=41 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -288,7 +288,7 @@ CREATE TABLE IF NOT EXISTS `spip_jobs` (
   PRIMARY KEY  (`id_job`),
   KEY `date` (`date`),
   KEY `status` (`status`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=188171 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -326,7 +326,7 @@ CREATE TABLE IF NOT EXISTS `spip_me` (
   KEY `id_auteur` (`id_auteur`),
   KEY `id_parent` (`id_parent`),
   FULLTEXT KEY `texte` (`texte`,`themes`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15870 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -347,7 +347,7 @@ CREATE TABLE IF NOT EXISTS `spip_messages` (
   `maj` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id_message`),
   KEY `id_auteur` (`id_auteur`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -491,7 +491,7 @@ CREATE TABLE IF NOT EXISTS `spip_mots` (
   PRIMARY KEY  (`id_mot`),
   KEY `id_parent` (`id_parent`),
   FULLTEXT KEY `tout` (`titre`,`texte`,`descriptif`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=26803 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -660,7 +660,7 @@ CREATE TABLE IF NOT EXISTS `spip_rubriques` (
   PRIMARY KEY  (`id_rubrique`),
   KEY `lang` (`lang`),
   KEY `id_parent` (`id_parent`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -682,7 +682,7 @@ CREATE TABLE IF NOT EXISTS `spip_signatures` (
   PRIMARY KEY  (`id_signature`),
   KEY `id_article` (`id_article`),
   KEY `statut` (`statut`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -720,7 +720,7 @@ CREATE TABLE IF NOT EXISTS `spip_syndic` (
   KEY `statut` (`statut`,`date_syndic`),
   KEY `id_parent` (`id_parent`),
   FULLTEXT KEY `url_site` (`url_site`,`titre`,`texte`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=26681 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -746,7 +746,7 @@ CREATE TABLE IF NOT EXISTS `spip_syndic_articles` (
   KEY `id_syndic` (`id_syndic`),
   KEY `statut` (`statut`),
   KEY `url` (`url`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
