@@ -39,22 +39,14 @@ RewriteBase /
 ################ REGLAGES PERSONNALISES ######################
 # Inscrivez ci-dessous vos reglages supplementaires
 
-## blocage par IP, moins necessaire si /etc/fail2ban/filters.d/apache-kiddies fonctionne
-order allow,deny
-#deny from 180.215.198.133
-#deny from 123.151.39.39
-#deny from 173.44.37.226
-allow from all
-
-
-RewriteCond %{HTTP_HOST} seen.li
-RewriteRule ^/?$      http://seenthis.net [R=301,L]
-RewriteCond %{HTTP_HOST} seen.li
-RewriteRule (.*) http://seenthis.net/index.php?action=seenli&me=$1 [R=301,L]
+#RewriteCond %{HTTP_HOST} seen.li
+#RewriteRule ^/?$      http://seenthis.net [R=301,L]
+#RewriteCond %{HTTP_HOST} seen.li
+#RewriteRule (.*) http://seenthis.net/index.php?action=seenli&me=$1 [R=301,L]
 
 # nimportequoi.seenthis.net => seenthis.net
-RewriteCond %{HTTP_HOST} !^((www|static[123])\.)?seenthis\.net$ [NC]
-RewriteRule .* http://seenthis.net/$0 [R=301,L]
+#RewriteCond %{HTTP_HOST} !^((www|static[123])\.)?seenthis\.net$ [NC]
+#RewriteRule .* http://seenthis.net/$0 [R=301,L]
 
 
 RewriteRule ^message/([0-9]+)$     spip.php?page=message&id_me=$1 [QSA,L]
