@@ -155,7 +155,7 @@ type d'urls: _seenthis_
 
 ## gravatar:
 [http://localhost/seenthis/ecrire/?exec=configurer_gravatar](http://localhost/seenthis/ecrire/?exec=configurer_gravatar)
-=> saisir 48 pour la dimension
+=> saisir 80 pour la dimension
 
 ## moteur de recherche fulltext:
 ```
