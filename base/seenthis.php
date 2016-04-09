@@ -48,6 +48,7 @@ function seenthis_declarer_tables_interfaces($interface){
 	$interface['table_des_tables']['me_texte']='me_texte';
 	$interface['table_des_tables']['me_recherche']='me_recherche';
 	$interface['table_des_tables']['me_follow']='me_follow';
+	$interface['table_des_tables']['me_tags']='me_tags';
 	$interface['tables_jointures']['spip_me'][] = 'spip_me_follow';		
 	$interface['tables_jointures']['spip_me'][] = 'spip_me_block';		
 
