@@ -255,4 +255,4 @@ et réindexer le contenu existant :
 
 Voilà ; vous pouvez commencer à personnaliser les squelettes en les recopiant dans squelettes/
 
-À noter : “microcache”, le cache de seenthis, est très agressif, et tout ce qui est de l'ordre du CSS ou javascript est parfois difficile à recalculer : en cas de doute, ne pas hésiter à purger le répertoire `local/microcache/`
+À noter : “microcache”, le cache de seenthis, est très agressif, et tout ce qui est de l'ordre du CSS ou javascript est parfois difficile à recalculer : en cas de doute, ne pas hésiter à purger le cache du site.
