@@ -55,7 +55,8 @@ RewriteRule ^sites/([0-9]+)$        spip.php?page=site&id_syndic=$1 [QSA,L]
 RewriteRule ^people/?$    spip.php?page=people [QSA,L]
 RewriteRule ^tags/?$      spip.php?page=tags [QSA,L]
 
-RewriteRule ^recherche/?$	spip.php?page=sphinx [QSA,L]
+# à décommenter si vous souhaitez utiliser sphinx pour la recherche
+#RewriteRule ^recherche/?$	spip.php?page=sphinx [QSA,L]
 
 RewriteRule ^(tags/.*)\$$     $1?page=mot_fin [QSA,L]
 RewriteRule ^(tags/.*)\*$     $1?page=mot_flou [QSA,L]
