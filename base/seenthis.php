@@ -379,58 +379,58 @@ function seenthis_install($action,$prefix,$version_cible){
 
 // champs extras pour afficher tous les champs supplémentaires d'un auteur
 // dans l'espace privé (si on active le plugin champ_extras :
-// svn co svn://zone.spip.org/spip-zone/_plugins_/champs_extras/core/branches/v1/ champs_extras2/
+// svn co svn://zone.spip.org/spip-zone/_plugins_/champs_extras_core/trunk champs_extras_core/
 function seenthis_declarer_champs_extras($champs = array()){
 
-	$champs[] = new ChampExtra(array(
-		'table' => 'auteur', // sur quelle table ?
-		'champ' => 'copyright', // nom sql
-		'label' => 'Licence', // chaine de langue 'prefix:cle'
-		'precisions' => '', // precisions sur le champ
-		'obligatoire' => false, // 'oui' ou '' (ou false)
-		'rechercher' => false, // false, ou true ou directement la valeur de ponderation (de 1 à 8 generalement)
-		'type' => 'ligne', // type de saisie
-		'sql' => "varchar(10) DEFAULT 'C'", // declaration sql
-	));
+	$champs['spip_auteurs']['copyright'] = array(
+		'saisie' => 'input',
+		'options' => array(
+			'nom' => 'copyright',
+			'label' => 'Licence',
+			'obligatoire' => false,
+			'rechercher' => false,
+			'sql' => "varchar(10) DEFAULT 'C'",
+		)
+	);
 
 	foreach (explode(' ', 'mail_nouv_billet mail_partage mail_rep_moi mail_rep_partage mail_rep_billet mail_rep_conv mail_suivre_moi mail_mes_billets liens_partage_fb liens_partage_tw') as $c) {
-	$champs[] = new ChampExtra(array(
-		'table' => 'auteur', // sur quelle table ?
-		'champ' => $c, // nom sql
-		'label' => $c, // chaine de langue 'prefix:cle'
-		'precisions' => '', // precisions sur le champ
-		'obligatoire' => false, // 'oui' ou '' (ou false)
-		'rechercher' => false, // false, ou true ou directement la valeur de ponderation (de 1 à 8 generalement)
-		'type' => 'checkbox', // type de saisie (checkbox existe pas mais on aura essayé : ça affiche une ligne)
-		'sql' => "tinyint(1) NOT NULL", // declaration sql
-	));
+	$champs['spip_auteurs'][$c] = array(
+		'saisie' => 'input',
+		'options' => array(
+			'nom' => $c,
+			'label' => $c,
+			'obligatoire' => false,
+			'rechercher' => false,
+			'sql' => "tinyint(1) NOT NULL",
+		)
+	);
 	}
 
 	foreach (explode(' ', 'troll troll_forcer') as $c) {
-	$champs[] = new ChampExtra(array(
-		'table' => 'auteur', // sur quelle table ?
-		'champ' => $c, // nom sql
-		'label' => $c, // chaine de langue 'prefix:cle'
-		'precisions' => '', // precisions sur le champ
-		'obligatoire' => false, // 'oui' ou '' (ou false)
-		'rechercher' => false, // false, ou true ou directement la valeur de ponderation (de 1 à 8 generalement)
-		'type' => 'checkbox', // type de saisie (checkbox existe pas mais on aura essayé : ça affiche une ligne)
-		'sql' => "BIGINT(21)", // declaration sql
-	));
+	$champs['spip_auteurs'][$c] = array(
+		'saisie' => 'input',
+		'options' => array(
+			'nom' => $c,
+			'label' => $c,
+			'obligatoire' => false,
+			'rechercher' => false,
+			'sql' => "BIGINT(21)",
+		)
+	);
 	}
 
 
 	foreach (explode(' ', 'twitter facebook gplus') as $c) {
-	$champs[] = new ChampExtra(array(
-		'table' => 'auteur', // sur quelle table ?
-		'champ' => $c, // nom sql
-		'label' => $c, // chaine de langue 'prefix:cle'
-		'precisions' => '', // precisions sur le champ
-		'obligatoire' => false, // 'oui' ou '' (ou false)
-		'rechercher' => false, // false, ou true ou directement la valeur de ponderation (de 1 à 8 generalement)
-		'type' => 'ligne', // type de saisie (checkbox existe pas mais on aura essayé : ça affiche une ligne)
-		'sql' => "VARCHAR(100) NOT NULL DEFAULT ''", // declaration sql
-	));
+	$champs['spip_auteurs'][$c] = array(
+		'saisie' => 'input',
+		'options' => array(
+			'nom' => $c,
+			'label' => $c,
+			'obligatoire' => false,
+			'rechercher' => false,
+			'sql' => "VARCHAR(100) NOT NULL DEFAULT ''",
+		)
+	);
 	}
 
 	return $champs;
