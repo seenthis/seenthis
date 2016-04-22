@@ -141,7 +141,7 @@ function seenthis_declarer_tables_principales($tables_principales){
 	$auteurs['field']['mail_rep_billet'] = "tinyint(1) NOT NULL DEFAULT '0'";
 	$auteurs['field']['mail_rep_conv'] = "tinyint(1) NOT NULL DEFAULT '0'";
 	$auteurs['field']['mail_suivre_moi'] = "tinyint(1) NOT NULL DEFAULT '1'";
-	$auteurs['field']['mail_mes_billets'] = "tinyint(1) NOT NULL DEFAULT '1'";
+	$auteurs['field']['mail_mes_billets'] = "tinyint(1) NOT NULL DEFAULT '0'";
 	$auteurs['field']['twitter'] = "varchar(100) NOT NULL DEFAULT ''";
 	$auteurs['field']['facebook'] = "varchar(100) NOT NULL DEFAULT ''";
 	$auteurs['field']['gplus'] = "varchar(100) NOT NULL DEFAULT ''";
