@@ -1,0 +1,26 @@
+<paquet
+	prefix="seenthis"
+	categorie="divers"
+	version="2.0.0"
+	etat="stable"
+	compatibilite="[3.0.0;["
+	schema="1.1.8"
+>	
+
+	<nom>Seenthis</nom>
+	<!-- Configuration de Seenthis -->
+
+	<auteur>ARNO*</auteur>
+
+	<pipeline nom="affichage_final" />
+	<pipeline nom="declarer_tables_interfaces" inclure="base/seenthis.php" />
+	<pipeline nom="declarer_tables_principales" inclure="base/seenthis.php" />
+	<pipeline nom="declarer_tables_auxiliaires" inclure="base/seenthis.php" />
+	<pipeline nom="declarer_tables_objets_surnoms" inclure="base/seenthis.php" />
+	<pipeline nom="declarer_champs_extras" inclure="base/seenthis.php" />
+
+	<necessite nom="microcache" />
+	<necessite nom="queue" />
+	<necessite nom="detecter_langue" />
+	<necessite nom="lien_court" />
+</paquet>
