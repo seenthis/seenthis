@@ -26,7 +26,7 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 			'spip_syndic',
 			'spip_traductions',
 			'spip_me_tags'
-		));
+		))
 	);
 	
 	// en 0.9.8, remplir arbitrairement les uuid manquants
