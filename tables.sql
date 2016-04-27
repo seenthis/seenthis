@@ -462,7 +462,7 @@ CREATE TABLE `spip_me_tags` (
   `uuid` char(36) NOT NULL DEFAULT '',
   `tag` text NOT NULL,
   `class` char(6) NOT NULL DEFAULT '',
-  `date` datetime NOT NULL default '0000-00-00 00:00:00' on update CURRENT_TIMESTAMP,
+  `date` datetime NOT NULL default '0000-00-00 00:00:00',
   `relevance` int(11) NOT NULL,
   `off` char(3) NOT NULL DEFAULT 'non',
   KEY `uuid` (`uuid`),
