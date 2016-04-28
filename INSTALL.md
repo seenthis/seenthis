@@ -41,7 +41,6 @@ svn co svn://zone.spip.org/spip-zone/_plugins_/inclure-ajaxload/ inclure-ajaxloa
 svn co svn://zone.spip.org/spip-zone/_plugins_/iterateurs/ iterateurs/
 svn co svn://zone.spip.org/spip-zone/_plugins_/job_queue/ job_queue/
 svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/lien_court/branches/spip2/ lien_court/
-svn co svn://zone.spip.org/spip-zone/_plugins_/mediabox/ mediabox/
 svn co svn://zone.spip.org/spip-zone/_plugins_/memoization/ memoization/
 svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/microcache/ microcache/
 svn co svn://zone.spip.org/spip-zone/_plugins_/opensearch/ opensearch/
