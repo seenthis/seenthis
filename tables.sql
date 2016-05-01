@@ -751,20 +751,6 @@ CREATE TABLE IF NOT EXISTS `spip_syndic_articles` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `spip_syndic_oc`
---
-
-CREATE TABLE IF NOT EXISTS `spip_syndic_oc` (
-  `id_syndic` bigint(21) NOT NULL,
-  `id_mot` bigint(21) NOT NULL,
-  `relevance` int(11) NOT NULL,
-  KEY `id_syndic` (`id_syndic`),
-  KEY `id_mot` (`id_mot`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Structure de la table `spip_traductions`
 --
 
