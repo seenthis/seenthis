@@ -325,7 +325,7 @@ function inc_seenthisrecherche_to_array_dist($u) {
 		foreach ($people[0] as $k=>$p) {
 			$login = mb_substr($p,1);
 			if ($t = sql_fetsel('id_auteur', 'spip_auteurs', 'login='.sql_quote($login))) {
-				$where[] = "((MATCH($key) AGAINST ('$p')) OR m.id_auteur=".$t['id_auteur'].")";
+				$where[] = "((MATCH(r.$key) AGAINST ('$p')) OR m.id_auteur=".$t['id_auteur'].")";
 				$r = trim(str_replace($p,'',$r));
 				# s'il ne reste plus rien, on renvoie vers people/$login
 				if (!strlen($r)) {
@@ -361,14 +361,14 @@ function inc_seenthisrecherche_to_array_dist($u) {
 
 	$p = sql_quote(trim("$r"));
 
-	$val = $match = "5 * (MATCH($key_titre) AGAINST($p)) + MATCH($key) AGAINST ($p)";
+	$val = $match = "5 * (MATCH($key_titre) AGAINST($p)) + MATCH(r.$key) AGAINST ($p)";
 	// Une chaine exacte rapporte plein de points
 	if ($pe)
-		$val .= "+ 2 * MATCH($key) AGAINST ($pe)";
+		$val .= "+ 2 * MATCH(r.$key) AGAINST ($pe)";
 
 	// si symboles booleens les prendre en compte
 	if ($boolean = preg_match(', [+-><~]|\* |".*?",', " $r "))
-		$val = $match = "MATCH($key) AGAINST ($p IN BOOLEAN MODE)";
+		$val = $match = "MATCH(r.$key) AGAINST ($p IN BOOLEAN MODE)";
 
 	$where[] = "($match) > 0";
 	$where[] = "m.statut='publi'";
