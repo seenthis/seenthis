@@ -13,6 +13,7 @@
 	<auteur>ARNO*</auteur>
 
 	<pipeline nom="affichage_final" />
+	<pipeline nom="seenthis_notifierme_destinataires" action="" />
 	<pipeline nom="declarer_tables_interfaces" inclure="base/seenthis.php" />
 	<pipeline nom="declarer_tables_principales" inclure="base/seenthis.php" />
 	<pipeline nom="declarer_tables_auxiliaires" inclure="base/seenthis.php" />
