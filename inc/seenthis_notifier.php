@@ -51,7 +51,7 @@ function notifier_partage($id_auteur_partage, $id_me) {
 	$nom_dest = nom_auteur($id_auteur);
 	$lang = $row_dest["lang"];
 
-	$url_aut_partage = "http://" . _HOST . "/" . generer_url_entite($id_auteur_partage, "auteur");
+	$url_aut_partage = _HTTPS . "://" . _HOST . "/" . generer_url_entite($id_auteur_partage, "auteur");
 
 	if ($lang == "en") {
 		$titre_mail = _L("$nom_aut_partage (@$login_aut_partage) has shared one of your posts on $seenthis.");
@@ -80,9 +80,9 @@ function notifier_partage($id_auteur_partage, $id_me) {
  */
 function seenthis_message_footer($lang, $seenthis) {
 	if ($lang == "en") {
-		return _L("\n\n---------\nTo stop receiving these alerts from $seenthis,\n you can configure your preferences in your profile\nhttp://" . _HOST . "\n\n");
+		return _L("\n\n---------\nTo stop receiving these alerts from $seenthis,\n you can configure your preferences in your profile\n" . _HTTPS . "://" . _HOST . "\n\n");
 	} else {
-		return _L("\n\n---------\nPour ne plus recevoir d'alertes de $seenthis,\n vous pouvez régler vos préférences dans votre profil\nhttp://" . _HOST . "\n\n");
+		return _L("\n\n---------\nPour ne plus recevoir d'alertes de $seenthis,\n vous pouvez régler vos préférences dans votre profil\n" . _HTTPS . "://" . _HOST . "\n\n");
 	}
 
 }
@@ -127,7 +127,7 @@ function notifier_suivre_moi($id_auteur, $id_follow) {
 			if (strlen(trim($email_dest)) > 3) {
 
 				include_spip("inc/filtres_mini");
-				$url_me = "http://" . _HOST . "/" . generer_url_entite($id_follow, "auteur");
+				$url_me = _HTTPS . "://" . _HOST . "/" . generer_url_entite($id_follow, "auteur");
 
 				$seenthis = $GLOBALS['meta']['nom_site']; # "Seenthis";
 				if ($lang == "en") {
@@ -169,8 +169,8 @@ function notifier_me($id_me, $id_parent) {
 	$nom_auteur = nom_auteur($id_auteur_me);
 	$texte_mail = notifier_construire_texte($id_parent, $id_me);
 	$texte_mail .= ($id_parent > 0)
-		? "\n\nhttp://" . _HOST . "/messages/$id_parent#message$id_me"
-		: "\n\nhttp://" . _HOST . "/messages/$id_me";
+		? "\n\n" . _HTTPS . "://" . _HOST . "/messages/$id_parent#message$id_me"
+		: "\n\n" . _HTTPS . "://" . _HOST . "/messages/$id_me";
 
 	// va contenir tous les destinataires du mail
 	$id_dest = array();
