@@ -107,6 +107,11 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 	} else if (TRUE) {
 
+		# Patch à l'arrache pour SPIP 3.1 avec lequel le / initial de $i n'est pas présent
+		if (strpos($i, '/') !== 0) {
+			$i = '/' . $i;
+		}
+
 		# la page d'un tag manuel ou opencalais :
 		if (preg_match(',/tag/(([^:]+):(.*)|(.*))$,',
 		preg_replace('/[?].*$/', '', $i), $r)) {
