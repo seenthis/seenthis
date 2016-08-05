@@ -108,7 +108,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 	} else if (TRUE) {
 
 		# Patch à l'arrache pour SPIP 3.1 avec lequel le / initial de $i n'est pas présent
-		if (strpos($i, '/') !== 0) {
+		if (strlen($i) > 0 and strpos($i, '/') !== 0) {
 			$i = '/' . $i;
 		}
 
