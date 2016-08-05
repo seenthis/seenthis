@@ -39,7 +39,9 @@ $GLOBALS['table_titre']['auteurs'] = 'login AS titre, lang';
 // http://doc.spip.org/@urls_libres_dist
 function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
-	define('_SET_HTML_BASE',1);
+	if (!defined('_SET_HTML_BASE')){
+		define('_SET_HTML_BASE',1);
+	}
 
 	if (is_numeric($i)) {
 		include_spip('base/abstract_sql');
@@ -56,7 +58,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			else
 				$tag = $k['type'].':'.$k['titre'];
 			$g = _DIR_RACINE.$GLOBALS['url_arbo_types']['mot'].'/'
-				. urlencode_1738_plus(mb_strtolower($tag,'UTF8'));
+				. urlencode_1738_plus(spip_strtolower($tag,'UTF8'));
 		}
 
 		# #URL_ME
@@ -87,7 +89,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
 			# people/login
 			$g = _DIR_RACINE.$GLOBALS['url_arbo_types']['auteur'].'/'
-				. urlencode_1738_plus(mb_strtolower($k['login'],'UTF8'));
+				. urlencode_1738_plus(spip_strtolower($k['login'],'UTF8'));
 
 		}
 
