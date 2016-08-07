@@ -63,8 +63,6 @@ RewriteCond %{HTTP_HOST} !^((www|static[123])\.)?seenthis\.net$ [NC]
 RewriteRule .* http://seenthis.net/$0 [R=301,L]
 
 
-RewriteRule ^tags/?$      spip.php?page=tags [QSA,L]
-
 RewriteRule ^recherche/?$	spip.php?page=sphinx [QSA,L]
 
 RewriteRule ^(api/messages.*)$     index.php?action=api [QSA,L]

@@ -172,6 +172,10 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			# une fois les vieux urls de mots resorbes, on pourra supprimer ce if()
 
 		}
+		# la page /tags/
+		else if (preg_match(',/tags/?$,', $i)) {
+			$g = array($args, 'tags');
+		}
 
 		# la page /people/
 		else if (preg_match(',/people/?([?].*)?$,', $i)) {
