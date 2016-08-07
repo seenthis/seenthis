@@ -1,15 +1,5 @@
 <?php
 
-/***************************************************************************\
- *  SPIP, Systeme de publication pour l'internet                           *
- *                                                                         *
- *  Copyright (c) 2001-2011                                                *
- *  Arnaud Martin, Antoine Pitrou, Philippe Riviere, Emmanuel Saint-James  *
- *                                                                         *
- *  Ce programme est un logiciel libre distribue sous licence GNU/GPL.     *
- *  Pour plus de details voir le fichier COPYING.txt ou l'aide en ligne.   *
-\***************************************************************************/
-
 if (!defined('_ECRIRE_INC_VERSION')) return;
 
 /*
@@ -36,7 +26,19 @@ include_spip('public/interfaces');
 $GLOBALS['table_titre']['auteurs'] = 'login AS titre, lang';
 
 
-// http://doc.spip.org/@urls_libres_dist
+/**
+ * API : retourner l'url d'un objet si i est numerique
+ * ou decoder cette url si c'est une chaine
+ * array([contexte],[type],[url_redirect],[fond]) : url decodee
+ *
+ * http://code.spip.net/@urls_arbo_dist
+ *
+ * @param string|int $i
+ * @param string $entite
+ * @param string|array $args
+ * @param string $ancre
+ * @return array|string
+ */
 function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
 	if (!defined('_SET_HTML_BASE')){
