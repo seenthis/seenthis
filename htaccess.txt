@@ -1,5 +1,5 @@
 ##############################################################
-# Fichier .htaccess                               SPIP v 2.0 #
+# Fichier .htaccess                               SPIP v 3.1 #
 #                                                            #
 # Permet de controler les URLs et la version de php utilisee #
 # Compatible avec les URLs 'html', 'propres' et 'propres2'   #
@@ -19,10 +19,16 @@ RewriteEngine On
 ################ CONFIGURATION ######################
 
 ### Configuration sous-repertoire
-# Chez la plupart des hebergeurs il faut indiquer "RewriteBase /"
-# sinon modifiez cette ligne
 
-RewriteBase /
+# Calcule automatiquememt le RewriteBase (qui permet de faire fonctionner
+# les belles URLs). De la sorte, un meme site peut etre affiche en racine
+# ou dans un sous repertoire sans devoir modifier la ligne RewriteBase.
+RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
+RewriteRule ^(.*) - [E=BASE:%1]
+
+# En alternative aux 2 lignes precedentes (a commenter dans ce cas),
+# vous pouvez indiquer un RewriteBase specifique
+#RewriteBase /
 
 
 # SPIP version 'php' - si vous avez d'anciennes adresses en '.php[3]',
@@ -119,6 +125,24 @@ RewriteRule ^spip_rss\.php3?$	spip.php?page=rss [QSA,L]
 ###
 
 ###
+# ping http://site/1234 => article1234
+
+RewriteRule ^([1-9][0-9]*)$     spip.php?action=redirect&type=article&status=301&id=$1 [QSA,L]
+
+#
+###
+
+###
+# APIs
+# http://site/xmlrpc.api
+# http://site/atom.api/articles/1234
+
+RewriteRule ^([\w]+)\.api(/(.*))?$ spip.php?action=api_$1&arg=$3 [QSA,L]
+
+# Fin des APIs
+###
+
+###
 # URLs "propres", "propres2", "libres", "arbo"
 
 RewriteRule ^[^\.]+(\.html)?$		spip.php [QSA,E=url_propre:$0,L]
@@ -129,8 +153,8 @@ RewriteRule ^[^\.]+(\.html)?$		spip.php [QSA,E=url_propre:$0,L]
 ###
 # Divers
 
-# bloquer les acces aux repertoires .svn/ (SPIP, plugins, squelettes...)
-RewriteRule ^(.*/)?\.svn/ - [F]
+# bloquer les acces aux fichiers caches (.svn, .git, etc)
+RewriteRule /\\..*(/.*|$) - [F]
 
 ###
 # Fichiers "standards" (si absents de la racine)
@@ -140,6 +164,10 @@ RewriteRule ^favicon[.]ico$      spip.php?page=favicon.ico [QSA,L]
 RewriteRule ^sitemap[.]xml$      spip.php?page=sitemap.xml [QSA,L]
 ##
 
+# Favicon pour itrucs
+# Si vous avez le plugin filtres_images et qu'une méthode de retouche a été configurée, vous pouvez décommenter la ligne ci-dessous.
+#RewriteRule ^apple-touch-icon(-(\d+x\d+))?(-precomposed)?[.]png$	spip.php?page=apple-touch-icon.png&size=$2 [QSA,L]
+
 # expirer les images (pour contourner gros bug MSIE sur le cache)
 # note : a decommenter si vous voulez tester
 #<IfModule mod_expires.c>
@@ -148,6 +176,11 @@ RewriteRule ^sitemap[.]xml$      spip.php?page=sitemap.xml [QSA,L]
 # ExpiresByType image/jpeg A3600
 # ExpiresByType image/png A3600
 #</IfModule>
+
+
+<IfModule mod_expires.c>
+	ExpiresByType text/html  "access plus 0 seconds"
+</IfModule>
 
 #################################
 # gestion des erreurs 404
