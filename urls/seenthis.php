@@ -48,21 +48,6 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 	if (is_numeric($i)) {
 		include_spip('base/abstract_sql');
 
-		# #URL_MOT (obsolète !)
-		if ($entite == "mot") {
-			$k = sql_fetsel('m.titre AS titre, g.titre AS type, m.id_groupe AS id_groupe FROM spip_mots AS m LEFT JOIN spip_groupes_mots AS g ON m.id_groupe=g.id_groupe WHERE m.id_mot='.sql_quote($i));
-			if (!$k) return '';
-
-			# tag/spip
-			if ($k['id_groupe'] == 1)
-				$tag = $k['titre'];
-			# tag/technology:radiation
-			else
-				$tag = $k['type'].':'.$k['titre'];
-			$g = _DIR_RACINE.$GLOBALS['url_arbo_types']['mot'].'/'
-				. urlencode_1738_plus(spip_strtolower($tag,'UTF8'));
-		}
-
 		# #URL_ME
 		if ($entite == 'me') {
 			# s'il y a un parent, c'est #URL_ME{parent}#message$i
