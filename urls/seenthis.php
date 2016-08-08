@@ -94,13 +94,8 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 	} else if (TRUE) {
 
-		# Patch à l'arrache pour SPIP 3.1 avec lequel le / initial de $i n'est pas présent
-		if (strlen($i) > 0 and strpos($i, '/') !== 0) {
-			$i = '/' . $i;
-		}
-
 		# la page d'un tag manuel ou opencalais :
-		if (preg_match(',/tag/(([^:]+):(.*)|(.*))$,',
+		if (preg_match(',tag/(([^:]+):(.*)|(.*))$,',
 		preg_replace('/[?].*$/', '', $i), $r)) {
 			# tag/spip
 			if (isset($r[4])) {
@@ -160,17 +155,17 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
 		}
 		# la page /tags/
-		else if (preg_match(',/tags/?$,', $i)) {
+		else if (preg_match(',tags/?$,', $i)) {
 			$g = array($args, 'tags');
 		}
 
 		# la page /people/
-		else if (preg_match(',/people/?([?].*)?$,', $i)) {
+		else if (preg_match(',people/?([?].*)?$,', $i)) {
 			$g = array($args, 'people');
 		}
 		# la page people/xxx/follow/feed => ramener sur people/xxx
 		else if (
-			preg_match(',^.*(/people/([^?/]+))(/follow|/only|/all)?((/feed)(_tw)?)?([?].*)?$,', $i, $r)
+			preg_match(',^.*(people/([^?/]+))(/follow|/only|/all)?((/feed)(_tw)?)?([?].*)?$,', $i, $r)
 		) {
 			if ($f = sql_fetsel('id_auteur', 'spip_auteurs', 'login='.sql_quote($r[2]))) {
 				$args['id_auteur'] = $f['id_auteur'];
@@ -203,7 +198,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			}
 		}
 		else
-		if (preg_match(',/messages/(\d+)([?].*)?$,', $i, $r)) {
+		if (preg_match(',messages/(\d+)([?].*)?$,', $i, $r)) {
 			$g = array(
 				array('id_me' => $r[1]),
 				'message',
@@ -213,7 +208,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 		# la page d'un site :
 		else
-		if (preg_match(',/sites/(\d+)([?].*)?$,i', $i, $r)) {
+		if (preg_match(',sites/(\d+)([?].*)?$,i', $i, $r)) {
 			if ($f = sql_fetsel('id_syndic, url_site, md5', 'spip_syndic', 'id_syndic='.$r[1])) {
 				$args['id_syndic'] = $f['id_syndic'];
 				$args['url'] = $f['url_site'];
@@ -227,7 +222,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			);
 		}
 		else
-		if (preg_match(',/sites/([0-9a-f]{32})([?].*)?$,i', $i, $r)) {
+		if (preg_match(',sites/([0-9a-f]{32})([?].*)?$,i', $i, $r)) {
 			/* old style = id_syndic */
 			if ($f = sql_fetsel('id_syndic, url_site, md5', 'spip_syndic', 'MD5(url_site)='.sql_quote($r[1]))) {
 				$args['id_syndic'] = $f['id_syndic'];
@@ -243,7 +238,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 
 		else
-		if (preg_match(',/sites/(https?:.*)([?].*)?$,', $i, $r)) {
+		if (preg_match(',sites/(https?:.*)([?].*)?$,', $i, $r)) {
 			/* old style = id_syndic */
 
 			if ($f = sql_fetsel('id_syndic, url_site, md5', 'spip_syndic', 'MD5(url_site)='.sql_quote(md5($r[1])))) {
@@ -260,7 +255,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 
 		else
-		if (preg_match(',/sites/?([?].*)?$,', $i, $r)) {
+		if (preg_match(',sites/?([?].*)?$,', $i, $r)) {
 			$g = array(
 				$args,
 				'sites',
@@ -270,7 +265,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 
 		else
-		if (preg_match(',/all([?].*)?$,i', $i, $r)) {
+		if (preg_match(',all([?].*)?$,i', $i, $r)) {
 			$args['follow'] = 'all';
 			$g = array(
 				$args,
