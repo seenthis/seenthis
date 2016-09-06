@@ -377,7 +377,7 @@ function inc_seenthisrecherche_to_array_dist($u) {
 	, "$debut,$max_pagination"
 	);
 
-	$t = sql_fetch(mysql_query("SELECT FOUND_ROWS() as total"));
+	$t = sql_fetch(sql_query("SELECT FOUND_ROWS() as total"));
 	# remplir avant debut, avec du vide
 	for ($i=0; $i< $debut; $i++) {
 		array_unshift($res, 0);

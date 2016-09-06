@@ -476,6 +476,10 @@ function _texte_inserer_embed($regs) {
 			'class',
 			trim(extraire_attribut($lien,'class').$class)
 		);
+		
+		// transformer les embed http en // pour les activer en https
+		$embed = preg_replace(',(["\'])http://,', '$1https://', $embed);
+		
 		return $lienclass.$embed;
 	}
 

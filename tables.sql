@@ -462,7 +462,7 @@ CREATE TABLE `spip_me_tags` (
   `uuid` char(36) NOT NULL DEFAULT '',
   `tag` text NOT NULL,
   `class` char(6) NOT NULL DEFAULT '',
-  `date` datetime NOT NULL default '0000-00-00 00:00:00' on update CURRENT_TIMESTAMP,
+  `date` datetime NOT NULL default '0000-00-00 00:00:00',
   `relevance` int(11) NOT NULL,
   `off` char(3) NOT NULL DEFAULT 'non',
   KEY `uuid` (`uuid`),
@@ -747,20 +747,6 @@ CREATE TABLE IF NOT EXISTS `spip_syndic_articles` (
   KEY `statut` (`statut`),
   KEY `url` (`url`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `spip_syndic_oc`
---
-
-CREATE TABLE IF NOT EXISTS `spip_syndic_oc` (
-  `id_syndic` bigint(21) NOT NULL,
-  `id_mot` bigint(21) NOT NULL,
-  `relevance` int(11) NOT NULL,
-  KEY `id_syndic` (`id_syndic`),
-  KEY `id_mot` (`id_mot`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
