@@ -52,18 +52,20 @@ order allow,deny
 #deny from 173.44.37.226
 allow from all
 
-
-RewriteCond %{HTTP_HOST} seen.li
-RewriteRule ^/?$      http://seenthis.net [R=301,L]
-RewriteCond %{HTTP_HOST} seen.li
-RewriteRule (.*) http://seenthis.net/index.php?action=seenli&me=$1 [R=301,L]
+#RewriteCond %{HTTP_HOST} seen.li
+#RewriteRule ^/?$      http://seenthis.net [R=301,L]
+#RewriteCond %{HTTP_HOST} seen.li
+#RewriteRule (.*) http://seenthis.net/index.php?action=seenli&me=$1 [R=301,L]
 
 # nimportequoi.seenthis.net => seenthis.net
-RewriteCond %{HTTP_HOST} !^((www|static[123])\.)?seenthis\.net$ [NC]
-RewriteRule .* http://seenthis.net/$0 [R=301,L]
+#RewriteCond %{HTTP_HOST} !^((www|static[123])\.)?seenthis\.net$ [NC]
+#RewriteRule .* http://seenthis.net/$0 [R=301,L]
 
 
-RewriteRule ^recherche/?$	spip.php?page=sphinx [QSA,L]
+# à décommenter si vous souhaitez utiliser sphinx pour la recherche
+#RewriteRule ^recherche/?$	spip.php?page=sphinx [QSA,L]
+# à commenter si vous souhaitez utiliser sphinx pour la recherche
+RewriteRule ^recherche/?$	spip.php?page=recherche [QSA,L]
 
 RewriteRule ^(api/messages.*)$     index.php?action=api [QSA,L]
 RewriteRule ^(api/people.*)$       index.php?action=api_auteur [QSA,L]

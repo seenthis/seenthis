@@ -5,6 +5,10 @@
 
 define ("_TROLL_VAL", 3000);
 
+if (!defined('_SEENTHIS_INDEXER_ME')) {
+	define('_SEENTHIS_INDEXER_ME', true);
+}
+
 function nofollow($texte){
    $texte = str_replace("<a href","<a rel='nofollow' href",$texte);
    return $texte;
@@ -747,6 +751,11 @@ function seenthis_titre_me($texte) {
 }
 
 function indexer_me($id_ref) {
+
+	if (!_SEENTHIS_INDEXER_ME) {
+		return false;
+	}
+
 	$query = sql_select("*", "spip_me", "(id_me=$id_ref OR id_parent=$id_ref) AND statut='publi'");
 	
 	$id_billets = false;
@@ -1138,8 +1147,14 @@ function urlencode_1738_plus($url) {
 }
 
 function erreur_405($texte, $err405 = 405) {
-	 header("HTTP/1.0 ".$err405." $texte");
- 	die("<html><body><h1>error $err405</h1><h2>$texte</h2></body></html>");
+	header("HTTP/1.0 ".$err405." $texte");
+	spip_log($GLOBALS['visiteur_session'], 'err'.$err405);
+	spip_log($_REQUEST, 'err'.$err405);
+	spip_log($_SERVER, 'err'.$err405);
+	spip_log($texte, 'err'.$err405);
+	$a = debug_backtrace();
+	spip_log($a, 'err'.$err405);
+	die("<html><body><h1>error $err405</h1><h2>$texte</h2></body></html>");
 }
 
 function seenthis_affichage_final($t) {
