@@ -1147,8 +1147,14 @@ function urlencode_1738_plus($url) {
 }
 
 function erreur_405($texte, $err405 = 405) {
-	 header("HTTP/1.0 ".$err405." $texte");
- 	die("<html><body><h1>error $err405</h1><h2>$texte</h2></body></html>");
+	header("HTTP/1.0 ".$err405." $texte");
+	spip_log($GLOBALS['visiteur_session'], 'err'.$err405);
+	spip_log($_REQUEST, 'err'.$err405);
+	spip_log($_SERVER, 'err'.$err405);
+	spip_log($texte, 'err'.$err405);
+	$a = debug_backtrace();
+	spip_log($a, 'err'.$err405);
+	die("<html><body><h1>error $err405</h1><h2>$texte</h2></body></html>");
 }
 
 function seenthis_affichage_final($t) {
