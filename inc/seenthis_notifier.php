@@ -165,7 +165,7 @@ function notifier_me($id_me, $id_parent) {
 
 	$id_auteur_me = $row["id_auteur"];
 	$texte = texte_de_me($id_me);
-	$titre_mail = trim(extraire_titre($texte));
+	$titre_mail = ($id_parent > 0) ? 'Re: ' . trim(extraire_titre(texte_de_me($id_parent))) : trim(extraire_titre($texte));
 	$nom_auteur = nom_auteur($id_auteur_me);
 	$texte_mail = notifier_construire_texte($id_parent, $id_me);
 	$texte_mail .= ($id_parent > 0)
@@ -267,8 +267,8 @@ function notifier_me($id_me, $id_parent) {
 	if (isset($id_dest)) {
 		$seenthis = $GLOBALS['meta']['nom_site'];
 		mb_internal_encoding("UTF-8");
-		$from = mb_encode_mimeheader(str_replace('@', '', $nom_auteur).' - '. lire_meta('nom_site'), "UTF-8", "Q")
-			. " <no-reply@" . _HOST .">";
+		$from = '"'. mb_encode_mimeheader(str_replace('"', '\\"', str_replace('@', '', $nom_auteur)) .' - '. lire_meta('nom_site'), "UTF-8", "Q")
+			. "\" <no-reply@" . _HOST .">";
 
 		$headers = "Message-Id: <$id_me" . "@" . _HOST . ">\n";
 

@@ -111,6 +111,12 @@ function _creer_lien_riche($lien) {
 		// Gérer les images en lien dropbox (remplacer www par dl)
 		$lien = preg_replace("/^(https\:\/\/)(www)(\.dropbox\.com\/.*\/.*\/.*)$/", '\1dl\3', $lien);
 
+		// Gérer les images de commons.wikimedia
+		if (preg_match("/^https?\:\/\/commons\.wikimedia\.org\/wiki\/File\:(.*)/i", $lien, $regs)) {
+			$md5 = md5($regs[1]);
+			$lien = 'https://upload.wikimedia.org/wikipedia/commons/' . $md5[0] . '/' . $md5[0] . $md5[1] . '/' . urlencode($regs[1]);
+		}
+
 		// liens vers des ressources github (ajouter ?raw=true)
 		if (preg_match(",^https://(github\.com/[^/]+/[^/]+)/blob/(.*)$,",
 		$lien)) {
