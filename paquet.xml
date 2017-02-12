@@ -1,7 +1,7 @@
 <paquet
 	prefix="seenthis"
 	categorie="divers"
-	version="2.0.0"
+	version="2.1.0"
 	etat="stable"
 	compatibilite="[3.0.0;["
 	schema="1.1.8"

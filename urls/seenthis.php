@@ -15,11 +15,19 @@ if (!defined('_MARQUEUR_URL'))
 	define('_MARQUEUR_URL', false);
 
 ## utiliser des mots anglais
-$GLOBALS['url_arbo_types']=array(
-	'mot'=>'tag',
-	'auteur'=>'people',
-	'site' =>'sites'
+$synonymes_types = array(
+	'mot' => 'tag',
+	'auteur '=> 'people',
+	'message' => 'messages',
+	'site' => 'sites'
 );
+
+if (isset($GLOBALS['url_arbo_types']) and is_array($GLOBALS['url_arbo_types'])) {
+	$GLOBALS['url_arbo_types'] = array_merge($synonymes_types, $GLOBALS['url_arbo_types']);
+} else {
+	$GLOBALS['url_arbo_types'] = $synonymes_types;
+}
+
 
 ## delicate composition pour prendre le login a la place du nom dans l'URL
 include_spip('public/interfaces');
@@ -57,7 +65,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 				$g = urls_seenthis_dist($k[0]['id_parent'], $entite, $args, 'message'.$i);
 			# sinon c'est messages/$i
 			else
-				$g = 'messages/'.$i;
+				$g = $GLOBALS['url_arbo_types']['message'].'/'.$i;
 
 			// Ajouter les args
 			if ($args)
@@ -95,7 +103,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 	} else if (TRUE) {
 
 		# la page d'un tag manuel ou opencalais :
-		if (preg_match(',tag/(([^:]+):(.*)|(.*))$,',
+		if (preg_match(','.$GLOBALS['url_arbo_types']['mot'].'/(([^:]+):(.*)|(.*))$,',
 		preg_replace('/[?].*$/', '', $i), $r)) {
 			# tag/spip
 			if (isset($r[4])) {
@@ -160,12 +168,12 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 
 		# la page /people/
-		else if (preg_match(',people/?([?].*)?$,', $i)) {
+		else if (preg_match(','.$GLOBALS['url_arbo_types']['auteur'].'/?([?].*)?$,', $i)) {
 			$g = array($args, 'people');
 		}
 		# la page people/xxx/follow/feed => ramener sur people/xxx
 		else if (
-			preg_match(',^.*(people/([^?/]+))(/follow|/only|/all)?((/feed)(_tw)?)?([?].*)?$,', $i, $r)
+			preg_match(',^.*('.$GLOBALS['url_arbo_types']['auteur'].'/([^?/]+))(/follow|/only|/all)?((/feed)(_tw)?)?([?].*)?$,', $i, $r)
 		) {
 			if ($f = sql_fetsel('id_auteur', 'spip_auteurs', 'login='.sql_quote($r[2]))) {
 				$args['id_auteur'] = $f['id_auteur'];
@@ -198,7 +206,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			}
 		}
 		else
-		if (preg_match(',messages/(\d+)([?].*)?$,', $i, $r)) {
+		if (preg_match(','.$GLOBALS['url_arbo_types']['message'].'/(\d+)([?].*)?$,', $i, $r)) {
 			$g = array(
 				array('id_me' => $r[1]),
 				'message',
@@ -208,7 +216,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 		# la page d'un site :
 		else
-		if (preg_match(',sites/(\d+)([?].*)?$,i', $i, $r)) {
+		if (preg_match(','.$GLOBALS['url_arbo_types']['site'].'/(\d+)([?].*)?$,i', $i, $r)) {
 			if ($f = sql_fetsel('id_syndic, url_site, md5', 'spip_syndic', 'id_syndic='.$r[1])) {
 				$args['id_syndic'] = $f['id_syndic'];
 				$args['url'] = $f['url_site'];
@@ -222,7 +230,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			);
 		}
 		else
-		if (preg_match(',sites/([0-9a-f]{32})([?].*)?$,i', $i, $r)) {
+		if (preg_match(','.$GLOBALS['url_arbo_types']['site'].'/([0-9a-f]{32})([?].*)?$,i', $i, $r)) {
 			/* old style = id_syndic */
 			if ($f = sql_fetsel('id_syndic, url_site, md5', 'spip_syndic', 'MD5(url_site)='.sql_quote($r[1]))) {
 				$args['id_syndic'] = $f['id_syndic'];
@@ -238,7 +246,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 
 		else
-		if (preg_match(',sites/(https?:.*)([?].*)?$,', $i, $r)) {
+		if (preg_match(','.$GLOBALS['url_arbo_types']['site'].'/(https?:.*)([?].*)?$,', $i, $r)) {
 			/* old style = id_syndic */
 
 			if ($f = sql_fetsel('id_syndic, url_site, md5', 'spip_syndic', 'MD5(url_site)='.sql_quote(md5($r[1])))) {
@@ -255,7 +263,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 
 		else
-		if (preg_match(',sites/?([?].*)?$,', $i, $r)) {
+		if (preg_match(','.$GLOBALS['url_arbo_types']['site'].'/?([?].*)?$,', $i, $r)) {
 			$g = array(
 				$args,
 				'sites',
