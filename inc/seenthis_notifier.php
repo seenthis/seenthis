@@ -63,11 +63,11 @@ function notifier_partage($id_auteur_partage, $id_me) {
 
 	$texte_message = message_texte(texte_de_me($id_me));
 	$footer = seenthis_message_footer($lang, $seenthis);
-	$corps_mail = "\n\n$annonce\n$url_aut_partage\n\n$texte_message\n\n$footer";
-	$headers = "Message-Id: <$id_auteur.$id_auteur_partage." . time() . "@" . _HOST . ">\n";
+	$corps_mail['texte'] = "\n\n$annonce\n$url_aut_partage\n\n$texte_message\n\n$footer";
+	$corps_mail['headers'] = "Message-Id: <$id_auteur.$id_auteur_partage." . time() . "@" . _HOST . ">\n";
 	$seenthis = $GLOBALS['meta']['nom_site']; # "Seenthis";
-	$from = "$seenthis <no-reply@" . _HOST . ">";
-	seenthis_envoyer_mail($email_dest, $titre_mail, $corps_mail, $from, $headers);
+	$corps_mail['from'] = "$seenthis <no-reply@" . _HOST . ">";
+	seenthis_envoyer_mail($email_dest, $titre_mail, $corps_mail);
 	spip_log("notifier partage $id_me part $id_auteur_partage pour $id_auteur", 'notifier');
 
 }
@@ -88,11 +88,11 @@ function seenthis_message_footer($lang, $seenthis) {
 }
 
 /**
- * Envoie un email
+ * Envoie un email (avec le plugin facteur)
  */
-function seenthis_envoyer_mail($email_dest, $titre_mail, $corps_mail, $from, $headers) {
+function seenthis_envoyer_mail($email_dest, $titre_mail, $corps_mail) {
 	$envoyer_mail = charger_fonction('envoyer_mail', 'inc');
-	$envoyer_mail($email_dest, $titre_mail, $corps_mail, $from, $headers);
+	$envoyer_mail($email_dest, $titre_mail, $corps_mail);
 }
 
 /**
@@ -139,11 +139,11 @@ function notifier_suivre_moi($id_auteur, $id_follow) {
 				}
 
 				$footer = seenthis_message_footer($lang, $seenthis);
-				$corps_mail = "\n\n$annonce\n$url_me\n\n$footer";
-				$headers = "Message-Id: <$id_auteur.$id_follow." . time() . "@" . _HOST . ">\n";
-				$from = "$seenthis <no-reply@" . _HOST . ">";
+				$corps_mail['texte'] = "\n\n$annonce\n$url_me\n\n$footer";
+				$corps_mail['headers'] = "Message-Id: <$id_auteur.$id_follow." . time() . "@" . _HOST . ">\n";
+				$corps_mail['from'] = "$seenthis <no-reply@" . _HOST . ">";
 
-				seenthis_envoyer_mail($email_dest, "$seenthis - $titre_mail", $corps_mail, $from, $headers);
+				seenthis_envoyer_mail($email_dest, "$seenthis - $titre_mail", $corps_mail);
 				spip_log("notification: @$login_aut suit @" . $row_dest['login'], 'suivre');
 			}
 		}
@@ -267,13 +267,13 @@ function notifier_me($id_me, $id_parent) {
 	if (isset($id_dest)) {
 		$seenthis = $GLOBALS['meta']['nom_site'];
 		mb_internal_encoding("UTF-8");
-		$from = '"'. mb_encode_mimeheader(str_replace('"', '\\"', str_replace('@', '', $nom_auteur)) .' - '. lire_meta('nom_site'), "UTF-8", "Q")
-			. "\" <no-reply@" . _HOST .">";
+		$corps_mail['nom_envoyeur'] = mb_encode_mimeheader(str_replace('@', '', $nom_auteur) .' - '. lire_meta('nom_site'), "UTF-8", "Q");
+		$corps_mail['from'] = "no-reply@" . _HOST;
 
-		$headers = "Message-Id: <$id_me" . "@" . _HOST . ">\n";
+		$corps_mail['headers'] = "Message-Id: <$id_me" . "@" . _HOST . ">\n";
 
 		if ($id_parent > 0) {
-			$headers = "Message-Id: <$id_me." . md5($nom_auteur) . "@" . _HOST . ">\n"
+			$corps_mail['headers'] = "Message-Id: <$id_me." . md5($nom_auteur) . "@" . _HOST . ">\n"
 				. "In-Reply-To: <$id_parent" . "@" . _HOST . ">\n";
 		}
 
@@ -304,8 +304,8 @@ function notifier_me($id_me, $id_parent) {
 				}
 
 				$footer = seenthis_message_footer($lang, $seenthis);
-				$corps_mail = "$annonce\n\n$texte_mail\n\n\n\n$footer";
-				seenthis_envoyer_mail($email_dest, $titre_mail, $corps_mail, $from, $headers);
+				$corps_mail['texte'] = "$annonce\n\n$texte_mail\n\n\n\n$footer";
+				seenthis_envoyer_mail($email_dest, $titre_mail, $corps_mail);
 			}
 		}
 

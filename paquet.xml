@@ -1,9 +1,9 @@
 <paquet
 	prefix="seenthis"
 	categorie="divers"
-	version="2.1.0"
+	version="2.2.0"
 	etat="stable"
-	compatibilite="[3.0.0;["
+	compatibilite="[3.1.0;["
 	schema="1.1.8"
 >	
 
@@ -24,4 +24,5 @@
 	<necessite nom="queue" />
 	<necessite nom="detecter_langue" />
 	<necessite nom="lien_court" />
+	<necessite nom="facteur" />
 </paquet>
