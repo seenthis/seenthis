@@ -106,9 +106,6 @@ function seenthis_declarer_tables_principales($tables_principales){
 		KEY `uuid` (`uuid`),
 		KEY `date` (`date`),
 		KEY `id_me` (`id_me`)"
-	## SPIP 2.1 n'accepte pas les KEY avec (60)
-	## on l'ajoute a la main plus bas
-	#		KEY `tag` (`tag`(60)),
 	);
 
 

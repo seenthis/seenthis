@@ -467,9 +467,7 @@ CREATE TABLE `spip_me_tags` (
   `off` char(3) NOT NULL DEFAULT 'non',
   KEY `uuid` (`uuid`),
   KEY `date` (`date`),
-  KEY `id_me` (`id_me`),
-  KEY `tag` (`tag`(60)),
-  KEY `spip_me_tags_index_tags` (`class`,`tag`(255))
+  KEY `id_me` (`id_me`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

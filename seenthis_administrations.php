@@ -74,6 +74,11 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	$maj['1.1.8'] = array(
 		array('sql_update','spip_auteurs',array('troll_forcer'=>0),"troll_forcer IS NULL"),
 	);
+	// en 1.1.9, retirer les index sur spip_me_tags car ils génèrent des erreurs SQL cf https://github.com/seenthis/seenthis_squelettes/issues/149 & https://github.com/seenthis/hebergement/issues/12
+	$maj['1.1.9'] = array(
+		array('sql_alter',"TABLE spip_me_tags DROP INDEX tag"),
+		array('sql_alter',"TABLE spip_me_tags DROP INDEX spip_me_tags_index_tags"),
+	);
 
 	include_spip('base/upgrade');
 	maj_plugin($nom_meta_base_version, $version_cible, $maj);
