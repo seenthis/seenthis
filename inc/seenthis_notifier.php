@@ -169,8 +169,8 @@ function notifier_me($id_me, $id_parent) {
 	$nom_auteur = nom_auteur($id_auteur_me);
 	$texte_mail = notifier_construire_texte($id_parent, $id_me);
 	$texte_mail .= ($id_parent > 0)
-		? "\n\n" . _HTTPS . "://" . _HOST . "/messages/$id_parent#message$id_me"
-		: "\n\n" . _HTTPS . "://" . _HOST . "/messages/$id_me";
+		? "\n\n" . _HTTPS . "://" . _HOST . "/". $GLOBALS['url_arbo_types']['message'] ."/$id_parent#message$id_me"
+		: "\n\n" . _HTTPS . "://" . _HOST . "/". $GLOBALS['url_arbo_types']['message'] ."/$id_me";
 
 	// va contenir tous les destinataires du mail
 	$id_dest = array();
