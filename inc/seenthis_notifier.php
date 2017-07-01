@@ -244,6 +244,13 @@ function notifier_me($id_me, $id_parent) {
 		unset($logins);
 	}
 
+	$id_dest = pipeline('seenthis_notifierme_destinataires',
+		array(
+			'args'=>array('id_me'=>$id_me,'id_parent'=>$id_parent),
+			'data'=>$id_dest
+		)
+	);
+
 	// toutes les raisons precedentes ne doivent jamais envoyer a l'auteur.e
 	// lui-meme : on filtre
 	foreach ($id_dest as $k => $id) {
@@ -255,13 +262,6 @@ function notifier_me($id_me, $id_parent) {
 	if (tester_mail_auteur($id_auteur_me, "mail_mes_billets")) {
 		$id_dest[] = $id_auteur_me;
 	}
-
-	$id_dest = pipeline('seenthis_notifierme_destinataires',
-		array(
-			'args'=>array('id_me'=>$id_me,'id_parent'=>$id_parent),
-			'data'=>$id_dest
-		)
-	);
 
 	// Envoyer si besoin
 	if (isset($id_dest)) {
