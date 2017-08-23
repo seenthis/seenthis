@@ -265,7 +265,7 @@ function notifier_me($id_me, $id_parent) {
 	}
 
 	// Envoyer si besoin
-	if (isset($id_dest)) {
+	if (isset($id_dest) and count($id_dest) > 0) {
 		$seenthis = $GLOBALS['meta']['nom_site'];
 		mb_internal_encoding("UTF-8");
 		$corps_mail['nom_envoyeur'] = mb_encode_mimeheader(str_replace('@', '', $nom_auteur) .' - '. lire_meta('nom_site'), "UTF-8", "Q");
