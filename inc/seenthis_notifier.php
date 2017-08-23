@@ -167,7 +167,8 @@ function notifier_me($id_me, $id_parent) {
 	$texte = texte_de_me($id_me);
 	$titre_mail = ($id_parent > 0) ? 'Re: ' . trim(extraire_titre(texte_de_me($id_parent))) : trim(extraire_titre($texte));
 	$nom_auteur = nom_auteur($id_auteur_me);
-	$texte_mail = notifier_construire_texte($id_parent, $id_me);
+	$notifier_construire_texte = charger_fonction('notifier_construire_texte', '');
+	$texte_mail = $notifier_construire_texte($id_parent, $id_me);
 	$texte_mail .= ($id_parent > 0)
 		? "\n\n" . _HTTPS . "://" . _HOST . "/". $GLOBALS['url_arbo_types']['message'] ."/$id_parent#message$id_me"
 		: "\n\n" . _HTTPS . "://" . _HOST . "/". $GLOBALS['url_arbo_types']['message'] ."/$id_me";
@@ -312,7 +313,7 @@ function notifier_me($id_me, $id_parent) {
 	}
 }
 
-function notifier_construire_texte($id_parent, $id_me) {
+function notifier_construire_texte_dist($id_parent, $id_me) {
 	if (!$id_parent) $id_parent = $id_me;
 	$conversation = sql_allfetsel("id_me, id_auteur", "spip_me", "(id_me=$id_parent OR id_parent=$id_parent) AND statut='publi' AND id_me <= $id_me ORDER BY date");
 
