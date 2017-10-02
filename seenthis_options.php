@@ -15,16 +15,16 @@ function nofollow($texte){
 } 
 
 
-define (_REG_CHARS, "a-z0-9\pN\pL\pM\'‘’°\&\+–\_•·⋅");
+define ('_REG_CHARS', "a-z0-9\pN\pL\pM\'‘’°\&\+–\_•·⋅");
 
-define (_REG_HASH, "(\#["._REG_CHARS."\@\.\/-]*["._REG_CHARS."])");
-define (_REG_URL, "((http|ftp)s?:\/\/["._REG_CHARS."\"#~!«»“”;:\|\.’\?=&%@!\/\,\$\(\)\[\]\\\\<>*-]+["._REG_CHARS."#«»“”\/\=\(\)\[\]\\\\\$*-])");
-//define(_REG_URL, "(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]\{\};:'\".,<>?«»“”‘’]))");
-define (_REG_PEOPLE, "\B@[a-zA-Z0-9\.\_\-]+[a-zA-Z0-9\_\-]");
+define ('_REG_HASH', "(\#["._REG_CHARS."\@\.\/-]*["._REG_CHARS."])");
+define ('_REG_URL', "((http|ftp)s?:\/\/["._REG_CHARS."\"#~!«»“”;:\|\.’\?=&%@!\/\,\$\(\)\[\]\\\\<>*-]+["._REG_CHARS."#«»“”\/\=\(\)\[\]\\\\\$*-])");
+//define('_REG_URL', "(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]\{\};:'\".,<>?«»“”‘’]))");
+define ('_REG_PEOPLE', "\B@[a-zA-Z0-9\.\_\-]+[a-zA-Z0-9\_\-]");
 
-define (_REG_DEBUT_URL, "((http|ftp)s?:\/\/(www\.)?)");
-define (_REG_FIN_URL, "(\.(html?|jpg|gif|png|php|css|js)\/?$)");
-define (_REG_CODE, '```([a-z]*\n.+?)```|`([^`\n]+)`');
+define ('_REG_DEBUT_URL', "((http|ftp)s?:\/\/(www\.)?)");
+define ('_REG_FIN_URL', "(\.(html?|jpg|gif|png|php|css|js)\/?$)");
+define ('_REG_CODE', '```([a-z]*\n.+?)```|`([^`\n]+)`');
 
 
 
@@ -1188,6 +1188,4 @@ function seenthis_affichage_final($t) {
 	return $t;
 }
 
-define('_HTTPS', ($_SERVER["HTTPS"] == 'on') ? 'https' : 'http');
-
-?>
+define('_HTTPS', (!empty($_SERVER["HTTPS"]) and $_SERVER["HTTPS"] == 'on') ? 'https' : 'http');
