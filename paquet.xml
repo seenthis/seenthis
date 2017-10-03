@@ -4,7 +4,7 @@
 	version="2.2.3"
 	etat="stable"
 	compatibilite="[3.1.0;["
-	schema="1.1.9"
+	schema="1.1.8"
 >	
 
 	<nom>Seenthis</nom>
