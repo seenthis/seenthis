@@ -97,6 +97,8 @@ CREATE TABLE IF NOT EXISTS `spip_auteurs` (
   `mail_rep_partage` tinyint(1) NOT NULL default '1',
   `mail_rep_billet` tinyint(1) NOT NULL default '0',
   `mail_rep_conv` tinyint(1) NOT NULL default '0',
+  `mail_suivre_moi` tinyint(1) NOT NULL default '1',
+  `mail_mes_billets` tinyint(1) NOT NULL default '0',
   `mail_tag_suivi` tinyint(1) NOT NULL default '0',
   `liens_partage_fb` tinyint(1) NOT NULL default '0',
   `liens_partage_tw` tinyint(1) NOT NULL default '0',
