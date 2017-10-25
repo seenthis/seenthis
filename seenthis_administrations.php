@@ -74,6 +74,10 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	$maj['1.1.8'] = array(
 		array('sql_update','spip_auteurs',array('troll_forcer'=>0),"troll_forcer IS NULL"),
 	);
+	// en 1.1.9, poser mail_tag_suivi=0
+	$maj['1.1.9'] = array(
+		array('maj_tables', array('spip_auteurs')),
+	);
 
 	include_spip('base/upgrade');
 	maj_plugin($nom_meta_base_version, $version_cible, $maj);

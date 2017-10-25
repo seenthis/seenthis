@@ -705,7 +705,7 @@ function supprimer_titre($texte, $long) {
 function tester_mail_auteur($id_auteur, $val) {
 	if (!(isset($GLOBALS["envoi_mail"]["$id_auteur"]))) {
 		$query = sql_select(
-			"mail_nouv_billet, mail_partage, mail_rep_moi, mail_rep_partage, mail_rep_billet, mail_rep_conv, mail_suivre_moi, mail_mes_billets",
+			"mail_nouv_billet, mail_partage, mail_rep_moi, mail_rep_partage, mail_rep_billet, mail_rep_conv, mail_suivre_moi, mail_mes_billets, mail_tag_suivi",
 			"spip_auteurs",
 			"id_auteur=$id_auteur");
 		if ($row = sql_fetch($query)) {

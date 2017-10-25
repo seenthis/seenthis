@@ -245,6 +245,19 @@ function notifier_me($id_me, $id_parent) {
 		unset($logins);
 	}
 
+	// auteurs qui suivent les tags présents dans le post
+	$t = preg_replace("/"._REG_URL."/ui", "", $texte);
+	if (preg_match_all("/"._REG_HASH."/ui", $t, $tags)) {
+		foreach(array_unique(array_values($tags[0])) as $tag) {
+			$query_follow = sql_select('id_follow', 'spip_me_follow_tag', "tag REGEXP '^$tag'");
+			while ($row_follow = sql_fetch($query_follow)) {
+				if (tester_mail_auteur($row_follow['id_follow'], 'mail_tag_suivi')) {
+					$id_dest[] = $row_follow['id_follow'];
+				}
+			}
+		}
+	}
+
 	$id_dest = pipeline('seenthis_notifierme_destinataires',
 		array(
 			'args'=>array('id_me'=>$id_me,'id_parent'=>$id_parent),
