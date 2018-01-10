@@ -53,13 +53,19 @@ function notifier_partage($id_auteur_partage, $id_me) {
 
 	$url_aut_partage = _HTTPS . "://" . _HOST . "/" . generer_url_entite($id_auteur_partage, "auteur");
 
-	if ($lang == "en") {
-		$titre_mail = _L("$nom_aut_partage (@$login_aut_partage) has shared one of your posts on $seenthis.");
-		$annonce = _L("Hi $nom_dest,\n\n$nom_aut_partage (@$login_aut_partage) has shared one of your posts on $seenthis.");
-	} else {
-		$titre_mail = _L("$nom_aut_partage (@$login_aut_partage) a partagé un de vos billets sur $seenthis.");
-		$annonce = _L("Bonjour $nom_dest,\n\n$nom_aut_partage (@$login_aut_partage) a partagé un de vos billets sur $seenthis.");
-	}
+	$titre_mail = _T('seenthis:notif_partage_titre', array(
+		'nom_aut_partage' => $nom_aut_partage,
+		'login_aut_partage' => $login_aut_partage,
+		'seenthis' => $seenthis,
+		'spip_lang' => $lang
+	));
+	$annonce = _T('seenthis:notif_partage_texte', array(
+		'nom_dest' => $nom_dest,
+		'nom_aut_partage' => $nom_aut_partage,
+		'login_aut_partage' => $login_aut_partage,
+		'seenthis' => $seenthis,
+		'spip_lang' => $lang
+	));
 
 	$texte_message = message_texte(texte_de_me($id_me));
 	$footer = seenthis_message_footer($lang, $seenthis);
@@ -79,12 +85,11 @@ function notifier_partage($id_auteur_partage, $id_me) {
  * @return string the footer to be used
  */
 function seenthis_message_footer($lang, $seenthis) {
-	if ($lang == "en") {
-		return _L("\n\n---------\nTo stop receiving these alerts from $seenthis,\n you can configure your preferences in your profile\n" . _HTTPS . "://" . _HOST . "\n\n");
-	} else {
-		return _L("\n\n---------\nPour ne plus recevoir d'alertes de $seenthis,\n vous pouvez régler vos préférences dans votre profil\n" . _HTTPS . "://" . _HOST . "\n\n");
-	}
-
+	return _T('seenthis:notif_message_footer', array(
+		'seenthis' => $seenthis,
+		'url' =>  _HTTPS . "://" . _HOST,
+		'spip_lang' => $lang
+	));
 }
 
 /**
@@ -130,13 +135,19 @@ function notifier_suivre_moi($id_auteur, $id_follow) {
 				$url_me = _HTTPS . "://" . _HOST . "/" . generer_url_entite($id_follow, "auteur");
 
 				$seenthis = $GLOBALS['meta']['nom_site']; # "Seenthis";
-				if ($lang == "en") {
-					$titre_mail = _L("$nom_aut (@$login_aut) is following you on $seenthis.");
-					$annonce = _L("Hi $nom_dest,\n\n$nom_aut (@$login_aut) is following you on $seenthis.");
-				} else {
-					$titre_mail = _L("$nom_aut (@$login_aut) vous suit sur $seenthis.");
-					$annonce = _L("Bonjour $nom_dest,\n\n$nom_aut (@$login_aut) vous suit sur $seenthis.");
-				}
+				$titre_mail = _T('seenthis:notif_suivremoi_titre', array(
+					'nom_aut' => $nom_aut,
+					'login_aut' => $login_aut,
+					'seenthis' => $seenthis,
+					'spip_lang' => $lang
+				));
+				$annonce = _T('seenthis:notif_suivremoi_texte', array(
+					'nom_dest' => $nom_dest,
+					'nom_aut' => $nom_aut,
+					'login_aut' => $login_aut,
+					'seenthis' => $seenthis,
+					'spip_lang' => $lang
+				));
 
 				$footer = seenthis_message_footer($lang, $seenthis);
 				$corps_mail['texte'] = "\n\n$annonce\n$url_me\n\n$footer";
@@ -301,19 +312,13 @@ function notifier_me($id_me, $id_parent) {
 				$lang = $row_dest["lang"];
 				spip_log("notifier $id_me($id_parent) a $email_dest", 'notifier');
 
-				if ($lang == "en") {
-					if ($id_parent == 0) {
-						$annonce = _L("$nom_auteur has posted a new message");
-					} else {
-						if ($nom_auteur == $nom_auteur_init) $annonce = _L("$nom_auteur has answered his/her own message");
-						else $annonce = _L("$nom_auteur has answered to $nom_auteur_init");
-					}
+				if ($id_parent == 0) {
+					$annonce = _T('seenthis:notif_me_nouveau', array('nom_auteur' => $nom_auteur, 'spip_lang' => $lang));
 				} else {
-					if ($id_parent == 0) {
-						$annonce = _L("$nom_auteur a posté un nouveau billet");
+					if ($nom_auteur == $nom_auteur_init) {
+						$annonce = _T('seenthis:notif_me_reponse', array('nom_auteur' => $nom_auteur, 'spip_lang' => $lang));
 					} else {
-						if ($nom_auteur == $nom_auteur_init) $annonce = _L("$nom_auteur a répondu à un de ses billets");
-						else $annonce = _L("$nom_auteur a répondu à un billet de $nom_auteur_init");
+						$annonce = _T('seenthis:notif_me_reponse_a', array('nom_auteur' => $nom_auteur, 'nom_auteur_init' => $nom_auteur_init, 'spip_lang' => $lang));
 					}
 				}
 
