@@ -71,7 +71,6 @@ function notifier_partage($id_auteur_partage, $id_me) {
 	$footer = seenthis_message_footer($lang, $seenthis);
 	$corps_mail['texte'] = "\n\n$annonce\n$url_aut_partage\n\n$texte_message\n\n$footer";
 	$corps_mail['headers'] = "Message-Id: <$id_auteur.$id_auteur_partage." . time() . "@" . _HOST . ">\n";
-	$seenthis = $GLOBALS['meta']['nom_site']; # "Seenthis";
 	$corps_mail['from'] = "$seenthis <no-reply@" . _HOST . ">";
 	seenthis_envoyer_mail($email_dest, $titre_mail, $corps_mail);
 	spip_log("notifier partage $id_me part $id_auteur_partage pour $id_auteur", 'notifier');
