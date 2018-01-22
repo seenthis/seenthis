@@ -32,7 +32,7 @@ function _traiter_code($regs) {
 	$le_hash = traiter_echap_code_dist(array(null,null,null,$code));
 
 	// dirty pour recuperer un code avec des lignes alternees (pour coloration)
-	$le_hash = str_replace('<br />', '</code></div><div class="spip_code"><code>', $le_hash);
+	$le_hash = str_replace('<br>', '</code></div><div class="spip_code"><code>', $le_hash);
 
 	$GLOBALS["num_hash"] ++;
 	$GLOBALS["les_hashs"][$GLOBALS["num_hash"]] = $le_hash;
@@ -128,7 +128,7 @@ function _creer_lien_riche($lien) {
 		// cf. inc/distant ligne 632
 		$a = $GLOBALS['meta']["adresse_site"];
 		$GLOBALS['meta']["adresse_site"] = preg_replace(',(://.+?)/.*$,', '$1', $lien);
-		$image = afficher_miniature($lien);
+		$image = afficher_miniature($lien, 600, 400);
 		$GLOBALS['meta']["adresse_site"] = $a;
 
 		if ($image) {
@@ -143,7 +143,7 @@ function _creer_lien_riche($lien) {
 			$lien_off= "<span class=\"lien_court\"><span class=\"lien_off\"> $lien </span></span>";
 			$image = str_replace("</a>", $lien_off."</a>", $image);
 
-			return $image;
+			return "<pics>$image</pics>";
 		}
 
 		//list($width, $height) = @getimagesize($lien);
@@ -437,16 +437,21 @@ function _traiter_texte($texte) {
 	$texte = preg_replace(",</blockquote>[\n\r\t\ ],", "</blockquote>", $texte);
 	$texte = str_replace("</blockquote></p>", "</blockquote>", $texte);
 
-	$texte = preg_replace(",([[:space:]]?)(\n|\r),", "<br />", $texte);
+	$texte = preg_replace(",([[:space:]]?)(\n|\r),", "<br>", $texte);
 
 	// Remettre les infos des liens
 	$texte = preg_replace_callback(",XXXLIEN([0-9]+)LIENXXX,", "_traiter_lien_retablir", $texte);
 	$texte = preg_replace_callback(",XXXHASH([0-9]+)HASHXXX,", "_traiter_hash_retablir", $texte);
 
-	$texte = str_replace("<p><br />", "<p>", $texte);
+	$texte = str_replace("<p><br>", "<p>", $texte);
 	$texte = str_replace("<p><div", "<div", $texte);
 	$texte = str_replace("</div></p>", "</div>", $texte);
 
+	$texte = str_replace("</pics><br><pics>", "</pics><pics>", $texte);
+	$texte = str_replace("</pics></p><p><pics>", "</pics><pics>", $texte);
+	$texte = str_replace("</pics><pics>", "", $texte);
+	$texte = str_replace("<pics>", "<div class='seenthis_pics'>", $texte);
+	$texte = str_replace("</pics>", "</div>", $texte);
 
 	if ($lang) $inserer = " lang=\"$lang\" dir=\"$dir\"";
 
