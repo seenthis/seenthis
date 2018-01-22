@@ -128,7 +128,7 @@ function _creer_lien_riche($lien) {
 		// cf. inc/distant ligne 632
 		$a = $GLOBALS['meta']["adresse_site"];
 		$GLOBALS['meta']["adresse_site"] = preg_replace(',(://.+?)/.*$,', '$1', $lien);
-		$image = afficher_miniature($lien);
+		$image = afficher_miniature($lien, 600, 400);
 		$GLOBALS['meta']["adresse_site"] = $a;
 
 		if ($image) {
