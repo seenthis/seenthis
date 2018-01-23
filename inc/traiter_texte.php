@@ -453,6 +453,9 @@ function _traiter_texte($texte) {
 	$texte = str_replace("<pics>", "<div class='seenthis_pics'>", $texte);
 	$texte = str_replace("</pics>", "</div>", $texte);
 
+	$texte = preg_replace_callback(",<div class\='seenthis_pics'>(.*)<\/div>,U", "_traiter_seenthis_pics", $texte);
+
+
 	if ($lang) $inserer = " lang=\"$lang\" dir=\"$dir\"";
 
 	if ($destinataires = join('',array_unique($destinataires)))
@@ -462,6 +465,12 @@ function _traiter_texte($texte) {
 	return "$destinataires<div$inserer>$texte</div>";
 }
 
+function _traiter_seenthis_pics($regs) {
+	$texte = $regs[1];
+
+	$total = substr_count($texte, "<a ");
+	return "<div class='seenthis_pics seenthis_pics_$total'>$texte</div>";
+}
 
 function _texte_inserer_embed($regs) {
 
