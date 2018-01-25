@@ -17,7 +17,7 @@ if (!defined('_MARQUEUR_URL'))
 ## utiliser des mots anglais
 $synonymes_types = array(
 	'mot' => 'tag',
-	'auteur '=> 'people',
+	'auteur' => 'people',
 	'message' => 'messages',
 	'site' => 'sites'
 );
