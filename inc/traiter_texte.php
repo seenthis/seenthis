@@ -507,7 +507,9 @@ function _texte_inserer_embed($regs) {
 }
 
 function _ajouter_embed($texte) {
-	$texte = preg_replace_callback(",(<a .*href=['\"])([^>]*)(['\"] class=['\"]spip_out['\"].*</a>),U", _texte_inserer_embed, $texte);
+	// Tous les liens sont dans un <span .lien_lien><a></span>
+	// donc il faut insérer l'autoembed *après* le </span> final
+	$texte = preg_replace_callback(",(<a .*href=['\"])([^>]*)(['\"] class=['\"]spip_out['\"].*</a></span>),U", _texte_inserer_embed, $texte);
 
 	return $texte;
 }
