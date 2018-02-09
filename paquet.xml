@@ -1,10 +1,11 @@
 <paquet
 	prefix="seenthis"
 	categorie="divers"
-	version="2.3.0"
+	version="2.3.1"
 	etat="stable"
 	compatibilite="[3.1.0;["
 	schema="1.1.9"
+	logo="prive/logo/logo_seenthis.png"
 >	
 
 	<nom>Seenthis</nom>
@@ -19,6 +20,9 @@
 	<pipeline nom="declarer_tables_auxiliaires" inclure="base/seenthis.php" />
 	<pipeline nom="declarer_tables_objets_surnoms" inclure="base/seenthis.php" />
 	<pipeline nom="declarer_champs_extras" inclure="base/seenthis.php" />
+
+
+
 
 	<necessite nom="microcache" />
 	<necessite nom="queue" />
