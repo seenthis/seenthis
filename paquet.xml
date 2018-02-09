@@ -21,6 +21,7 @@
 	<pipeline nom="declarer_tables_objets_surnoms" inclure="base/seenthis.php" />
 	<pipeline nom="declarer_champs_extras" inclure="base/seenthis.php" />
 
+	<menu nom="seenthis_troll" titre="Gérer les trolls" parent="bando_activite" icone="images/troll-16.png" action="gerer_trolls" />
 
 
 
