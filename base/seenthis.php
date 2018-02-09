@@ -112,8 +112,8 @@ function seenthis_declarer_tables_principales($tables_principales){
 	// ajouts dans spip_auteurs
 	$auteurs = &$tables_principales['spip_auteurs'];
 	$auteurs['field']['couleur'] = "varchar(6) NOT NULL DEFAULT '24b8dd'";
-	$auteurs['field']['troll'] = "bigint(21) NOT NULL DEFAULT '300'";
-	$auteurs['field']['troll_forcer'] = "bigint(21) DEFAULT NULL";
+	$auteurs['field']['troll'] = "bigint(21) DEFAULT NULL";
+	$auteurs['field']['troll_forcer'] = "bigint(21) NOT NULL DEFAULT '0'";
 	$auteurs['field']['copyright'] = "varchar(10) NOT NULL DEFAULT 'C'";
 	$auteurs['field']['mail_nouv_billet'] = "tinyint(1) NOT NULL DEFAULT '1'";
 	$auteurs['field']['mail_partage'] = "tinyint(1) NOT NULL DEFAULT '0'";
