@@ -1,0 +1,15 @@
+
+[<h3>Popularité recalculée (troll) : (#ENV{id_auteur}|calculer_troll{1})</h3>]
+
+<B_bloque>
+<h3>Auteur·e bloqué·e par [(#TOTAL_BOUCLE) personnes]</h3>
+
+<ul style="columns:2">
+<BOUCLE_bloque(spip_me_block){id_auteur=#ENV{id_auteur}}>
+	<BOUCLE_auteur(AUTEURS){id_auteur=#ID_BLOCK}{tous}>
+	<li><b>#TROLL</b> <a href="?exec=auteur&id_auteur=#ID_AUTEUR">#LOGIN</a></li>
+	</BOUCLE_auteur>
+</BOUCLE_bloque>
+</ul>
+
+</B_bloque>
