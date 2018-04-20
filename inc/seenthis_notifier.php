@@ -229,7 +229,7 @@ function notifier_me($id_me, $id_parent) {
 
 	// auteurs qui ont participé à la discussion
 	if ($id_parent > 0) {
-		$query = sql_select("id_auteur", "spip_me", "id_parent=$id_parent AND id_me!=$id_me");
+		$query = sql_select("id_auteur", "spip_me", "id_parent=$id_parent AND id_me!=$id_me AND statut='publi'");
 		while ($row = sql_fetch($query)) {
 			$id_auteur = $row["id_auteur"];
 
