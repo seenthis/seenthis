@@ -446,8 +446,11 @@ function sucrer_utm($url) {
 	# twitter/#!/truc
 	$url = preg_replace(",https?://twitter.com/#!/,", "http://twitter.com/", $url);
 
-	# &utm_xxx =
+	# &utm_xxx=
 	$url = preg_replace(",([\?\&]|\&amp;)utm\_.*,", "", $url);
+
+	# &fbclid=
+	$url = preg_replace(",([\?\&]|\&amp;)fbclid=.*,", "", $url);
 
 	# #.UQk2gR0q7bM mais pas #.jpg
 	if (!preg_match(',\.(jpe?g|png|gif|svg|mp3)$,', $url)){
