@@ -49,8 +49,8 @@ svn co svn://zone.spip.org/spip-zone/_plugins_/saisies/ saisies/
 svn co svn://zone.spip.org/spip-zone/_plugins_/soundmanager/ soundmanager/
 svn co svn://zone.spip.org/spip-zone/_plugins_/photoswipe/trunk/ photoswipe/
 
-svn co https://github.com/seenthis/seenthis/trunk/ seenthis/
-svn co https://github.com/seenthis/seenthis_squelettes/trunk/ seenthis_squelettes/
+svn co https://github.com/seenthis/seenthis/branches/spip31/ seenthis/
+svn co https://github.com/seenthis/seenthis_squelettes/branches/spip31/ seenthis_squelettes/
 ```
 
 
