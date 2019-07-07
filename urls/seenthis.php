@@ -18,7 +18,7 @@ if (!defined('_MARQUEUR_URL'))
 $synonymes_types = array(
 	'mot' => 'tag',
 	'auteur' => 'people',
-	'message' => 'messages',
+	'me' => 'messages',
 	'site' => 'sites'
 );
 
@@ -65,7 +65,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 				$g = urls_seenthis_dist($k[0]['id_parent'], $entite, $args, 'message'.$i);
 			# sinon c'est messages/$i
 			else
-				$g = $GLOBALS['url_arbo_types']['message'].'/'.$i;
+				$g = $GLOBALS['url_arbo_types']['me'].'/'.$i;
 
 			// Ajouter les args
 			if ($args)

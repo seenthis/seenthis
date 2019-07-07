@@ -51,7 +51,7 @@ function notifier_partage($id_auteur_partage, $id_me) {
 	$nom_dest = nom_auteur($id_auteur);
 	$lang = $row_dest["lang"];
 
-	$url_aut_partage = _HTTPS . "://" . _HOST . "/" . generer_url_entite($id_auteur_partage, "auteur");
+	$url_aut_partage = url_absolue(generer_url_entite($id_auteur_partage, 'auteur', '', '', true));
 
 	$titre_mail = _T('seenthis:notif_partage_titre', array(
 		'nom_aut_partage' => $nom_aut_partage,
@@ -130,7 +130,7 @@ function notifier_suivre_moi($id_auteur, $id_follow) {
 			if (strlen(trim($email_dest)) > 3) {
 
 				include_spip("inc/filtres_mini");
-				$url_me = _HTTPS . "://" . _HOST . "/" . generer_url_entite($id_follow, "auteur");
+				$url_me = url_absolue(generer_url_entite($id_follow, 'auteur', '', '', true));
 
 				$seenthis = $GLOBALS['meta']['nom_site']; # "Seenthis";
 				$titre_mail = _T('seenthis:notif_suivremoi_titre', array(
@@ -177,9 +177,7 @@ function notifier_me($id_me, $id_parent) {
 	$nom_auteur = nom_auteur($id_auteur_me);
 	$notifier_construire_texte = charger_fonction('notifier_construire_texte', '');
 	$texte_mail = $notifier_construire_texte($id_parent, $id_me);
-	$texte_mail .= ($id_parent > 0)
-		? "\n\n" . _HTTPS . "://" . _HOST . "/". $GLOBALS['url_arbo_types']['message'] ."/$id_parent#message$id_me"
-		: "\n\n" . _HTTPS . "://" . _HOST . "/". $GLOBALS['url_arbo_types']['message'] ."/$id_me";
+	$texte_mail .= "\n\n" . url_absolue(generer_url_entite($id_me, 'me', '', '', true));
 
 	// va contenir tous les destinataires du mail
 	$id_dest = array();
