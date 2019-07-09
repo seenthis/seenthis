@@ -206,7 +206,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			}
 		}
 		else
-		if (preg_match(','.$GLOBALS['url_arbo_types']['message'].'/(\d+)([?].*)?$,', $i, $r)) {
+		if (preg_match(','.$GLOBALS['url_arbo_types']['me'].'/(\d+)([?].*)?$,', $i, $r)) {
 			$g = array(
 				array('id_me' => $r[1]),
 				'message',
