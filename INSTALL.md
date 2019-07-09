@@ -189,13 +189,6 @@ svn co svn://zone.spip.org/spip-zone/_plugins_/palette/trunk palette/
 ```
 le configurer pour activation sur les pages publiques permet d'offrir la roue chromatique dans les préférences (http://contrib.spip.net/Palette) ; attention, palette nécessite l'activation de cfg.
 
-## seenthis_arbo_anglais
-```
-svn co https://github.com/seenthis/seenthis_arbo_anglais/trunk/ seenthis_arbo_anglais/
-```
-un plugin bidouille pour les URLs des articles (et pas des messages) de seenthis.net
-à priori ce n'est pas indispensable
-
 ## Sphinx
 
 Pour avoir le moteur de recherche basé sur sphinx, installer d'abord Sphinx (http://sphinxsearch.com/ - version 2.2.3 minimum!), puis ajouter deux plugins :
