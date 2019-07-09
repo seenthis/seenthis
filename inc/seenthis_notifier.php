@@ -173,7 +173,7 @@ function notifier_me($id_me, $id_parent) {
 
 	$id_auteur_me = $row["id_auteur"];
 	$texte = texte_de_me($id_me);
-	$titre_mail = ($id_parent > 0) ? 'Re: ' . trim(extraire_titre(texte_de_me($id_parent))) : trim(extraire_titre($texte));
+	$titre_mail = ($id_parent > 0) ? 'Re: ' . trim(extraire_titre(texte_de_me($id_parent), 100, true)) : trim(extraire_titre($texte, 100, true));
 	$nom_auteur = nom_auteur($id_auteur_me);
 	$notifier_construire_texte = charger_fonction('notifier_construire_texte', '');
 	$texte_mail = $notifier_construire_texte($id_parent, $id_me);
