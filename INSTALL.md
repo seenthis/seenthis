@@ -19,10 +19,10 @@ Une table enregistre les partages : spip_me_share.
 
 # Télécharger les composants :
 
-# On commence par installer SPIP en version 3.1
+# On commence par installer SPIP en version 3.2
 ```
 cd www/
-svn co svn://trac.rezo.net/spip/branches/spip-3.1/ seenthis/
+svn co svn://trac.rezo.net/spip/branches/spip-3.2/ seenthis/
 ```
 
 *On ajoute ensuite les plugins suivants :*
