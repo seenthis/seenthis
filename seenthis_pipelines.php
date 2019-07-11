@@ -16,3 +16,10 @@ function seenthis_afficher_contenu_objet($flux){
 	
 	return $flux;
 }
+
+function seenthis_facteur_pre_envoi($facteur){
+	// focer les mails au format txt
+	$facteur->ContentType = 'text/plain';
+	$facteur->AltBody = '';
+	return $facteur;
+}

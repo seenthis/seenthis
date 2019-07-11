@@ -21,6 +21,7 @@
 	<pipeline nom="declarer_tables_objets_surnoms" inclure="base/seenthis.php" />
 	<pipeline nom="declarer_champs_extras" inclure="base/seenthis.php" />
 
+	<pipeline nom="facteur_pre_envoi" inclure="seenthis_pipelines.php" />
 	<pipeline nom="afficher_contenu_objet" inclure="seenthis_pipelines.php" />
 
 
