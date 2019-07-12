@@ -67,6 +67,10 @@ allow from all
 # à commenter si vous souhaitez utiliser sphinx pour la recherche
 RewriteRule ^recherche/?$	spip.php?page=recherche [QSA,L]
 
+RewriteRule ^(tags/.*)\$$     $1?page=mot_fin [QSA,L]
+RewriteRule ^(tags/.*)\*$     $1?page=mot_flou [QSA,L]
+RewriteRule ^(tag/.*)$ spip.php [QSA,L]
+
 RewriteRule ^(api/messages.*)$     index.php?action=api [QSA,L]
 RewriteRule ^(api/people.*)$       index.php?action=api_auteur [QSA,L]
 RewriteRule ^api/url/(.*)$       index.php?action=api_url&code=$1 [QSA,L]
