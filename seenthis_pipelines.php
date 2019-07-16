@@ -21,5 +21,7 @@ function seenthis_facteur_pre_envoi($facteur){
 	// focer les mails au format txt
 	$facteur->ContentType = 'text/plain';
 	$facteur->AltBody = '';
+	// décoder les entités html du sujet (insérées par typo_guillemets dans post_typo par exemple)
+	$facteur->Subject = html_entity_decode($facteur->Subject, ENT_QUOTES, $facteur->CharSet);
 	return $facteur;
 }
