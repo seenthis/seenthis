@@ -1,15 +1,5 @@
 <?php
 
-/***************************************************************************\
- *  SPIP, Systeme de publication pour l'internet                           *
- *                                                                         *
- *  Copyright (c) 2001-2011                                                *
- *  Arnaud Martin, Antoine Pitrou, Philippe Riviere, Emmanuel Saint-James  *
- *                                                                         *
- *  Ce programme est un logiciel libre distribue sous licence GNU/GPL.     *
- *  Pour plus de details voir le fichier COPYING.txt ou l'aide en ligne.   *
-\***************************************************************************/
-
 if (!defined('_ECRIRE_INC_VERSION')) return;
 
 /*
@@ -25,39 +15,46 @@ if (!defined('_MARQUEUR_URL'))
 	define('_MARQUEUR_URL', false);
 
 ## utiliser des mots anglais
-$GLOBALS['url_arbo_types']=array(
-	'mot'=>'tag',
-	'auteur'=>'people',
-	'site' =>'sites'
+$synonymes_types = array(
+	'mot' => 'tag',
+	'auteur' => 'people',
+	'me' => 'messages',
+	'site' => 'sites'
 );
+
+if (isset($GLOBALS['url_arbo_types']) and is_array($GLOBALS['url_arbo_types'])) {
+	$GLOBALS['url_arbo_types'] = array_merge($synonymes_types, $GLOBALS['url_arbo_types']);
+} else {
+	$GLOBALS['url_arbo_types'] = $synonymes_types;
+}
+
 
 ## delicate composition pour prendre le login a la place du nom dans l'URL
 include_spip('public/interfaces');
 $GLOBALS['table_titre']['auteurs'] = 'login AS titre, lang';
 
 
-// http://doc.spip.org/@urls_libres_dist
+/**
+ * API : retourner l'url d'un objet si i est numerique
+ * ou decoder cette url si c'est une chaine
+ * array([contexte],[type],[url_redirect],[fond]) : url decodee
+ *
+ * http://code.spip.net/@urls_arbo_dist
+ *
+ * @param string|int $i
+ * @param string $entite
+ * @param string|array $args
+ * @param string $ancre
+ * @return array|string
+ */
 function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
-	define('_SET_HTML_BASE',1);
+	if (!defined('_SET_HTML_BASE')){
+		define('_SET_HTML_BASE',1);
+	}
 
 	if (is_numeric($i)) {
 		include_spip('base/abstract_sql');
-
-		# #URL_MOT (obsolète !)
-		if ($entite == "mot") {
-			$k = sql_fetsel('m.titre AS titre, g.titre AS type, m.id_groupe AS id_groupe FROM spip_mots AS m LEFT JOIN spip_groupes_mots AS g ON m.id_groupe=g.id_groupe WHERE m.id_mot='.sql_quote($i));
-			if (!$k) return '';
-
-			# tag/spip
-			if ($k['id_groupe'] == 1)
-				$tag = $k['titre'];
-			# tag/technology:radiation
-			else
-				$tag = $k['type'].':'.$k['titre'];
-			$g = _DIR_RACINE.$GLOBALS['url_arbo_types']['mot'].'/'
-				. urlencode_1738_plus(mb_strtolower($tag,'UTF8'));
-		}
 
 		# #URL_ME
 		if ($entite == 'me') {
@@ -68,7 +65,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 				$g = urls_seenthis_dist($k[0]['id_parent'], $entite, $args, 'message'.$i);
 			# sinon c'est messages/$i
 			else
-				$g = 'messages/'.$i;
+				$g = $GLOBALS['url_arbo_types']['me'].'/'.$i;
 
 			// Ajouter les args
 			if ($args)
@@ -87,7 +84,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
 			# people/login
 			$g = _DIR_RACINE.$GLOBALS['url_arbo_types']['auteur'].'/'
-				. urlencode_1738_plus(mb_strtolower($k['login'],'UTF8'));
+				. urlencode_1738_plus(spip_strtolower($k['login'],'UTF8'));
 
 		}
 
@@ -106,7 +103,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 	} else if (TRUE) {
 
 		# la page d'un tag manuel ou opencalais :
-		if (preg_match(',/tag/(([^:]+):(.*)|(.*))$,',
+		if (preg_match(','.$GLOBALS['url_arbo_types']['mot'].'/(([^:]+):(.*)|(.*))$,',
 		preg_replace('/[?].*$/', '', $i), $r)) {
 			# tag/spip
 			if (isset($r[4])) {
@@ -165,14 +162,18 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			# une fois les vieux urls de mots resorbes, on pourra supprimer ce if()
 
 		}
+		# la page /tags/
+		else if (preg_match(',tags/?$,', $i)) {
+			$g = array($args, 'tags');
+		}
 
 		# la page /people/
-		else if (preg_match(',/people/?([?].*)?$,', $i)) {
+		else if (preg_match(','.$GLOBALS['url_arbo_types']['auteur'].'/?([?].*)?$,', $i)) {
 			$g = array($args, 'people');
 		}
 		# la page people/xxx/follow/feed => ramener sur people/xxx
 		else if (
-			preg_match(',^.*(/people/([^?/]+))(/follow|/only|/all)?((/feed)(_tw)?)?([?].*)?$,', $i, $r)
+			preg_match(',^.*('.$GLOBALS['url_arbo_types']['auteur'].'/([^?/]+))(/follow|/only|/all)?((/feed)(_tw)?)?([?].*)?$,', $i, $r)
 		) {
 			if ($f = sql_fetsel('id_auteur', 'spip_auteurs', 'login='.sql_quote($r[2]))) {
 				$args['id_auteur'] = $f['id_auteur'];
@@ -205,7 +206,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			}
 		}
 		else
-		if (preg_match(',/messages/(\d+)([?].*)?$,', $i, $r)) {
+		if (preg_match(','.$GLOBALS['url_arbo_types']['me'].'/(\d+)([?].*)?$,', $i, $r)) {
 			$g = array(
 				array('id_me' => $r[1]),
 				'message',
@@ -215,7 +216,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 		# la page d'un site :
 		else
-		if (preg_match(',/sites/(\d+)([?].*)?$,i', $i, $r)) {
+		if (preg_match(','.$GLOBALS['url_arbo_types']['site'].'/(\d+)([?].*)?$,i', $i, $r)) {
 			if ($f = sql_fetsel('id_syndic, url_site, md5', 'spip_syndic', 'id_syndic='.$r[1])) {
 				$args['id_syndic'] = $f['id_syndic'];
 				$args['url'] = $f['url_site'];
@@ -229,7 +230,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			);
 		}
 		else
-		if (preg_match(',/sites/([0-9a-f]{32})([?].*)?$,i', $i, $r)) {
+		if (preg_match(','.$GLOBALS['url_arbo_types']['site'].'/([0-9a-f]{32})([?].*)?$,i', $i, $r)) {
 			/* old style = id_syndic */
 			if ($f = sql_fetsel('id_syndic, url_site, md5', 'spip_syndic', 'MD5(url_site)='.sql_quote($r[1]))) {
 				$args['id_syndic'] = $f['id_syndic'];
@@ -245,7 +246,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 
 		else
-		if (preg_match(',/sites/(https?:.*)([?].*)?$,', $i, $r)) {
+		if (preg_match(','.$GLOBALS['url_arbo_types']['site'].'/(https?:.*)([?].*)?$,', $i, $r)) {
 			/* old style = id_syndic */
 
 			if ($f = sql_fetsel('id_syndic, url_site, md5', 'spip_syndic', 'MD5(url_site)='.sql_quote(md5($r[1])))) {
@@ -262,7 +263,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 
 		else
-		if (preg_match(',/sites/?([?].*)?$,', $i, $r)) {
+		if (preg_match(','.$GLOBALS['url_arbo_types']['site'].'/?([?].*)?$,', $i, $r)) {
 			$g = array(
 				$args,
 				'sites',
@@ -272,7 +273,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		}
 
 		else
-		if (preg_match(',/all([?].*)?$,i', $i, $r)) {
+		if (preg_match(',all([?].*)?$,i', $i, $r)) {
 			$args['follow'] = 'all';
 			$g = array(
 				$args,

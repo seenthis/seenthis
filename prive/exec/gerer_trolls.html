@@ -1,0 +1,31 @@
+#CACHE{0}
+
+
+<h1 class="grostitre">Gérer les trolls</h1>
+
+
+<h2>Les trolls (valeur à zéro ou 1)</h2>
+<ul style="padding-bottom: 40px; columns: 2;">
+<BOUCLE_bottom(AUTEURS){par troll}{troll<=1}{tous}{doublons}>
+	<li><a href="?exec=auteur&id_auteur=#ID_AUTEUR">#LOGIN</a>
+</BOUCLE_bottom>
+</ul>
+
+
+<h2>Les plus populaires</h2>
+<ul style="padding-bottom: 40px; columns: 2;">
+<BOUCLE_top(AUTEURS){par troll}{inverse}{troll>=3000}{tous}{doublons}>
+	<li><b>[(#TROLL)]</b> <a href="?exec=auteur&id_auteur=#ID_AUTEUR">#LOGIN</a>
+</BOUCLE_top>
+</ul>
+
+
+<B_forcer>
+<h2>Les valeurs forcées (troll_forcer ≠ 0)</h2>
+<ul style="padding-bottom: 40px; columns: 2;">
+<BOUCLE_forcer(AUTEURS){par troll}{inverse}{troll_forcer!=''}{tous}>
+	<li><b>[(#TROLL_FORCER)]</b> <a href="?exec=auteur&id_auteur=#ID_AUTEUR">#LOGIN</a>
+</BOUCLE_forcer>
+</ul>
+</B_forcer>
+

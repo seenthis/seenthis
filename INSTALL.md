@@ -19,10 +19,10 @@ Une table enregistre les partages : spip_me_share.
 
 # Télécharger les composants :
 
-# On commence par installer SPIP en version 2.1
+# On commence par installer SPIP en version 3.2
 ```
 cd www/
-svn co svn://trac.rezo.net/spip/branches/spip-2.1/ seenthis/
+svn co svn://trac.rezo.net/spip/branches/spip-3.2/ seenthis/
 ```
 
 *On ajoute ensuite les plugins suivants :*
@@ -38,43 +38,33 @@ svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/detecter_langue/
 svn co svn://zone.spip.org/spip-zone/_plugins_/fulltext/ fulltext/
 svn co svn://zone.spip.org/spip-zone/_plugins_/gravatar/ gravatar/
 svn co svn://zone.spip.org/spip-zone/_plugins_/inclure-ajaxload/ inclure-ajaxload/
-svn co svn://zone.spip.org/spip-zone/_plugins_/iterateurs/ iterateurs/
-svn co svn://zone.spip.org/spip-zone/_plugins_/job_queue/ job_queue/
 svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/lien_court/branches/spip2/ lien_court/
-svn co svn://zone.spip.org/spip-zone/_plugins_/mediabox/ mediabox/
 svn co svn://zone.spip.org/spip-zone/_plugins_/memoization/ memoization/
 svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/microcache/ microcache/
 svn co svn://zone.spip.org/spip-zone/_plugins_/opensearch/ opensearch/
 svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/recuperer_favicon/ recuperer_favicon/
-svn co svn://zone.spip.org/spip-zone/_plugins_/textwheel/ textwheel/
 svn co svn://zone.spip.org/spip-zone/_plugins_/typo_guillemets/ typo_guillemets/
-svn co svn://zone.spip.org/spip-zone/_plugins_/champs_extras/core/branches/v1/ champs_extras2/
+svn co svn://zone.spip.org/spip-zone/_plugins_/champs_extras_core/trunk champs_extras_core/
 svn co svn://zone.spip.org/spip-zone/_plugins_/saisies/ saisies/
-svn co svn://zone.spip.org/spip-zone/_plugins_/cfg/branches/v1 cfg/
 svn co svn://zone.spip.org/spip-zone/_plugins_/soundmanager/ soundmanager/
 svn co svn://zone.spip.org/spip-zone/_plugins_/photoswipe/trunk/ photoswipe/
 
-svn co https://github.com/seenthis/seenthis/trunk/ seenthis/
-svn co https://github.com/seenthis/seenthis_squelettes/trunk/ seenthis_squelettes/
+svn co https://github.com/seenthis/seenthis/branches/spip31/ seenthis/
+svn co https://github.com/seenthis/seenthis_squelettes/branches/spip31/ seenthis_squelettes/
 ```
 
 
 Si tout va bien, voici la liste des plugins présents :
-* cfg
-* champs_extras2
+* champs_extras_core
 * css_imbriques
 * date_relative_dynamique
 * detecter_langue
 * fulltext
 * gravatar
 * inclure-ajaxload
-* iterateurs
-* job_queue
 * lien_court
-* mediabox
 * memoization
 * microcache
-* oembed
 * opensearch
 * photoswipe
 * recuperer_favicon
@@ -82,7 +72,6 @@ Si tout va bien, voici la liste des plugins présents :
 * seenthis
 * seenthis_squelettes
 * soundmanager
-* textwheel
 * typo_guillemets
 
 # Activation du site
@@ -190,22 +179,15 @@ Ce plugin s'interface avec l'API OpenCalais (il faut demander une clé d'API), p
 svn co https://github.com/seenthis/seenthis_opencalais/trunk/ seenthis_opencalais/
 ````
 
-## champs_extras2
+## champs_extras_core
 
 permet aux admins d'éditer les préférences des auteurs depuis l'espace privé.
 
 ## Palette
 ```
-svn co svn://zone.spip.org/spip-zone/_plugins_/palette/branches/1_3/ palette/
+svn co svn://zone.spip.org/spip-zone/_plugins_/palette/trunk palette/
 ```
 le configurer pour activation sur les pages publiques permet d'offrir la roue chromatique dans les préférences (http://contrib.spip.net/Palette) ; attention, palette nécessite l'activation de cfg.
-
-## seenthis_arbo_anglais
-```
-svn co https://github.com/seenthis/seenthis_arbo_anglais/trunk/ seenthis_arbo_anglais/
-```
-un plugin bidouille pour les URLs des articles (et pas des messages) de seenthis.net
-à priori ce n'est pas indispensable
 
 ## Sphinx
 

@@ -325,7 +325,7 @@ function inc_seenthisrecherche_to_array_dist($u) {
 		foreach ($people[0] as $k=>$p) {
 			$login = mb_substr($p,1);
 			if ($t = sql_fetsel('id_auteur', 'spip_auteurs', 'login='.sql_quote($login))) {
-				$where[] = "((MATCH($key) AGAINST ('$p')) OR m.id_auteur=".$t['id_auteur'].")";
+				$where[] = "((MATCH(r.$key) AGAINST ('$p')) OR m.id_auteur=".$t['id_auteur'].")";
 				$r = trim(str_replace($p,'',$r));
 				# s'il ne reste plus rien, on renvoie vers people/$login
 				if (!strlen($r)) {
@@ -361,14 +361,14 @@ function inc_seenthisrecherche_to_array_dist($u) {
 
 	$p = sql_quote(trim("$r"));
 
-	$val = $match = "5 * (MATCH($key_titre) AGAINST($p)) + MATCH($key) AGAINST ($p)";
+	$val = $match = "5 * (MATCH($key_titre) AGAINST($p)) + MATCH(r.$key) AGAINST ($p)";
 	// Une chaine exacte rapporte plein de points
 	if ($pe)
-		$val .= "+ 2 * MATCH($key) AGAINST ($pe)";
+		$val .= "+ 2 * MATCH(r.$key) AGAINST ($pe)";
 
 	// si symboles booleens les prendre en compte
 	if ($boolean = preg_match(', [+-><~]|\* |".*?",', " $r "))
-		$val = $match = "MATCH($key) AGAINST ($p IN BOOLEAN MODE)";
+		$val = $match = "MATCH(r.$key) AGAINST ($p IN BOOLEAN MODE)";
 
 	$where[] = "($match) > 0";
 	$where[] = "m.statut='publi'";
@@ -507,7 +507,7 @@ function liste_pointe_sql($debut, $max_pagination, $moi) {
 
 	# les mentions @login vers $moi :
 	$mentions = sql_allfetsel('id_me', 'spip_me_auteur', 'id_auteur='.$moi, '', 'date DESC', '0,'.($debut + $max_pagination));
-	$pointe = array_merge($pointe, array_map('array_pop', $mentions));
+	$pointe = array_column($mentions, 'id_me');
 
 	# les messages qui parlent d'un sujet ou url qui m'interesse $moi
 	if ($pointetags = liste_pointe_tags($debut, $max_pagination, $moi)) {
@@ -516,7 +516,7 @@ function liste_pointe_sql($debut, $max_pagination, $moi) {
 
 	# les messages auxquels j'ai repondu $moi
 	$mentions = sql_allfetsel('DISTINCT(id_parent) as id, date', 'spip_me', "id_auteur=$moi AND id_parent>0 AND statut='publi'", '', 'date DESC', '0,'.($debut + $max_pagination));
-	foreach($mentions as $m) $pointe[] = $m['id'];
+	$pointe = array_column($mentions, 'id');
 
 	# faut-il ajouter les messages ayant des URLs avec un tag opencalais que je suis ?
 

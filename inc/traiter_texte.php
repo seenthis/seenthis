@@ -3,7 +3,7 @@
 function _traiter_hash ($regs) {
 	$tag = substr($regs[0],1); // supprimer le '#'
 
-	$url = 'tag/'.mb_strtolower($tag,'UTF-8');
+	$url = $GLOBALS['url_arbo_types']['mot'] .'/'. mb_strtolower($tag,'UTF-8');
 
 	$url = urlencode_1738_plus($url);
 
@@ -49,7 +49,7 @@ function _traiter_people ($regs) {
 			." AND statut!='5poubelle'");
 	if ($k = sql_fetch($query)) {
 		$GLOBALS['destinataires'][] = microcache($k['id_auteur'], 'noisettes/logo_auteur/message_logo_auteur_small');
-		$url = 'people/'.urlencode_1738_plus(mb_strtolower($k['login'],'UTF8'));
+		$url = $GLOBALS['url_arbo_types']['auteur'] .'/'. urlencode_1738_plus(mb_strtolower($k['login'],'UTF8'));
 
 		$res = "<span class='lien_people'>@<a href='$url'>$tag</a></span>";
 

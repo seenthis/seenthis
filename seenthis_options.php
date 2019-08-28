@@ -15,16 +15,16 @@ function nofollow($texte){
 } 
 
 
-define (_REG_CHARS, "a-z0-9\pN\pL\pM\'‘’°\&\+–\_•·⋅");
+define ('_REG_CHARS', "a-z0-9\pN\pL\pM\'‘’°\&\+–\_•·⋅");
 
-define (_REG_HASH, "(\#["._REG_CHARS."\@\.\/-]*["._REG_CHARS."])");
-define (_REG_URL, "((http|ftp)s?:\/\/["._REG_CHARS."\"#~!«»“”;:\|\.’\?=&%@!\/\,\$\(\)\[\]\\\\<>*-]+["._REG_CHARS."#«»“”\/\=\(\)\[\]\\\\\$*-])");
-//define(_REG_URL, "(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]\{\};:'\".,<>?«»“”‘’]))");
-define (_REG_PEOPLE, "\B@[a-zA-Z0-9\.\_\-]+[a-zA-Z0-9\_\-]");
+define ('_REG_HASH', "(\#["._REG_CHARS."\@\.\/-]*["._REG_CHARS."])");
+define ('_REG_URL', "((http|ftp)s?:\/\/["._REG_CHARS."\"#~!«»“”;:\|\.’\?=&%@!\/\,\$\(\)\[\]\\\\<>*-]+["._REG_CHARS."#«»“”\/\=\(\)\[\]\\\\\$*-])");
+//define('_REG_URL', "(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]\{\};:'\".,<>?«»“”‘’]))");
+define ('_REG_PEOPLE', "\B@[a-zA-Z0-9\.\_\-]+[a-zA-Z0-9\_\-]");
 
-define (_REG_DEBUT_URL, "((http|ftp)s?:\/\/(www\.)?)");
-define (_REG_FIN_URL, "(\.(html?|jpg|gif|png|php|css|js)\/?$)");
-define (_REG_CODE, '```([a-z]*\n.+?)```|`([^`\n]+)`');
+define ('_REG_DEBUT_URL', "((http|ftp)s?:\/\/(www\.)?)");
+define ('_REG_FIN_URL', "(\.(html?|jpg|gif|png|php|css|js)\/?$)");
+define ('_REG_CODE', '```([a-z]*\n.+?)```|`([^`\n]+)`');
 
 
 
@@ -532,6 +532,7 @@ function fichier_logo_auteur($id_auteur, $avec_date = true) {
 
 
 
+$GLOBALS["nb_messages_6_mois"] = array();
 function calculer_troll($id_auteur, $reseau = false) {
 	$troll_forcer = 0;
 	$query = sql_select("troll_forcer", "spip_auteurs", "id_auteur=$id_auteur");
@@ -541,7 +542,23 @@ function calculer_troll($id_auteur, $reseau = false) {
 	if ($troll_forcer >0) {
 		$total = $troll_forcer;
 	} else {
-		$total = 0;
+	
+		if (empty($GLOBALS["nb_messages_6_mois"])) {
+			// Ajouter des points si activité…
+			$query = sql_select("id_auteur, count(*) as nombre_messages", "spip_me", "date > CURRENT_DATE - INTERVAL '6' MONTH", "id_auteur");
+			while ($row = sql_fetch($query)) {
+				$id = $row["id_auteur"];
+				// ajouter 1 pour ne pas avoir de valeur 0
+				$nombre_messages = $row["nombre_messages"] + 1;
+				$GLOBALS["nb_messages_6_mois"]["$id"] = $nombre_messages;
+			}
+			$GLOBALS["nb_messages_6_mois_moyenne"] = array_sum($GLOBALS["nb_messages_6_mois"]) / count($GLOBALS["nb_messages_6_mois"]);
+		}
+	
+	
+		$total =310; // Juste au-dessus de 2*150
+		
+		// Ajouter des points pour chaque abonné
 		$query = sql_select("auteur.id_auteur, auteur.troll, auteur.troll_forcer", "spip_auteurs as auteur LEFT JOIN spip_me_follow as follow ON follow.id_follow=auteur.id_auteur", "follow.id_auteur=$id_auteur");
 		while ($row = sql_fetch($query)) {
 			$id_follow = $row["id_auteur"];
@@ -550,26 +567,29 @@ function calculer_troll($id_auteur, $reseau = false) {
 				$troll = $row["troll"];
 				if ($reseau) $troll = calculer_troll($id_follow, false);
 			}
-			
-			$troll = max(70, ($troll - _TROLL_VAL)/20 );
+			$troll = min(6000, $troll);
+			$troll = max(20, ($troll / 40 ));
 			
 			$total += $troll;
 		}
-		
-		//$total = max(0, $total);
-		//$total = min($total, 6000);
-
+		// Retirer des points (plus!) quand bloqué
 		$query = sql_select("*", "spip_me_block", "id_auteur=$id_auteur");
 		while ($row = sql_fetch($query)) {
-			$id_blockeur = $row["id_auteur"];
+			$id_blockeur = $row["id_block"];
 			$troll = afficher_troll($id_blockeur);
-			$troll = max(70, ($troll - _TROLL_VAL)/20 );
+			$troll = min(6000, $troll);
+			$troll = max(10, ($troll / 20 ));
 			$total -= $troll;
 		}
+		
+		$mess = $GLOBALS["nb_messages_6_mois"]["$id_auteur"] / $GLOBALS["nb_messages_6_mois_moyenne"];
+		// limiter entre 0.1 et 1
+		$mess = max(0.1,min(1, $mess));
 
+		$total = $mess * $total;
 		$total = round($total);
 		$total = max(0, $total);
-		$total = min($total, 6000);
+		$total = min($total, 100000);
 	}
 	sql_update ("spip_auteurs", 
 		array(
@@ -577,11 +597,12 @@ function calculer_troll($id_auteur, $reseau = false) {
 		),
 		"id_auteur = '$id_auteur'"
 	);
+	
 
 	// if ($reseau) echo "<li><b>$id_auteur - $total</b></li>";
 	// else echo "<li>$id_auteur - $total</li>";
 	
-	return $total;
+	return  $total;
 }
 
 
@@ -708,7 +729,7 @@ function supprimer_titre($texte, $long) {
 function tester_mail_auteur($id_auteur, $val) {
 	if (!(isset($GLOBALS["envoi_mail"]["$id_auteur"]))) {
 		$query = sql_select(
-			"mail_nouv_billet, mail_partage, mail_rep_moi, mail_rep_partage, mail_rep_billet, mail_rep_conv, mail_suivre_moi, mail_mes_billets",
+			"mail_nouv_billet, mail_partage, mail_rep_moi, mail_rep_partage, mail_rep_billet, mail_rep_conv, mail_suivre_moi, mail_mes_billets, mail_tag_suivi",
 			"spip_auteurs",
 			"id_auteur=$id_auteur");
 		if ($row = sql_fetch($query)) {
@@ -1191,6 +1212,4 @@ function seenthis_affichage_final($t) {
 	return $t;
 }
 
-define('_HTTPS', ($_SERVER["HTTPS"] == 'on') ? 'https' : 'http');
-
-?>
+define('_HTTPS', (!empty($_SERVER["HTTPS"]) and $_SERVER["HTTPS"] == 'on') ? 'https' : 'http');

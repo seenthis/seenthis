@@ -51,23 +51,27 @@ function notifier_partage($id_auteur_partage, $id_me) {
 	$nom_dest = nom_auteur($id_auteur);
 	$lang = $row_dest["lang"];
 
-	$url_aut_partage = _HTTPS . "://" . _HOST . "/" . generer_url_entite($id_auteur_partage, "auteur");
+	$url_aut_partage = url_absolue(generer_url_entite($id_auteur_partage, 'auteur', '', '', true));
 
-	if ($lang == "en") {
-		$titre_mail = _L("$nom_aut_partage (@$login_aut_partage) has shared one of your posts on $seenthis.");
-		$annonce = _L("Hi $nom_dest,\n\n$nom_aut_partage (@$login_aut_partage) has shared one of your posts on $seenthis.");
-	} else {
-		$titre_mail = _L("$nom_aut_partage (@$login_aut_partage) a partagé un de vos billets sur $seenthis.");
-		$annonce = _L("Bonjour $nom_dest,\n\n$nom_aut_partage (@$login_aut_partage) a partagé un de vos billets sur $seenthis.");
-	}
+	$titre_mail = _T('seenthis:notif_partage_titre', array(
+		'nom_aut_partage' => $nom_aut_partage,
+		'login_aut_partage' => $login_aut_partage,
+		'seenthis' => $seenthis,
+		'spip_lang' => $lang
+	));
+	$annonce = _T('seenthis:notif_partage_texte', array(
+		'nom_dest' => $nom_dest,
+		'nom_aut_partage' => $nom_aut_partage,
+		'login_aut_partage' => $login_aut_partage,
+		'seenthis' => $seenthis,
+		'spip_lang' => $lang
+	));
 
 	$texte_message = message_texte(texte_de_me($id_me));
 	$footer = seenthis_message_footer($lang, $seenthis);
-	$corps_mail = "\n\n$annonce\n$url_aut_partage\n\n$texte_message\n\n$footer";
-	$headers = "Message-Id: <$id_auteur.$id_auteur_partage." . time() . "@" . _HOST . ">\n";
-	$seenthis = $GLOBALS['meta']['nom_site']; # "Seenthis";
-	$from = "$seenthis <no-reply@" . _HOST . ">";
-	seenthis_envoyer_mail($email_dest, $titre_mail, $corps_mail, $from, $headers);
+	$corps_mail['texte'] = "\n\n$annonce\n$url_aut_partage\n\n$texte_message\n\n$footer";
+	$corps_mail['headers'] = "Message-Id: <$id_auteur.$id_auteur_partage." . time() . "@" . _HOST . ">\n";
+	seenthis_envoyer_mail($email_dest, $titre_mail, $corps_mail);
 	spip_log("notifier partage $id_me part $id_auteur_partage pour $id_auteur", 'notifier');
 
 }
@@ -79,20 +83,19 @@ function notifier_partage($id_auteur_partage, $id_me) {
  * @return string the footer to be used
  */
 function seenthis_message_footer($lang, $seenthis) {
-	if ($lang == "en") {
-		return _L("\n\n---------\nTo stop receiving these alerts from $seenthis,\n you can configure your preferences in your profile\n" . _HTTPS . "://" . _HOST . "\n\n");
-	} else {
-		return _L("\n\n---------\nPour ne plus recevoir d'alertes de $seenthis,\n vous pouvez régler vos préférences dans votre profil\n" . _HTTPS . "://" . _HOST . "\n\n");
-	}
-
+	return _T('seenthis:notif_message_footer', array(
+		'seenthis' => $seenthis,
+		'url' =>  _HTTPS . "://" . _HOST,
+		'spip_lang' => $lang
+	));
 }
 
 /**
- * Envoie un email
+ * Envoie un email (avec le plugin facteur)
  */
-function seenthis_envoyer_mail($email_dest, $titre_mail, $corps_mail, $from, $headers) {
+function seenthis_envoyer_mail($email_dest, $titre_mail, $corps_mail) {
 	$envoyer_mail = charger_fonction('envoyer_mail', 'inc');
-	$envoyer_mail($email_dest, $titre_mail, $corps_mail, $from, $headers);
+	$envoyer_mail($email_dest, $titre_mail, $corps_mail);
 }
 
 /**
@@ -127,23 +130,28 @@ function notifier_suivre_moi($id_auteur, $id_follow) {
 			if (strlen(trim($email_dest)) > 3) {
 
 				include_spip("inc/filtres_mini");
-				$url_me = _HTTPS . "://" . _HOST . "/" . generer_url_entite($id_follow, "auteur");
+				$url_me = url_absolue(generer_url_entite($id_follow, 'auteur', '', '', true));
 
 				$seenthis = $GLOBALS['meta']['nom_site']; # "Seenthis";
-				if ($lang == "en") {
-					$titre_mail = _L("$nom_aut (@$login_aut) is following you on $seenthis.");
-					$annonce = _L("Hi $nom_dest,\n\n$nom_aut (@$login_aut) is following you on $seenthis.");
-				} else {
-					$titre_mail = _L("$nom_aut (@$login_aut) vous suit sur $seenthis.");
-					$annonce = _L("Bonjour $nom_dest,\n\n$nom_aut (@$login_aut) vous suit sur $seenthis.");
-				}
+				$titre_mail = _T('seenthis:notif_suivremoi_titre', array(
+					'nom_aut' => $nom_aut,
+					'login_aut' => $login_aut,
+					'seenthis' => $seenthis,
+					'spip_lang' => $lang
+				));
+				$annonce = _T('seenthis:notif_suivremoi_texte', array(
+					'nom_dest' => $nom_dest,
+					'nom_aut' => $nom_aut,
+					'login_aut' => $login_aut,
+					'seenthis' => $seenthis,
+					'spip_lang' => $lang
+				));
 
 				$footer = seenthis_message_footer($lang, $seenthis);
-				$corps_mail = "\n\n$annonce\n$url_me\n\n$footer";
-				$headers = "Message-Id: <$id_auteur.$id_follow." . time() . "@" . _HOST . ">\n";
-				$from = "$seenthis <no-reply@" . _HOST . ">";
+				$corps_mail['texte'] = "\n\n$annonce\n$url_me\n\n$footer";
+				$corps_mail['headers'] = "Message-Id: <$id_auteur.$id_follow." . time() . "@" . _HOST . ">\n";
 
-				seenthis_envoyer_mail($email_dest, "$seenthis - $titre_mail", $corps_mail, $from, $headers);
+				seenthis_envoyer_mail($email_dest, "$seenthis - $titre_mail", $corps_mail);
 				spip_log("notification: @$login_aut suit @" . $row_dest['login'], 'suivre');
 			}
 		}
@@ -165,12 +173,11 @@ function notifier_me($id_me, $id_parent) {
 
 	$id_auteur_me = $row["id_auteur"];
 	$texte = texte_de_me($id_me);
-	$titre_mail = ($id_parent > 0) ? 'Re: ' . trim(extraire_titre(texte_de_me($id_parent))) : trim(extraire_titre($texte));
+	$titre_mail = ($id_parent > 0) ? 'Re: ' . trim(extraire_titre(texte_de_me($id_parent), 100, true)) : trim(extraire_titre($texte, 100, true));
 	$nom_auteur = nom_auteur($id_auteur_me);
-	$texte_mail = notifier_construire_texte($id_parent, $id_me);
-	$texte_mail .= ($id_parent > 0)
-		? "\n\n" . _HTTPS . "://" . _HOST . "/messages/$id_parent#message$id_me"
-		: "\n\n" . _HTTPS . "://" . _HOST . "/messages/$id_me";
+	$notifier_construire_texte = charger_fonction('notifier_construire_texte', '');
+	$texte_mail = $notifier_construire_texte($id_parent, $id_me);
+	$texte_mail .= "\n\n" . url_absolue(generer_url_entite($id_me, 'me', '', '', true));
 
 	// va contenir tous les destinataires du mail
 	$id_dest = array();
@@ -244,6 +251,26 @@ function notifier_me($id_me, $id_parent) {
 		unset($logins);
 	}
 
+	// auteurs qui suivent les tags présents dans le post
+	$t = preg_replace("/"._REG_URL."/ui", "", $texte);
+	if (preg_match_all("/"._REG_HASH."/ui", $t, $tags)) {
+		foreach(array_unique(array_values($tags[0])) as $tag) {
+			$query_follow = sql_select('id_follow', 'spip_me_follow_tag', "tag REGEXP '^$tag'");
+			while ($row_follow = sql_fetch($query_follow)) {
+				if (tester_mail_auteur($row_follow['id_follow'], 'mail_tag_suivi')) {
+					$id_dest[] = $row_follow['id_follow'];
+				}
+			}
+		}
+	}
+
+	$id_dest = pipeline('seenthis_notifierme_destinataires',
+		array(
+			'args'=>array('id_me'=>$id_me,'id_parent'=>$id_parent),
+			'data'=>$id_dest
+		)
+	);
+
 	// toutes les raisons precedentes ne doivent jamais envoyer a l'auteur.e
 	// lui-meme : on filtre
 	foreach ($id_dest as $k => $id) {
@@ -257,16 +284,15 @@ function notifier_me($id_me, $id_parent) {
 	}
 
 	// Envoyer si besoin
-	if (isset($id_dest)) {
+	if (isset($id_dest) and count($id_dest) > 0) {
 		$seenthis = $GLOBALS['meta']['nom_site'];
 		mb_internal_encoding("UTF-8");
-		$from = '"'. mb_encode_mimeheader(str_replace('"', '\\"', str_replace('@', '', $nom_auteur)) .' - '. lire_meta('nom_site'), "UTF-8", "Q")
-			. "\" <no-reply@" . _HOST .">";
+		$corps_mail['nom_envoyeur'] = mb_encode_mimeheader(str_replace('@', '', $nom_auteur) .' - '. lire_meta('nom_site'), "UTF-8", "Q");
 
-		$headers = "Message-Id: <$id_me" . "@" . _HOST . ">\n";
+		$corps_mail['headers'] = "Message-Id: <$id_me" . "@" . _HOST . ">\n";
 
 		if ($id_parent > 0) {
-			$headers = "Message-Id: <$id_me." . md5($nom_auteur) . "@" . _HOST . ">\n"
+			$corps_mail['headers'] = "Message-Id: <$id_me." . md5($nom_auteur) . "@" . _HOST . ">\n"
 				. "In-Reply-To: <$id_parent" . "@" . _HOST . ">\n";
 		}
 
@@ -280,32 +306,26 @@ function notifier_me($id_me, $id_parent) {
 				$lang = $row_dest["lang"];
 				spip_log("notifier $id_me($id_parent) a $email_dest", 'notifier');
 
-				if ($lang == "en") {
-					if ($id_parent == 0) {
-						$annonce = _L("$nom_auteur has posted a new message");
-					} else {
-						if ($nom_auteur == $nom_auteur_init) $annonce = _L("$nom_auteur has answered his/her own message");
-						else $annonce = _L("$nom_auteur has answered to $nom_auteur_init");
-					}
+				if ($id_parent == 0) {
+					$annonce = _T('seenthis:notif_me_nouveau', array('nom_auteur' => $nom_auteur, 'spip_lang' => $lang));
 				} else {
-					if ($id_parent == 0) {
-						$annonce = _L("$nom_auteur a posté un nouveau billet");
+					if ($nom_auteur == $nom_auteur_init) {
+						$annonce = _T('seenthis:notif_me_reponse', array('nom_auteur' => $nom_auteur, 'spip_lang' => $lang));
 					} else {
-						if ($nom_auteur == $nom_auteur_init) $annonce = _L("$nom_auteur a répondu à un de ses billets");
-						else $annonce = _L("$nom_auteur a répondu à un billet de $nom_auteur_init");
+						$annonce = _T('seenthis:notif_me_reponse_a', array('nom_auteur' => $nom_auteur, 'nom_auteur_init' => $nom_auteur_init, 'spip_lang' => $lang));
 					}
 				}
 
 				$footer = seenthis_message_footer($lang, $seenthis);
-				$corps_mail = "$annonce\n\n$texte_mail\n\n\n\n$footer";
-				seenthis_envoyer_mail($email_dest, $titre_mail, $corps_mail, $from, $headers);
+				$corps_mail['texte'] = "$annonce\n\n$texte_mail\n\n\n\n$footer";
+				seenthis_envoyer_mail($email_dest, $titre_mail, $corps_mail);
 			}
 		}
 
 	}
 }
 
-function notifier_construire_texte($id_parent, $id_me) {
+function notifier_construire_texte_dist($id_parent, $id_me) {
 	if (!$id_parent) $id_parent = $id_me;
 	$conversation = sql_allfetsel("id_me, id_auteur", "spip_me", "(id_me=$id_parent OR id_parent=$id_parent) AND statut='publi' AND id_me <= $id_me ORDER BY date");
 
