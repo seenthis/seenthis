@@ -24,10 +24,7 @@
 	<pipeline nom="facteur_pre_envoi" inclure="seenthis_pipelines.php" />
 	<pipeline nom="afficher_contenu_objet" inclure="seenthis_pipelines.php" />
 
-
 	<menu nom="seenthis_troll" titre="Gérer les trolls" parent="bando_activite" icone="images/troll-16.png" action="gerer_trolls" />
-
-
 
 	<necessite nom="microcache" />
 	<necessite nom="queue" />
