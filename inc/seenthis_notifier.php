@@ -234,6 +234,8 @@ function notifier_me($id_me, $id_parent) {
 				$id_dest[] = $id_auteur;
 			}
 		}
+	} else {
+		$id_auteur = 0;
 	}
 
 	// destinataires cités dans le message ; sauf s'ils bloquent l'auteur
@@ -271,12 +273,22 @@ function notifier_me($id_me, $id_parent) {
 		)
 	);
 
-	// toutes les raisons precedentes ne doivent jamais envoyer a l'auteur.e
-	// lui-meme : on filtre
-	foreach ($id_dest as $k => $id) {
-		if ($id == $id_auteur_me)
-			unset($id_dest[$k]);
+	// ne pas envoyer vers soi-même
+	$remove = [$id_auteur_me];
+
+	// ni vers les comptes bloques
+	$s = sql_query($q = 'SELECT id_auteur FROM spip_me_block WHERE id_block IN (' . sql_quote($id_auteur_me).','.sql_quote($id_auteur).')');
+	while ($t = sql_fetch($s)) {
+		$remove[] = $t['id_auteur'];
 	}
+
+	foreach ($remove as $id_r) {
+		foreach ($id_dest as $k => $id) {
+			if ($id == $id_r)
+				unset($id_dest[$k]);
+		}
+	}
+
 
 	// Ajouter l'auteur.e du message si elle a coche la case correspondante
 	if (tester_mail_auteur($id_auteur_me, "mail_mes_billets")) {
