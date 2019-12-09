@@ -39,7 +39,7 @@ function notifier_partage($id_auteur_partage, $id_me) {
 		return;
 	}
 
-	$query_aut_partage = sql_select("*", "spip_auteurs", "id_auteur = $id_auteur_partage");
+	$query_aut_partage = sql_select("*", "spip_auteurs", "id_auteur = $id_auteur_partage AND id_auteur NOT IN (select id_auteur FROM spip_me_block WHERE id_block IN($id_auteur_partage, id_auteur))");
 	$row_aut_partage = sql_fetch($query_aut_partage);
 	if (!$row_aut_partage) {
 		return;
