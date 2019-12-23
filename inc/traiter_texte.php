@@ -180,8 +180,8 @@ function _creer_lien_riche($lien) {
 	if ($id_syndic) {
 		$query_total = sql_query("SELECT count(*) as c
 			FROM spip_me
-			RIGHT JOIN spip_me_syndic ON spip_me_syndic.id_me=spip_me.id_me
-			WHERE spip_me_syndic.id_syndic=$id_syndic
+			RIGHT JOIN spip_me_tags ON spip_me_tags.id_me=spip_me.id_me
+			WHERE spip_me_tags.tag=$long
 				AND spip_me.statut='publi'");
 		include_spip('inc/urls');
 		$url = generer_url_entite($id_syndic,'site');
