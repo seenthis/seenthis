@@ -149,8 +149,10 @@ function _creer_lien_riche($lien) {
 		//list($width, $height) = @getimagesize($lien);
 		//if (($width * $height) >= 300) return;
 	}
-	
-	$query = sql_query("SELECT id_syndic, lang, titre, url_syndic, md5 FROM spip_syndic WHERE url_site=".sql_quote($lien));
+
+	// virer le http/https en début d'url + le slash final
+	$lien_flou = preg_replace(',/$,', '', preg_replace(',^(https?://)?,i', '', $lien));
+	$query = sql_query("SELECT id_syndic, lang, titre, url_syndic, md5 FROM spip_syndic WHERE url_site LIKE ".sql_quote('%' . $lien_flou));	
 	if ($row = sql_fetch($query)) {
 		$id_syndic = $row["id_syndic"];
 		$lang = $row["lang"];
@@ -178,10 +180,11 @@ function _creer_lien_riche($lien) {
 	// Ne faire apparaître le lien_court
 	// que si plusieurs billets referencent le lien
 	if ($id_syndic) {
+		$long = preg_replace(',/$,', '', preg_replace(',^(https?://)?,i', '', $long));
 		$query_total = sql_query("SELECT count(*) as c
 			FROM spip_me
 			RIGHT JOIN spip_me_tags ON spip_me_tags.id_me=spip_me.id_me
-			WHERE spip_me_tags.tag=$long
+			WHERE spip_me_tags.tag LIKE ". sql_quote('%' . $long) ."
 				AND spip_me.statut='publi'");
 		include_spip('inc/urls');
 		$url = generer_url_entite($id_syndic,'site');
