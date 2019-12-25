@@ -92,7 +92,6 @@ Créer un fichier `config/mes_options.php` :
 <?php
 
 // localhost/seenthis
-define('_ANALYTICS', '');
 define('_HOST', 'localhost/seenthis');
 define('_STATIC_HOST', _HOST);
 define('_SHORT_HOST', 'localhost/seenli');
@@ -117,7 +116,6 @@ define('_COPIE_LOCALE_MAX_SIZE',33554432);  # 32 Mo
 define('_LOGIN_TROP_COURT', 2);
 
 // A titre d'exemple voici la configuration de seenthis.net
-#define('_ANALYTICS', 'UA-2985608-16');
 #define('_HOST', 'seenthis.net');
 #define('_STATIC_HOST', 'static%s.'._HOST);
 
