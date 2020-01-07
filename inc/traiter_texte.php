@@ -152,7 +152,7 @@ function _creer_lien_riche($lien) {
 
 	// virer le http/https en début d'url + le slash final
 	$lien_flou = preg_replace(',/$,', '', preg_replace(',^(https?://)?,i', '', $lien));
-	$query = sql_query("SELECT id_syndic, lang, titre, url_syndic, md5 FROM spip_syndic WHERE url_site LIKE ".sql_quote('%' . $lien_flou));	
+	$query = sql_query("SELECT id_syndic, lang, titre, url_syndic, md5 FROM spip_syndic WHERE url_site = ".sql_quote('http://' . $lien_flou)." OR url_site = ".sql_quote('https://' . $lien_flou));
 	if ($row = sql_fetch($query)) {
 		$id_syndic = $row["id_syndic"];
 		$lang = $row["lang"];
@@ -184,7 +184,7 @@ function _creer_lien_riche($lien) {
 		$query_total = sql_query("SELECT count(*) as c
 			FROM spip_me
 			RIGHT JOIN spip_me_tags ON spip_me_tags.id_me=spip_me.id_me
-			WHERE spip_me_tags.tag LIKE ". sql_quote('%' . $long) ."
+			WHERE (spip_me_tags.tag = ".sql_quote('http://' . $long)." OR spip_me_tags.tag = ".sql_quote('https://' . $long).")
 				AND spip_me.statut='publi'");
 		include_spip('inc/urls');
 		$url = generer_url_entite($id_syndic,'site');
