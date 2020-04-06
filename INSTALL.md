@@ -29,28 +29,31 @@ svn co svn://trac.rezo.net/spip/branches/spip-3.2/ seenthis/
 
 ```
 cd seenthis/; 
-svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/autoembed autoembed/
+git clone https://git.spip.net/spip-contrib-extensions/seenthis_autoembed.git autoembed 
 
 mkdir plugins; cd plugins/
-svn co svn://zone.spip.org/spip-zone/_plugins_/css_imbriques/ css_imbriques/
-svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/date_relative_dynamique/ date_relative_dynamique/
-svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/detecter_langue/ detecter_langue/
-svn co svn://zone.spip.org/spip-zone/_plugins_/fulltext/ fulltext/
-svn co svn://zone.spip.org/spip-zone/_plugins_/gravatar/ gravatar/
-svn co svn://zone.spip.org/spip-zone/_plugins_/inclure-ajaxload/ inclure-ajaxload/
-svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/lien_court/branches/spip2/ lien_court/
-svn co svn://zone.spip.org/spip-zone/_plugins_/memoization/ memoization/
-svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/microcache/ microcache/
-svn co svn://zone.spip.org/spip-zone/_plugins_/opensearch/ opensearch/
-svn co svn://zone.spip.org/spip-zone/_plugins_/plugins_seenthis/recuperer_favicon/ recuperer_favicon/
-svn co svn://zone.spip.org/spip-zone/_plugins_/typo_guillemets/ typo_guillemets/
-svn co svn://zone.spip.org/spip-zone/_plugins_/champs_extras_core/trunk champs_extras_core/
-svn co svn://zone.spip.org/spip-zone/_plugins_/saisies/ saisies/
-svn co svn://zone.spip.org/spip-zone/_plugins_/soundmanager/ soundmanager/
-svn co svn://zone.spip.org/spip-zone/_plugins_/photoswipe/trunk/ photoswipe/
+git clone https://git.spip.net/spip-contrib-extensions/champs_extras_core.git
+git clone https://git.spip.net/spip-contrib-extensions/css_imbriques.git
+git clone https://git.spip.net/spip-contrib-extensions/seenthis_date_relative_dynamique.git
+git clone https://git.spip.net/spip-contrib-extensions/seenthis_detecter_langue.git
+git clone https://git.spip.net/spip-contrib-extensions/fulltext.git
+git clone https://git.spip.net/spip-contrib-extensions/gravatar.git
+git clone https://git.spip.net/spip-contrib-extensions/inclure-ajaxload.git
+git clone https://git.spip.net/spip-contrib-extensions/seenthis_lien_court.git
+git clone https://git.spip.net/spip-contrib-extensions/memoization.git
+git clone https://git.spip.net/spip-contrib-extensions/seenthis_microcache.git
+git clone https://git.spip.net/spip-contrib-extensions/opensearch.git
+git clone https://git.spip.net/spip-contrib-extensions/photoswipe.git
+git clone https://git.spip.net/spip-contrib-extensions/saisies.git
+git clone https://git.spip.net/spip-contrib-extensions/seenthis_recuperer_favicon.git
+git clone https://git.spip.net/spip-contrib-extensions/soundmanager.git
+git clone https://git.spip.net/spip-contrib-extensions/typo_guillemets.git
 
-svn co https://github.com/seenthis/seenthis/branches/spip31/ seenthis/
-svn co https://github.com/seenthis/seenthis_squelettes/branches/spip31/ seenthis_squelettes/
+git clone https://github.com/seenthis/seenthis.git
+git clone https://github.com/seenthis/seenthis_squelettes.git
+
+# semblerait il qu'il faut aussi facteur...
+git clone https://git.spip.net/spip-contrib-extensions/facteur.git
 ```
 
 
