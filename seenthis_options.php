@@ -26,9 +26,9 @@ define ('_REG_DEBUT_URL', "((http|ftp)s?:\/\/(www\.)?)");
 define ('_REG_FIN_URL', "(\.(html?|jpg|gif|png|php|css|js)\/?$)");
 define ('_REG_CODE', '```([a-z]*\n.+?)```|`([^`\n]+)`');
 
-
-
 define('_TRANSLITTERER_URL', false);
+
+define('_EMAIL_AUTO_CONVERT_TEXT_TO_HTML', false);
 
 // definir ces pipelines, sans ecraser leur valeur s'ils existent
 if(!isset($GLOBALS['spip_pipeline']['seenthis_instance_objet']))
