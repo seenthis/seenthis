@@ -180,11 +180,10 @@ function _creer_lien_riche($lien) {
 	// Ne faire apparaître le lien_court
 	// que si plusieurs billets referencent le lien
 	if ($id_syndic) {
-		$long = preg_replace(',/$,', '', preg_replace(',^(https?://)?,i', '', $long));
 		$query_total = sql_query("SELECT count(*) as c
 			FROM spip_me
 			RIGHT JOIN spip_me_tags ON spip_me_tags.id_me=spip_me.id_me
-			WHERE (spip_me_tags.tag = ".sql_quote('http://' . $long)." OR spip_me_tags.tag = ".sql_quote('https://' . $long).")
+			WHERE (spip_me_tags.tag = ".sql_quote('http://' . $lien_flou)." OR spip_me_tags.tag = ".sql_quote('https://' . $lien_flou).")
 				AND spip_me.statut='publi'");
 		include_spip('inc/urls');
 		$url = generer_url_entite($id_syndic,'site');
