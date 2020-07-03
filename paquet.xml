@@ -30,5 +30,5 @@
 	<necessite nom="queue" />
 	<necessite nom="detecter_langue" />
 	<necessite nom="lien_court" />
-	<necessite nom="facteur" />
+	<necessite nom="facteur" compatibilite="[4.1.0;]" />
 </paquet>
