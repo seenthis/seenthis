@@ -34,26 +34,23 @@ git clone https://git.spip.net/spip-contrib-extensions/seenthis_autoembed.git au
 mkdir plugins; cd plugins/
 git clone https://git.spip.net/spip-contrib-extensions/champs_extras_core.git
 git clone https://git.spip.net/spip-contrib-extensions/css_imbriques.git
-git clone https://git.spip.net/spip-contrib-extensions/seenthis_date_relative_dynamique.git
-git clone https://git.spip.net/spip-contrib-extensions/seenthis_detecter_langue.git
 git clone https://git.spip.net/spip-contrib-extensions/fulltext.git
 git clone https://git.spip.net/spip-contrib-extensions/gravatar.git
 git clone https://git.spip.net/spip-contrib-extensions/inclure-ajaxload.git
-git clone https://git.spip.net/spip-contrib-extensions/seenthis_lien_court.git
 git clone https://git.spip.net/spip-contrib-extensions/memoization.git
-git clone https://git.spip.net/spip-contrib-extensions/seenthis_microcache.git
 git clone https://git.spip.net/spip-contrib-extensions/opensearch.git
 git clone https://git.spip.net/spip-contrib-extensions/photoswipe.git
 git clone https://git.spip.net/spip-contrib-extensions/saisies.git
+git clone https://git.spip.net/spip-contrib-extensions/seenthis_date_relative_dynamique.git
+git clone https://git.spip.net/spip-contrib-extensions/seenthis_detecter_langue.git
+git clone https://git.spip.net/spip-contrib-extensions/seenthis_lien_court.git
+git clone https://git.spip.net/spip-contrib-extensions/seenthis_microcache.git
 git clone https://git.spip.net/spip-contrib-extensions/seenthis_recuperer_favicon.git
 git clone https://git.spip.net/spip-contrib-extensions/soundmanager.git
 git clone https://git.spip.net/spip-contrib-extensions/typo_guillemets.git
 
 git clone https://github.com/seenthis/seenthis.git
 git clone https://github.com/seenthis/seenthis_squelettes.git
-
-# semblerait il qu'il faut aussi facteur...
-git clone https://git.spip.net/spip-contrib-extensions/facteur.git
 ```
 
 
@@ -62,6 +59,7 @@ Si tout va bien, voici la liste des plugins présents :
 * css_imbriques
 * date_relative_dynamique
 * detecter_langue
+* facteur
 * fulltext
 * gravatar
 * inclure-ajaxload
