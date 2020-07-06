@@ -34,6 +34,7 @@ git clone https://git.spip.net/spip-contrib-extensions/seenthis_autoembed.git au
 mkdir plugins; cd plugins/
 git clone https://git.spip.net/spip-contrib-extensions/champs_extras_core.git
 git clone https://git.spip.net/spip-contrib-extensions/css_imbriques.git
+git clone https://git.spip.net/spip-contrib-extensions/facteur.git
 git clone https://git.spip.net/spip-contrib-extensions/fulltext.git
 git clone https://git.spip.net/spip-contrib-extensions/gravatar.git
 git clone https://git.spip.net/spip-contrib-extensions/inclure-ajaxload.git
@@ -167,7 +168,7 @@ ALTER TABLE spip_syndic ADD FULLTEXT tout (`url_site`,`titre`,`texte`);
 
 Ce plugin ajoute un champ 'rss' dans spip_auteurs, et une tâche cron qui charge ce RSS et le transforme en seens (et en partages si l'URL est déjà mentionnée dans un autre seen).
 ```
-svn co https://github.com/seenthis/seenthis_importer_flux/trunk/ seenthis_importer_flux/
+git clone https://github.com/seenthis/seenthis_importer_flux.git
 ```
 
 
@@ -175,7 +176,7 @@ svn co https://github.com/seenthis/seenthis_importer_flux/trunk/ seenthis_import
 
 Ce plugin s'interface avec l'API OpenCalais (il faut demander une clé d'API), pour thématiser de façon automatique les seens.
 ```
-svn co https://github.com/seenthis/seenthis_opencalais/trunk/ seenthis_opencalais/
+git clone https://github.com/seenthis/seenthis_opencalais.git
 ````
 
 ## champs_extras_core
@@ -184,7 +185,7 @@ permet aux admins d'éditer les préférences des auteurs depuis l'espace privé
 
 ## Palette
 ```
-svn co svn://zone.spip.org/spip-zone/_plugins_/palette/trunk palette/
+git clone https://git.spip.net/spip-contrib-extensions/palette.git
 ```
 le configurer pour activation sur les pages publiques permet d'offrir la roue chromatique dans les préférences (http://contrib.spip.net/Palette) ; attention, palette nécessite l'activation de cfg.
 
@@ -192,8 +193,8 @@ le configurer pour activation sur les pages publiques permet d'offrir la roue ch
 
 Pour avoir le moteur de recherche basé sur sphinx, installer d'abord Sphinx (http://sphinxsearch.com/ - version 2.2.3 minimum!), puis ajouter deux plugins :
 ```
-svn co https://github.com/seenthis/seenthis_sphinx/trunk/ seenthis_sphinx/
-svn co svn://zone.spip.org/spip-zone/_plugins_/indexer/trunk indexer/
+git clone https://github.com/seenthis/seenthis_sphinx.git
+git clone https://git.spip.net/spip-contrib-extensions/indexer.git
 ```
 (voir la doc détaillée sur le plugin indexer)
 
