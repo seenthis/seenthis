@@ -1,5 +1,8 @@
 <?php
 
+if (!defined("_ECRIRE_INC_VERSION")) {
+	return;
+}
 
 function seenthis_afficher_contenu_objet($flux){
 	// recuperer les saisies de l'objet en cours
