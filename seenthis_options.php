@@ -837,7 +837,7 @@ function supprimer_background_favicon($texte) {
 }	
 
 // insertion ou modification en base d'un message
-function instance_me($id_auteur = 0, $texte_message="", $id_me=0, $id_parent=0, $time="NOW()", $uuid=null){
+function instance_me($id_auteur = 0, $texte_message="", $id_me=0, $id_parent=0, $time="NOW()", $uuid=null, $viarss=0){
 	include_spip('base/abstract_sql');
 
 	if ($id_auteur < 1) return false;
@@ -894,7 +894,8 @@ function instance_me($id_auteur = 0, $texte_message="", $id_me=0, $id_parent=0, 
 				"id_parent" => $id_parent,
 				"ip" => $GLOBALS['ip'],
 				"statut" => "publi",
-				"troll" => afficher_troll($id_auteur)
+				"troll" => afficher_troll($id_auteur),
+				"viarss" => $viarss
 			)
 		);
 
