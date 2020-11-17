@@ -892,7 +892,7 @@ function instance_me($id_auteur = 0, $texte_message="", $id_me=0, $id_parent=0, 
 				"date_modif" => "NOW()",
 				"id_auteur" => $id_auteur,
 				"id_parent" => $id_parent,
-				"ip" => $GLOBALS['ip'],
+				"ip" => $viarss ? '' : $GLOBALS['ip'],
 				"statut" => "publi",
 				"troll" => afficher_troll($id_auteur),
 				"viarss" => $viarss
