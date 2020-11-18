@@ -940,7 +940,8 @@ function instance_me($id_auteur = 0, $texte_message="", $id_me=0, $id_parent=0, 
 				"date_parent" => "$date_parent",
 				"date_modif" => "NOW()",
 				"ip" => $ip,
-				"statut" => "publi"
+				"statut" => "publi",
+				"viarss" => $viarss
 			),
 			"id_me=$id_me"
 		);
