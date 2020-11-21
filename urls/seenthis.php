@@ -83,6 +83,7 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			if (!$k) return '';
 
 			# people/login
+			include_spip('inc/charsets');
 			$g = _DIR_RACINE.$GLOBALS['url_arbo_types']['auteur'].'/'
 				. urlencode_1738_plus(spip_strtolower($k['login'],'UTF8'));
 
