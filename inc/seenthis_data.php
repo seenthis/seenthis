@@ -243,7 +243,8 @@ function inc_seenthisrecherche_to_array_dist($u) {
 
 	$debut = intval($env['debut_messages']);
 
-	$moi = intval($GLOBALS['visiteur_session']['id_auteur']);
+	include_spip('inc/session');
+	$moi = intval(session_get('id_auteur'));
 
 	$where = array();
 
