@@ -920,7 +920,8 @@ function instance_me($id_auteur = 0, $texte_message="", $id_me=0, $id_parent=0, 
 			$date_parent_old = $row["date_parent"];
 		}
 		
-		if ($id_auteur_old != $id_auteur) die ("Forbidden");
+		include_spip('inc/autoriser');
+		if (!autoriser('modifier', 'me', $id_me)) die ("Forbidden");
 
 		cache_message($id_me, $id_parent);
 
