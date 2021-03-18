@@ -52,6 +52,7 @@ git clone https://git.spip.net/spip-contrib-extensions/typo_guillemets.git
 
 git clone https://github.com/seenthis/seenthis.git
 git clone https://github.com/seenthis/seenthis_squelettes.git
+git clone https://github.com/seenthis/seenthis_importer_flux.git
 ```
 
 
@@ -73,6 +74,7 @@ Si tout va bien, voici la liste des plugins présents :
 * saisies
 * seenthis
 * seenthis_squelettes
+* seenthis_importer_flux
 * soundmanager
 * typo_guillemets
 
@@ -86,7 +88,6 @@ On active alors la connexion SQL du site SPIP :
 Activer tous les plugins pré-cités, sauf :
 * OpenSearch
 * option = activer seenthis_opencalais
-* option = activer seenthis_importer_flux
 
 Créer un fichier `config/mes_options.php` :
 
@@ -163,14 +164,6 @@ ALTER TABLE spip_syndic ADD FULLTEXT tout (`url_site`,`titre`,`texte`);
 
 
 # Ajout des plugins optionnels 
-
-## seenthis_importer_flux
-
-Ce plugin ajoute un champ 'rss' dans spip_auteurs, et une tâche cron qui charge ce RSS et le transforme en seens (et en partages si l'URL est déjà mentionnée dans un autre seen).
-```
-git clone https://github.com/seenthis/seenthis_importer_flux.git
-```
-
 
 ## seenthis_opencalais
 

@@ -1,7 +1,7 @@
 <paquet
 	prefix="seenthis"
 	categorie="divers"
-	version="2.3.4"
+	version="2.3.5"
 	etat="stable"
 	compatibilite="[3.1.0;["
 	schema="1.1.10"
@@ -31,4 +31,5 @@
 	<necessite nom="detecter_langue" />
 	<necessite nom="lien_court" />
 	<necessite nom="facteur" compatibilite="[4.1.0;]" />
+	<necessite nom="seenthis_importer_flux" compatibilite="[2.0.3;]" />
 </paquet>
