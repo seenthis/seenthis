@@ -31,5 +31,4 @@
 	<necessite nom="detecter_langue" />
 	<necessite nom="lien_court" />
 	<necessite nom="facteur" compatibilite="[4.1.0;]" />
-	<necessite nom="seenthis_importer_flux" compatibilite="[2.0.3;]" />
 </paquet>
