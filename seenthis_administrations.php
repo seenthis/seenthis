@@ -78,6 +78,10 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 	$maj['1.1.9'] = array(
 		array('maj_tables', array('spip_auteurs')),
 	);
+	// en 1.1.11, poser viarss sur spip_me
+	$maj['1.1.11'] = array(
+		array('maj_tables', array('spip_me')),
+	);
 
 	include_spip('base/upgrade');
 	maj_plugin($nom_meta_base_version, $version_cible, $maj);
