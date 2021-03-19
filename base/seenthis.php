@@ -63,6 +63,7 @@ function seenthis_declarer_tables_principales($tables_principales){
 		`ip` varchar(40) NOT NULL,
 		`id_dest` bigint(21) NOT NULL,
 		`troll` bigint(21) NOT NULL,
+		`viarss` tinyint(1) NOT NULL DEFAULT '0',
 		PRIMARY KEY (`id_me`),
 		KEY `uuid` (`uuid`),
 		KEY `id_auteur` (`id_auteur`),
