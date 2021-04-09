@@ -82,7 +82,8 @@ function _creer_lien_riche($lien) {
 		if ($id_me
 		AND $t = texte_de_me($id_me)) {
 			$t = array_filter(explode("\n", $t));
-			$titre = supprimer_tags(typo_seenthis(couper($t[0], 60)));
+			$typo_seenthis = charger_fonction('typo_seenthis', 'inc');
+			$titre = supprimer_tags($typo_seenthis(couper($t[0], 60)));
 			if (!strlen($titre)) $titre = $lien;
 			return "<style>    a.internal-link { text-decoration: none;  } a.internal-link span.titre { text-decoration: underline;  }  a.internal-link span.url {     display:inline-block;     width:1px;     height:1px;     overflow:hidden;     color:transparent;    }    a.internal-link::before {     content: '❝';  }    a.internal-link::after {     content: '❞';  text-decoration: none;}    }    </style>    <a href='$lien' class='internal-link'><span class='url'>$lien </span><span class='titre'>$titre</span></a>";
 		}
@@ -299,7 +300,8 @@ function _traiter_block ($regs) {
 	} else {
 		$texte = typo($texte);
 	}
-	$texte = typo_seenthis($texte);
+	$typo_seenthis = charger_fonction('typo_seenthis', 'inc');
+	$texte = $typo_seenthis($texte);
 	
 	$texte = str_replace("TILDE_SEENTHIS", "~", $texte);
 	
@@ -320,7 +322,7 @@ function _traiter_traiter($reg) {
 	return "AAA";
 }
 
-function typo_seenthis($texte) {
+function inc_typo_seenthis_dist($texte) {
 
 	$texte = str_replace("&#8217;", "’", $texte);
 
@@ -415,7 +417,8 @@ function _traiter_texte($texte) {
 	} else {
 		$texte = typo($texte);
 	}
-	$texte = typo_seenthis($texte);
+	$typo_seenthis = charger_fonction('typo_seenthis', 'inc');
+	$texte = $typo_seenthis($texte);
 
 	$texte = str_replace("TILDE_SEENTHIS", "~", $texte);
 
