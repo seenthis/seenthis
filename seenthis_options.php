@@ -1217,3 +1217,8 @@ function seenthis_affichage_final($t) {
 }
 
 define('_HTTPS', (!empty($_SERVER["HTTPS"]) and $_SERVER["HTTPS"] == 'on') ? 'https' : 'http');
+
+// autoriser le prive uniquement pour les admins
+function autoriser_ecrire($faire, $type, $id, $qui, $opt) {
+	return $qui['statut'] == '0minirezo';
+}
