@@ -40,7 +40,7 @@ function autoriser_me_supprimer_dist($faire, $quoi, $id, $qui, $opts) {
 	if ($qui['id_auteur'] == $me['id_auteur']) {
 		return true;
 	}
-	if ($row['id_parent'] > 0) {
+	if ($me['id_parent'] > 0) {
 		if ($id_auteur = sql_getfetsel('id_auteur', 'spip_me', 'id_me='.intval($me['id_parent'])) and $qui['id_auteur'] == $id_auteur) {
 			return true;
 		}
