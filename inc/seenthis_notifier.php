@@ -282,6 +282,12 @@ function notifier_me($id_me, $id_parent) {
 		$remove[] = $t['id_auteur'];
 	}
 
+	// ni vers les comptes qui bloquent
+	$u = sql_select('id_block', 'spip_me_block', "id_auteur=$id_auteur_me");
+	while ($v = sql_fetch($u)) {
+		$remove[] = $v['id_auteur'];
+	}
+
 	foreach ($remove as $id_r) {
 		foreach ($id_dest as $k => $id) {
 			if ($id == $id_r)
