@@ -70,7 +70,7 @@ function notifier_partage($id_auteur_partage, $id_me) {
 	$texte_message = message_texte(texte_de_me($id_me));
 	$footer = seenthis_message_footer($lang, $seenthis);
 	$corps_mail['texte'] = "\n\n$annonce\n$url_aut_partage\n\n$texte_message\n\n$footer";
-	$corps_mail['headers'] = "Message-Id: <$id_auteur.$id_auteur_partage." . time() . "@" . _HOST . ">\n";
+	$corps_mail['headers'] = "Message-ID: <$id_auteur.$id_auteur_partage." . time() . "@" . _HOST . ">\n";
 	seenthis_envoyer_mail($email_dest, $titre_mail, $corps_mail);
 	spip_log("notifier partage $id_me part $id_auteur_partage pour $id_auteur", 'notifier');
 
@@ -149,7 +149,7 @@ function notifier_suivre_moi($id_auteur, $id_follow) {
 
 				$footer = seenthis_message_footer($lang, $seenthis);
 				$corps_mail['texte'] = "\n\n$annonce\n$url_me\n\n$footer";
-				$corps_mail['headers'] = "Message-Id: <$id_auteur.$id_follow." . time() . "@" . _HOST . ">\n";
+				$corps_mail['headers'] = "Message-ID: <$id_auteur.$id_follow." . time() . "@" . _HOST . ">\n";
 
 				seenthis_envoyer_mail($email_dest, "$seenthis - $titre_mail", $corps_mail);
 				spip_log("notification: @$login_aut suit @" . $row_dest['login'], 'suivre');
@@ -307,10 +307,10 @@ function notifier_me($id_me, $id_parent) {
 		mb_internal_encoding("UTF-8");
 		$corps_mail['nom_envoyeur'] = mb_encode_mimeheader(str_replace('@', '', $nom_auteur) .' - '. lire_meta('nom_site'), "UTF-8", "Q");
 
-		$corps_mail['headers'] = "Message-Id: <$id_me" . "@" . _HOST . ">\n";
+		$corps_mail['headers'] = "Message-ID: <$id_me" . "@" . _HOST . ">\n";
 
 		if ($id_parent > 0) {
-			$corps_mail['headers'] = "Message-Id: <$id_me." . md5($nom_auteur) . "@" . _HOST . ">\n"
+			$corps_mail['headers'] = "Message-ID: <$id_me." . md5($nom_auteur) . "@" . _HOST . ">\n"
 				. "In-Reply-To: <$id_parent" . "@" . _HOST . ">\n";
 		}
 
