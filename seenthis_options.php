@@ -739,7 +739,7 @@ function extraire_titre($texte, $long = 100, $brut = false) {
 
 	if (mb_strlen($texte, 'utf-8') > $long) {
 		$texte = mb_substr($texte, 0, $long, 'utf-8');
-		$pos = mb_strrpos($texte, ' ', 'utf-8');
+		$pos = mb_strrpos($texte, ' ', 0, 'utf-8');
 
 		if ($pos > 5 && !$brut) {
 			$texte = mb_substr($texte, 0, $pos, 'utf-8');
@@ -1094,7 +1094,7 @@ function instance_me($id_auteur = 0, $texte_message = '', $id_me = 0, $id_parent
 	// inserer_themes($id_me);
 
 	// indexer tout de suite
-	indexer_me($id_parent ? $id_parent : $id_me);
+	indexer_me($id_parent ?: $id_me);
 
 	// inserer les tags
 	inserer_tags_liens($id_me);

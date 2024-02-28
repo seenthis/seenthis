@@ -11,7 +11,7 @@ var_dump(UUID::Valid(UUID::getuuid())); #true
 */
 
 class UUID {
-	const REGEXP_UUID = '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}';
+	public const REGEXP_UUID = '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}';
 
 	public static function Valid($what) {
 		return preg_match(',^' . UUID::REGEXP_UUID . '$,i', $what);
@@ -105,7 +105,7 @@ class UUID {
 
 		if (empty($node)) {
 			# $node = crc32(Configure::read('Security.salt'));
-			$node = crc32(rand(0, 255));
+			$node = crc32(random_int(0, 255));
 		}
 
 		if (function_exists('hphp_get_thread_id')) {
@@ -120,7 +120,7 @@ class UUID {
 			$pid = mt_rand(0, 0xfff) | 0x4000;
 		}
 
-		list($timeMid, $timeLow) = explode(' ', microtime());
+		[$timeMid, $timeLow] = explode(' ', microtime());
 		$uuid = sprintf(
 			'%08x-%04x-%04x-%02x%02x-%04x%08x',
 			(int)$timeLow,
