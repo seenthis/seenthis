@@ -286,14 +286,14 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 	}
 
 	// Sinon on se base sur l'url arbo
-	if (!isset($g)) {
-		$arbo = charger_fonction('arbo', 'urls');
+	if (!isset($g) and is_numeric($i)) {
+		$arbo = charger_fonction_url('objet', 'arbo');
 		$g = $arbo($i, $entite, $args, $ancre);
 		
 		# si c'est un mot old-style, on redirige vers l'URL new-style
 		if (is_array($g) AND $g[1] == 'mot' AND isset($g[0]['id_mot']) ) {
 			include_spip('inc/filtres_mini');
-			$g[2] = url_absolue(generer_url_entite($g[0]['id_mot'], $g[1]));
+			$g[2] = url_absolue(generer_objet_url($g[0]['id_mot'], $g[1]));
 		}
 	}
 
