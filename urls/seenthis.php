@@ -1,26 +1,31 @@
 <?php
 
-if (!defined('_ECRIRE_INC_VERSION')) return;
+if (!defined('_ECRIRE_INC_VERSION')) {
+	return;
+}
 
 /*
 	Ce jeu d'URLs est une variation de urls/arbo
 	qui prend en compte les urls de message
 */
 
-if (!defined('_URLS_ARBO_MIN')) define('_URLS_ARBO_MIN', 0);
+if (!defined('_URLS_ARBO_MIN')) {
+	define('_URLS_ARBO_MIN', 0);
+}
 
 define('URLS_SEENTHIS_EXEMPLE', 'message/12 people/login tag/mot-clé');
 
-if (!defined('_MARQUEUR_URL'))
+if (!defined('_MARQUEUR_URL')) {
 	define('_MARQUEUR_URL', false);
+}
 
 ## utiliser des mots anglais
-$synonymes_types = array(
+$synonymes_types = [
 	'mot' => 'tag',
 	'auteur' => 'people',
 	'me' => 'messages',
 	'site' => 'sites'
-);
+];
 
 if (isset($GLOBALS['url_arbo_types']) and is_array($GLOBALS['url_arbo_types'])) {
 	$GLOBALS['url_arbo_types'] = array_merge($synonymes_types, $GLOBALS['url_arbo_types']);
@@ -47,10 +52,10 @@ $GLOBALS['table_titre']['auteurs'] = 'login AS titre, lang';
  * @param string $ancre
  * @return array|string
  */
-function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
+function urls_seenthis_dist($i, &$entite, $args = '', $ancre = '') {
 
-	if (!defined('_SET_HTML_BASE')){
-		define('_SET_HTML_BASE',1);
+	if (!defined('_SET_HTML_BASE')) {
+		define('_SET_HTML_BASE', 1);
 	}
 
 	if (is_numeric($i)) {
@@ -59,53 +64,64 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 		# #URL_ME
 		if ($entite == 'me') {
 			# s'il y a un parent, c'est #URL_ME{parent}#message$i
-			$k = sql_allfetsel('id_me,id_parent', 'spip_me', 'id_me='.$i);
-			if (!$k[0]) $g = '';
-			if ($k[0]['id_parent'])
-				$g = urls_seenthis_dist($k[0]['id_parent'], $entite, $args, 'message'.$i);
+			$k = sql_allfetsel('id_me,id_parent', 'spip_me', 'id_me=' . $i);
+			if (!$k[0]) {
+				$g = '';
+			}
+			if ($k[0]['id_parent']) {
+				$g = urls_seenthis_dist($k[0]['id_parent'], $entite, $args, 'message' . $i);
+			}
 			# sinon c'est messages/$i
-			else
-				$g = $GLOBALS['url_arbo_types']['me'].'/'.$i;
+			else {
+				$g = $GLOBALS['url_arbo_types']['me'] . '/' . $i;
+			}
 
 			// Ajouter les args
-			if ($args)
-				$g .= ((strpos($g, '?')===false) ? '?' : '&') . $args;
-		
-			// Ajouter l'ancre
-			if ($ancre)
-				$g .= "#$ancre";
+			if ($args) {
+				$g .= ((strpos($g, '?') === false) ? '?' : '&') . $args;
+			}
 
+			// Ajouter l'ancre
+			if ($ancre) {
+				$g .= "#$ancre";
+			}
 		}
 
 		# #URL_AUTEUR
-		if ($entite == "auteur") {
-			$k = sql_fetsel('login FROM spip_auteurs WHERE id_auteur='.sql_quote($i));
-			if (!$k) return '';
+		if ($entite == 'auteur') {
+			$k = sql_fetsel('login FROM spip_auteurs WHERE id_auteur=' . sql_quote($i));
+			if (!$k) {
+				return '';
+			}
 
 			# people/login
 			include_spip('inc/charsets');
-			$g = _DIR_RACINE.$GLOBALS['url_arbo_types']['auteur'].'/'
-				. urlencode_1738_plus(spip_strtolower($k['login'],'UTF8'));
-
+			$g = _DIR_RACINE . $GLOBALS['url_arbo_types']['auteur'] . '/'
+				. urlencode_1738_plus(spip_strtolower($k['login'], 'UTF8'));
 		}
 
 		# generer_url_entite('site', id_syndic)
-		if ($entite == "site") {
-			$k = sql_fetsel('url_site,md5 FROM spip_syndic WHERE id_syndic='.sql_quote($i));
-			if (!$k) return '';
+		if ($entite == 'site') {
+			$k = sql_fetsel('url_site,md5 FROM spip_syndic WHERE id_syndic=' . sql_quote($i));
+			if (!$k) {
+				return '';
+			}
 			#if (!$ref = $k['md5']) // a activer si on veut le md5 dans l'url
 				$ref = $i;
 
 			# people/login
-			$g = _DIR_RACINE.$GLOBALS['url_arbo_types']['site'].'/'
+			$g = _DIR_RACINE . $GLOBALS['url_arbo_types']['site'] . '/'
 				. $ref;
-
 		}
-	} else if (TRUE) {
-
+	} elseif (true) {
 		# la page d'un tag manuel ou opencalais :
-		if (preg_match(','.$GLOBALS['url_arbo_types']['mot'].'/(([^:]+):(.*)|(.*))$,',
-		preg_replace('/[?].*$/', '', $i), $r)) {
+		if (
+			preg_match(
+				',' . $GLOBALS['url_arbo_types']['mot'] . '/(([^:]+):(.*)|(.*))$,',
+				preg_replace('/[?].*$/', '', $i),
+				$r
+			)
+		) {
 			# tag/spip
 			if (isset($r[4])) {
 				$type = 'Hashtags';
@@ -116,18 +132,18 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 				$titre = urldecode($r[3]);
 				$tag = "$type:$titre";
 			}
-			switch (substr($titre,-1)) {
+			switch (substr($titre, -1)) {
 				# spip$ = seulement le mot 'spip'
 				case '$':
 					$fond = 'mot_fin';
-					$titre = substr($titre,0,-1);
-					$tag = substr($tag,0,-1);
+					$titre = substr($titre, 0, -1);
+					$tag = substr($tag, 0, -1);
 					break;
 				# spip* = 'spip', 'spip_zone' etc
 				case '*':
 					$fond = 'mot_flou';
-					$titre = substr($titre,0,-1);
-					$tag = substr($tag,0,-1);
+					$titre = substr($titre, 0, -1);
+					$tag = substr($tag, 0, -1);
 					break;
 				# spip* = 'spip', 'cms' etc (tous les thèmes liés à 'spip')
 				default:
@@ -135,13 +151,15 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 					break;
 			}
 
-			# /tag/ => meme chose que tags/ = les themes que vous suivez			
-			if ($tag == '#') $fond = 'tags';
+			# /tag/ => meme chose que tags/ = les themes que vous suivez
+			if ($tag == '#') {
+				$fond = 'tags';
+			}
 
 			# tag/truc/feed => flux RSS du tag
-			if (substr($titre,-5) == '/feed') {
-				$titre = substr($titre,0,-5);
-				$tag = substr($tag,0,-5);
+			if (substr($titre, -5) == '/feed') {
+				$titre = substr($titre, 0, -5);
+				$tag = substr($tag, 0, -5);
 				$fond = 'backend_tag';
 			}
 			$args['tag'] = $tag;
@@ -154,40 +172,39 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 			}
 			*/
 
-			$g = array(
+			$g = [
 				$args,
 				$fond,
 				null,
 				null
-			);
+			];
 			# une fois les vieux urls de mots resorbes, on pourra supprimer ce if()
-
 		}
 		# la page /tags/
-		else if (preg_match(',tags/?$,', $i)) {
-			$g = array($args, 'tags');
+		elseif (preg_match(',tags/?$,', $i)) {
+			$g = [$args, 'tags'];
 		}
 
 		# la page /people/
-		else if (preg_match(','.$GLOBALS['url_arbo_types']['auteur'].'/?([?].*)?$,', $i)) {
-			$g = array($args, 'people');
+		elseif (preg_match(',' . $GLOBALS['url_arbo_types']['auteur'] . '/?([?].*)?$,', $i)) {
+			$g = [$args, 'people'];
 		}
 		# la page people/xxx/follow/feed => ramener sur people/xxx
-		else if (
-			preg_match(',^.*('.$GLOBALS['url_arbo_types']['auteur'].'/([^?/]+))(/follow|/only|/all)?((/feed)(_tw)?)?([?].*)?$,', $i, $r)
+		elseif (
+			preg_match(',^.*(' . $GLOBALS['url_arbo_types']['auteur'] . '/([^?/]+))(/follow|/only|/all)?((/feed)(_tw)?)?([?].*)?$,', $i, $r)
 		) {
-			if ($f = sql_fetsel('id_auteur', 'spip_auteurs', 'login='.sql_quote($r[2]))) {
+			if ($f = sql_fetsel('id_auteur', 'spip_auteurs', 'login=' . sql_quote($r[2]))) {
 				$args['id_auteur'] = $f['id_auteur'];
-				$g = array(
+				$g = [
 					$args
-				);
+				];
 				$feed = $r[5] ? true : false;
 				if ($feed) {
-					$g[1] = "backend_auteur";
+					$g[1] = 'backend_auteur';
 					$g['0']['twitter'] = $r[6];
 				}
 				else {
-					$g[1] = "auteur";
+					$g[1] = 'auteur';
 				}
 
 				switch ($r[3]) {
@@ -206,82 +223,76 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 				}
 			}
 		}
-		else
-		if (preg_match(','.$GLOBALS['url_arbo_types']['me'].'/(\d+)([?].*)?$,', $i, $r)) {
-			$g = array(
-				array('id_me' => $r[1]),
+		elseif (preg_match(',' . $GLOBALS['url_arbo_types']['me'] . '/(\d+)([?].*)?$,', $i, $r)) {
+			$g = [
+				['id_me' => $r[1]],
 				'message',
 				null,
 				null
-			);
+			];
 		}
 		# la page d'un site :
-		else
-		if (preg_match(','.$GLOBALS['url_arbo_types']['site'].'/(\d+)([?].*)?$,i', $i, $r)) {
-			if ($f = sql_fetsel('id_syndic, url_site, md5', 'spip_syndic', 'id_syndic='.$r[1])) {
+		elseif (preg_match(',' . $GLOBALS['url_arbo_types']['site'] . '/(\d+)([?].*)?$,i', $i, $r)) {
+			if ($f = sql_fetsel('id_syndic, url_site, md5', 'spip_syndic', 'id_syndic=' . $r[1])) {
 				$args['id_syndic'] = $f['id_syndic'];
 				$args['url'] = $f['url_site'];
 				$args['md5'] = $f['md5'];
 			}
-			$g = array(
+			$g = [
 				$args,
 				'site',
 				null,
 				null
-			);
+			];
 		}
-		else
-		if (preg_match(','.$GLOBALS['url_arbo_types']['site'].'/([0-9a-f]{32})([?].*)?$,i', $i, $r)) {
+		elseif (preg_match(',' . $GLOBALS['url_arbo_types']['site'] . '/([0-9a-f]{32})([?].*)?$,i', $i, $r)) {
 			/* old style = id_syndic */
-			if ($f = sql_fetsel('id_syndic, url_site, md5', 'spip_syndic', 'MD5(url_site)='.sql_quote($r[1]))) {
+			if ($f = sql_fetsel('id_syndic, url_site, md5', 'spip_syndic', 'MD5(url_site)=' . sql_quote($r[1]))) {
 				$args['id_syndic'] = $f['id_syndic'];
 				$args['url'] = $f['url_site'];
 				$args['md5'] = $f['md5'];
 			}
-			$g = array(
+			$g = [
 				$args,
 				'site',
 				null,
 				null
-			);
+			];
 		}
 
-		else
-		if (preg_match(','.$GLOBALS['url_arbo_types']['site'].'/(https?:.*)([?].*)?$,', $i, $r)) {
+		elseif (preg_match(',' . $GLOBALS['url_arbo_types']['site'] . '/(https?:.*)([?].*)?$,', $i, $r)) {
 			/* old style = id_syndic */
 
-			if ($f = sql_fetsel('id_syndic, url_site, md5', 'spip_syndic', 'MD5(url_site)='.sql_quote(md5($r[1])))) {
+			if ($f = sql_fetsel('id_syndic, url_site, md5', 'spip_syndic', 'MD5(url_site)=' . sql_quote(md5($r[1])))) {
 				$args['id_syndic'] = $f['id_syndic'];
 				$args['url'] = $f['url_site'];
 				$args['md5'] = $f['md5'];
 			}
-			$g = array(
+			$g = [
 				$args,
 				'site',
 				null,
 				null
-			);
+			];
 		}
 
-		else
-		if (preg_match(','.$GLOBALS['url_arbo_types']['site'].'/?([?].*)?$,', $i, $r)) {
-			$g = array(
+		elseif (preg_match(',' . $GLOBALS['url_arbo_types']['site'] . '/?([?].*)?$,', $i, $r)) {
+			$g = [
 				$args,
 				'sites',
 				null,
 				null
-			);
+			];
 		}
 
-		else
-		if (preg_match(',all([?].*)?$,i', $i, $r)) {
+		elseif (preg_match(',all([?].*)?$,i', $i, $r)) {
 			$args['follow'] = 'all';
-			$g = array(
+			$g = [
 				$args,
 				'sommaire',
 				null,
 				null
-			);
+			];
 		}
 	}
 
@@ -289,9 +300,9 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 	if (!isset($g) and is_numeric($i)) {
 		$arbo = charger_fonction_url('objet', 'arbo');
 		$g = $arbo($i, $entite, $args, $ancre);
-		
+
 		# si c'est un mot old-style, on redirige vers l'URL new-style
-		if (is_array($g) AND $g[1] == 'mot' AND isset($g[0]['id_mot']) ) {
+		if (is_array($g) and $g[1] == 'mot' and isset($g[0]['id_mot'])) {
 			include_spip('inc/filtres_mini');
 			$g[2] = url_absolue(generer_objet_url($g[0]['id_mot'], $g[1]));
 		}
@@ -299,5 +310,3 @@ function urls_seenthis_dist($i, &$entite, $args='', $ancre='') {
 
 	return $g;
 }
-
-?>

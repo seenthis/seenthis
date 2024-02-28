@@ -18,7 +18,7 @@ function seenthis_autoriser() {
  * @return boolean true/false
  */
 function autoriser_me_modifier_dist($faire, $quoi, $id, $qui, $opts) {
-	$id_auteur = sql_getfetsel('id_auteur', 'spip_me', 'id_me='.intval($id));
+	$id_auteur = sql_getfetsel('id_auteur', 'spip_me', 'id_me=' . intval($id));
 	return $qui['id_auteur'] == $id_auteur;
 }
 
@@ -33,7 +33,7 @@ function autoriser_me_modifier_dist($faire, $quoi, $id, $qui, $opts) {
  * @return boolean true/false
  */
 function autoriser_me_supprimer_dist($faire, $quoi, $id, $qui, $opts) {
-	$me = sql_fetsel('id_auteur, id_parent', 'spip_me', 'id_me='.intval($id));
+	$me = sql_fetsel('id_auteur, id_parent', 'spip_me', 'id_me=' . intval($id));
 	if (!$me) {
 		return false;
 	}
@@ -41,7 +41,7 @@ function autoriser_me_supprimer_dist($faire, $quoi, $id, $qui, $opts) {
 		return true;
 	}
 	if ($me['id_parent'] > 0) {
-		if ($id_auteur = sql_getfetsel('id_auteur', 'spip_me', 'id_me='.intval($me['id_parent'])) and $qui['id_auteur'] == $id_auteur) {
+		if ($id_auteur = sql_getfetsel('id_auteur', 'spip_me', 'id_me=' . intval($me['id_parent'])) and $qui['id_auteur'] == $id_auteur) {
 			return true;
 		}
 	}

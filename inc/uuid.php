@@ -14,26 +14,28 @@ class UUID {
 	const REGEXP_UUID = '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}';
 
 	public static function Valid($what) {
-		return preg_match(',^'.UUID::REGEXP_UUID.'$,i', $what);
+		return preg_match(',^' . UUID::REGEXP_UUID . '$,i', $what);
 	}
 
 
 	public static function getuuid($what = null) {
-		if (is_null($what))
+		if (is_null($what)) {
 			return UUID::random_uuid();
+		}
 
-		if (UUID::Valid($what))
+		if (UUID::Valid($what)) {
 			return strtolower($what);
+		}
 
 		$m = md5($what);
 
 		$uuid = sprintf(
-			"%s-%s-%s-%s-%s",
-				substr($m,0,8),
-				substr($m,8,4),
-				substr($m,12,4),
-				substr($m,16,4),
-				substr($m,20,32)
+			'%s-%s-%s-%s-%s',
+			substr($m, 0, 8),
+			substr($m, 8, 4),
+			substr($m, 12, 4),
+			substr($m, 16, 4),
+			substr($m, 20, 32)
 		);
 
 		return $uuid;
@@ -61,7 +63,9 @@ class UUID {
 		if (strpos($node, ':') !== false) {
 			if (substr_count($node, '::')) {
 				$node = str_replace(
-					'::', str_repeat(':0000', 8 - substr_count($node, ':')) . ':', $node
+					'::',
+					str_repeat(':0000', 8 - substr_count($node, ':')) . ':',
+					$node
 				);
 			}
 			$node = explode(':', $node);
@@ -101,7 +105,7 @@ class UUID {
 
 		if (empty($node)) {
 			# $node = crc32(Configure::read('Security.salt'));
-			$node = crc32(rand(0,255));
+			$node = crc32(rand(0, 255));
 		}
 
 		if (function_exists('hphp_get_thread_id')) {
@@ -118,11 +122,16 @@ class UUID {
 
 		list($timeMid, $timeLow) = explode(' ', microtime());
 		$uuid = sprintf(
-			"%08x-%04x-%04x-%02x%02x-%04x%08x", (int)$timeLow, (int)substr($timeMid, 2) & 0xffff,
-			mt_rand(0, 0xfff) | 0x4000, mt_rand(0, 0x3f) | 0x80, mt_rand(0, 0xff), $pid, $node
+			'%08x-%04x-%04x-%02x%02x-%04x%08x',
+			(int)$timeLow,
+			(int)substr($timeMid, 2) & 0xffff,
+			mt_rand(0, 0xfff) | 0x4000,
+			mt_rand(0, 0x3f) | 0x80,
+			mt_rand(0, 0xff),
+			$pid,
+			$node
 		);
 
 		return $uuid;
 	}
 }
-
