@@ -124,7 +124,7 @@ function _creer_lien_riche($lien) {
 
 	// Si ça ressemble à une image, inclure la vignette sur place
 	if (preg_match(',\.(png|gif|jpe?g|svg),i', $lien)) {
-		include_spip('seenthis_fonctions'); # pour afficher_miniature
+		include_spip('seenthissq_fonctions'); # pour afficher_miniature
 
 		// Gérer les images en lien dropbox (remplacer www par dl)
 		$lien = preg_replace('/^(https\:\/\/)(www)(\.dropbox\.com\/.*\/.*\/.*)$/', '\1dl\3', $lien);
