@@ -30,6 +30,7 @@ function inc_seenthisaccueil_to_array_dist($u, $page = null) {
 	$max_pagination = 300;
 	$debut = intval($env['debut_messages']);
 	$variante = $env['variante']; // '', 'only', 'all', 'follow'
+	$moi = 0;
 
 
 	$r = [];
