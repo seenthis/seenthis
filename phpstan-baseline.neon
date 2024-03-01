@@ -1,0 +1,576 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Function generer_url_entite not found\\.$#"
+			count: 1
+			path: inc/seenthis_data.php
+
+		-
+			message: "#^Function include_spip not found\\.$#"
+			count: 3
+			path: inc/seenthis_data.php
+
+		-
+			message: "#^Function liste_follow not found\\.$#"
+			count: 4
+			path: inc/seenthis_data.php
+
+		-
+			message: "#^Function redirige_par_entete not found\\.$#"
+			count: 1
+			path: inc/seenthis_data.php
+
+		-
+			message: "#^Function session_get not found\\.$#"
+			count: 1
+			path: inc/seenthis_data.php
+
+		-
+			message: "#^Function sql_allfetsel not found\\.$#"
+			count: 15
+			path: inc/seenthis_data.php
+
+		-
+			message: "#^Function sql_fetch not found\\.$#"
+			count: 2
+			path: inc/seenthis_data.php
+
+		-
+			message: "#^Function sql_fetsel not found\\.$#"
+			count: 1
+			path: inc/seenthis_data.php
+
+		-
+			message: "#^Function sql_in not found\\.$#"
+			count: 19
+			path: inc/seenthis_data.php
+
+		-
+			message: "#^Function sql_query not found\\.$#"
+			count: 2
+			path: inc/seenthis_data.php
+
+		-
+			message: "#^Function sql_quote not found\\.$#"
+			count: 10
+			path: inc/seenthis_data.php
+
+		-
+			message: "#^Function translitteration not found\\.$#"
+			count: 1
+			path: inc/seenthis_data.php
+
+		-
+			message: "#^Function _T not found\\.$#"
+			count: 8
+			path: inc/seenthis_notifier.php
+
+		-
+			message: "#^Function charger_fonction not found\\.$#"
+			count: 2
+			path: inc/seenthis_notifier.php
+
+		-
+			message: "#^Function generer_url_entite not found\\.$#"
+			count: 3
+			path: inc/seenthis_notifier.php
+
+		-
+			message: "#^Function include_spip not found\\.$#"
+			count: 2
+			path: inc/seenthis_notifier.php
+
+		-
+			message: "#^Function lire_meta not found\\.$#"
+			count: 1
+			path: inc/seenthis_notifier.php
+
+		-
+			message: "#^Function pipeline not found\\.$#"
+			count: 1
+			path: inc/seenthis_notifier.php
+
+		-
+			message: "#^Function spip_log not found\\.$#"
+			count: 5
+			path: inc/seenthis_notifier.php
+
+		-
+			message: "#^Function sql_allfetsel not found\\.$#"
+			count: 1
+			path: inc/seenthis_notifier.php
+
+		-
+			message: "#^Function sql_countsel not found\\.$#"
+			count: 2
+			path: inc/seenthis_notifier.php
+
+		-
+			message: "#^Function sql_fetch not found\\.$#"
+			count: 15
+			path: inc/seenthis_notifier.php
+
+		-
+			message: "#^Function sql_in not found\\.$#"
+			count: 1
+			path: inc/seenthis_notifier.php
+
+		-
+			message: "#^Function sql_query not found\\.$#"
+			count: 2
+			path: inc/seenthis_notifier.php
+
+		-
+			message: "#^Function sql_quote not found\\.$#"
+			count: 8
+			path: inc/seenthis_notifier.php
+
+		-
+			message: "#^Function sql_select not found\\.$#"
+			count: 13
+			path: inc/seenthis_notifier.php
+
+		-
+			message: "#^Function url_absolue not found\\.$#"
+			count: 3
+			path: inc/seenthis_notifier.php
+
+		-
+			message: "#^Function include_spip not found\\.$#"
+			count: 1
+			path: inc/seenthis_uuid.php
+
+		-
+			message: "#^Function spip_log not found\\.$#"
+			count: 2
+			path: inc/seenthis_uuid.php
+
+		-
+			message: "#^Function sql_fetch not found\\.$#"
+			count: 1
+			path: inc/seenthis_uuid.php
+
+		-
+			message: "#^Function sql_query not found\\.$#"
+			count: 1
+			path: inc/seenthis_uuid.php
+
+		-
+			message: "#^Function sql_updateq not found\\.$#"
+			count: 1
+			path: inc/seenthis_uuid.php
+
+		-
+			message: "#^Function afficher_miniature not found\\.$#"
+			count: 1
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function charger_fonction not found\\.$#"
+			count: 3
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function copie_locale not found\\.$#"
+			count: 1
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function couper not found\\.$#"
+			count: 1
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function detecter_langue not found\\.$#"
+			count: 2
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function extraire_attribut not found\\.$#"
+			count: 4
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function extraire_balises not found\\.$#"
+			count: 1
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function generer_url_entite not found\\.$#"
+			count: 1
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function include_spip not found\\.$#"
+			count: 5
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function inserer_attribut not found\\.$#"
+			count: 2
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function lang_dir not found\\.$#"
+			count: 2
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function lang_select not found\\.$#"
+			count: 4
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function lien_court not found\\.$#"
+			count: 1
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function microcache not found\\.$#"
+			count: 1
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function parametre_url not found\\.$#"
+			count: 1
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function sql_fetch not found\\.$#"
+			count: 3
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function sql_query not found\\.$#"
+			count: 3
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function sql_quote not found\\.$#"
+			count: 5
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function supprimer_tags not found\\.$#"
+			count: 1
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function textebrut not found\\.$#"
+			count: 1
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function traiter_echap_code_dist not found\\.$#"
+			count: 1
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function typo not found\\.$#"
+			count: 4
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function url_absolue not found\\.$#"
+			count: 1
+			path: inc/traiter_texte.php
+
+		-
+			message: "#^Function cextras_api_vider_tables not found\\.$#"
+			count: 1
+			path: seenthis_administrations.php
+
+		-
+			message: "#^Function effacer_meta not found\\.$#"
+			count: 1
+			path: seenthis_administrations.php
+
+		-
+			message: "#^Function include_spip not found\\.$#"
+			count: 5
+			path: seenthis_administrations.php
+
+		-
+			message: "#^Function maj_plugin not found\\.$#"
+			count: 1
+			path: seenthis_administrations.php
+
+		-
+			message: "#^Function spip_query not found\\.$#"
+			count: 1
+			path: seenthis_administrations.php
+
+		-
+			message: "#^Function sql_drop_table not found\\.$#"
+			count: 10
+			path: seenthis_administrations.php
+
+		-
+			message: "#^Function sql_fetch not found\\.$#"
+			count: 1
+			path: seenthis_administrations.php
+
+		-
+			message: "#^Function sql_query not found\\.$#"
+			count: 7
+			path: seenthis_administrations.php
+
+		-
+			message: "#^Function sql_updateq not found\\.$#"
+			count: 1
+			path: seenthis_administrations.php
+
+		-
+			message: "#^Function sql_fetsel not found\\.$#"
+			count: 1
+			path: seenthis_autoriser.php
+
+		-
+			message: "#^Function sql_getfetsel not found\\.$#"
+			count: 2
+			path: seenthis_autoriser.php
+
+		-
+			message: "#^Function champ_sql not found\\.$#"
+			count: 1
+			path: seenthis_fonctions.php
+
+		-
+			message: "#^Function charger_fonction not found\\.$#"
+			count: 1
+			path: seenthis_fonctions.php
+
+		-
+			message: "#^Function autoriser not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function copie_locale not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function couper not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function detecter_langue not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function extraire_attribut not found\\.$#"
+			count: 2
+			path: seenthis_options.php
+
+		-
+			message: "#^Function extraire_balise not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function extraire_balises not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function fichier_copie_locale not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function importer_charset not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function include_spip not found\\.$#"
+			count: 15
+			path: seenthis_options.php
+
+		-
+			message: "#^Function interdire_scripts not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function is_utf8 not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function job_queue_add not found\\.$#"
+			count: 5
+			path: seenthis_options.php
+
+		-
+			message: "#^Function lang_dir not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function liens_absolus not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function pipeline not found\\.$#"
+			count: 3
+			path: seenthis_options.php
+
+		-
+			message: "#^Function quote_amp not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function sous_repertoire not found\\.$#"
+			count: 4
+			path: seenthis_options.php
+
+		-
+			message: "#^Function spip_log not found\\.$#"
+			count: 15
+			path: seenthis_options.php
+
+		-
+			message: "#^Function sql_allfetsel not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function sql_count not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function sql_delete not found\\.$#"
+			count: 4
+			path: seenthis_options.php
+
+		-
+			message: "#^Function sql_fetch not found\\.$#"
+			count: 28
+			path: seenthis_options.php
+
+		-
+			message: "#^Function sql_fetsel not found\\.$#"
+			count: 2
+			path: seenthis_options.php
+
+		-
+			message: "#^Function sql_getfetsel not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function sql_in not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function sql_insertq not found\\.$#"
+			count: 9
+			path: seenthis_options.php
+
+		-
+			message: "#^Function sql_query not found\\.$#"
+			count: 7
+			path: seenthis_options.php
+
+		-
+			message: "#^Function sql_quote not found\\.$#"
+			count: 9
+			path: seenthis_options.php
+
+		-
+			message: "#^Function sql_select not found\\.$#"
+			count: 24
+			path: seenthis_options.php
+
+		-
+			message: "#^Function sql_update not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function sql_updateq not found\\.$#"
+			count: 5
+			path: seenthis_options.php
+
+		-
+			message: "#^Function suivre_invalideur not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function supprimer_microcache not found\\.$#"
+			count: 26
+			path: seenthis_options.php
+
+		-
+			message: "#^Function texte_de_me\\(\\) should return string but return statement is missing\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function textebrut not found\\.$#"
+			count: 2
+			path: seenthis_options.php
+
+		-
+			message: "#^Function typo not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Instantiated class Readability not found\\.$#"
+			count: 1
+			path: seenthis_options.php
+
+		-
+			message: "#^Function recuperer_fond not found\\.$#"
+			count: 1
+			path: seenthis_pipelines.php
+
+		-
+			message: "#^Function charger_fonction_url not found\\.$#"
+			count: 1
+			path: urls/seenthis.php
+
+		-
+			message: "#^Function generer_objet_url not found\\.$#"
+			count: 1
+			path: urls/seenthis.php
+
+		-
+			message: "#^Function include_spip not found\\.$#"
+			count: 4
+			path: urls/seenthis.php
+
+		-
+			message: "#^Function spip_strtolower not found\\.$#"
+			count: 1
+			path: urls/seenthis.php
+
+		-
+			message: "#^Function sql_allfetsel not found\\.$#"
+			count: 1
+			path: urls/seenthis.php
+
+		-
+			message: "#^Function sql_fetsel not found\\.$#"
+			count: 6
+			path: urls/seenthis.php
+
+		-
+			message: "#^Function sql_quote not found\\.$#"
+			count: 5
+			path: urls/seenthis.php
+
+		-
+			message: "#^Function url_absolue not found\\.$#"
+			count: 1
+			path: urls/seenthis.php

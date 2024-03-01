@@ -1,0 +1,9 @@
+includes:
+	- phpstan-baseline.neon
+parameters:
+	paths:
+		- .
+	excludePaths:
+		analyseAndScan:
+			- lang
+	level: 0
