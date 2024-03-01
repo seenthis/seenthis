@@ -1,2 +1,3 @@
 /phpstan.neon.dist export-ignore
 /phpstan-baseline.neon export-ignore
+/phpstan-constants.php export-ignore
