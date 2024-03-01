@@ -554,6 +554,7 @@ function liste_pointe_sql($debut, $max_pagination, $moi) {
  * class : '# oc' pour manuel|opencalais; 'url'; null=tout
  */
 function liste_pointe_tags($debut, $max_pagination, $moi, $class = null) {
+	$where = '';
 	if ($class === null) {
 		$where = '';
 	} elseif ($class == 'url') {
