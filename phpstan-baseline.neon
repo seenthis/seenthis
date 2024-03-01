@@ -511,11 +511,6 @@ parameters:
 			path: seenthis_options.php
 
 		-
-			message: "#^Function texte_de_me\\(\\) should return string but return statement is missing\\.$#"
-			count: 1
-			path: seenthis_options.php
-
-		-
 			message: "#^Function textebrut not found\\.$#"
 			count: 2
 			path: seenthis_options.php

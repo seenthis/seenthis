@@ -501,6 +501,7 @@ function texte_de_me($id_me) {
 		$GLOBALS['texte_de_id_me']["$id_me"] = $row['texte'];
 		return $GLOBALS['texte_de_id_me']["$id_me"];
 	}
+	return '';
 }
 
 
