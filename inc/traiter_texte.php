@@ -207,7 +207,7 @@ function _creer_lien_riche($lien) {
 			WHERE (spip_me_tags.tag = ' . sql_quote('http://' . $lien_flou) . ' OR spip_me_tags.tag = ' . sql_quote('https://' . $lien_flou) . ")
 				AND spip_me.statut='publi'");
 		include_spip('inc/urls');
-		$url = generer_url_entite($id_syndic, 'site');
+		$url = generer_objet_url($id_syndic, 'site');
 
 		$r = sql_fetch($query_total);
 		$triangle = ($r['c'] > 1) ? '►' : '▻';

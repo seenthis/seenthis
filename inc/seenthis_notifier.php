@@ -51,7 +51,7 @@ function notifier_partage($id_auteur_partage, $id_me) {
 	$nom_dest = nom_auteur($id_auteur);
 	$lang = $row_dest['lang'];
 
-	$url_aut_partage = url_absolue(generer_url_entite($id_auteur_partage, 'auteur', '', '', true));
+	$url_aut_partage = url_absolue(generer_objet_url($id_auteur_partage, 'auteur', '', '', true));
 
 	$titre_mail = _T('seenthis:notif_partage_titre', [
 		'nom_aut_partage' => $nom_aut_partage,
@@ -128,7 +128,7 @@ function notifier_suivre_moi($id_auteur, $id_follow) {
 
 			if (strlen(trim($email_dest)) > 3) {
 				include_spip('inc/filtres_mini');
-				$url_me = url_absolue(generer_url_entite($id_follow, 'auteur', '', '', true));
+				$url_me = url_absolue(generer_objet_url($id_follow, 'auteur', '', '', true));
 
 				$seenthis = $GLOBALS['meta']['nom_site']; # "Seenthis";
 				$titre_mail = _T('seenthis:notif_suivremoi_titre', [
@@ -169,13 +169,14 @@ function notifier_me($id_me, $id_parent) {
 		return;
 	}
 
+	$id_auteur = 0;
 	$id_auteur_me = $row['id_auteur'];
 	$texte = texte_de_me($id_me);
 	$titre_mail = ($id_parent > 0) ? 'Re: ' . trim(extraire_titre(texte_de_me($id_parent), 100, true)) : trim(extraire_titre($texte, 100, true));
 	$nom_auteur = nom_auteur($id_auteur_me);
 	$notifier_construire_texte = charger_fonction('notifier_construire_texte', '');
 	$texte_mail = $notifier_construire_texte($id_parent, $id_me);
-	$texte_mail .= "\n\n" . url_absolue(generer_url_entite($id_me, 'me', '', '', true));
+	$texte_mail .= "\n\n" . url_absolue(generer_objet_url($id_me, 'me', '', '', true));
 
 	// va contenir tous les destinataires du mail
 	$id_dest = [];

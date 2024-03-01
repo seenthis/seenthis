@@ -1,7 +1,7 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Function generer_url_entite not found\\.$#"
+			message: "#^Function generer_objet_url not found\\.$#"
 			count: 1
 			path: inc/seenthis_data.php
 
@@ -71,7 +71,7 @@ parameters:
 			path: inc/seenthis_notifier.php
 
 		-
-			message: "#^Function generer_url_entite not found\\.$#"
+			message: "#^Function generer_objet_url not found\\.$#"
 			count: 3
 			path: inc/seenthis_notifier.php
 
@@ -196,7 +196,7 @@ parameters:
 			path: inc/traiter_texte.php
 
 		-
-			message: "#^Function generer_url_entite not found\\.$#"
+			message: "#^Function generer_objet_url not found\\.$#"
 			count: 1
 			path: inc/traiter_texte.php
 

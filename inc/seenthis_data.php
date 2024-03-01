@@ -335,7 +335,7 @@ function inc_seenthisrecherche_to_array_dist($u) {
 				if (!strlen($r)) {
 					include_spip('inc/headers');
 					include_spip('inc/urls');
-					redirige_par_entete(generer_url_entite($t['id_auteur'], 'auteur'));
+					redirige_par_entete(generer_objet_url($t['id_auteur'], 'auteur'));
 				}
 			}
 		}

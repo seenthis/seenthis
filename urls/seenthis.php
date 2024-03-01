@@ -100,7 +100,7 @@ function urls_seenthis_dist($i, &$entite, $args = '', $ancre = '') {
 				. urlencode_1738_plus(spip_strtolower($k['login'], 'UTF8'));
 		}
 
-		# generer_url_entite('site', id_syndic)
+		# generer_objet_url('site', id_syndic)
 		if ($entite == 'site') {
 			$k = sql_fetsel('url_site,md5 FROM spip_syndic WHERE id_syndic=' . sql_quote($i));
 			if (!$k) {
