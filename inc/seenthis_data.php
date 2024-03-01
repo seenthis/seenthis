@@ -31,6 +31,7 @@ function inc_seenthisaccueil_to_array_dist($u, $page = null) {
 	$debut = intval($env['debut_messages']);
 	$variante = $env['variante']; // '', 'only', 'all', 'follow'
 	$moi = 0;
+	$auteurs_bloques = [];
 
 
 	$r = [];
@@ -244,6 +245,7 @@ function inc_seenthisrecherche_to_array_dist($u) {
 
 	include_spip('inc/session');
 	$moi = intval(session_get('id_auteur'));
+	$auteurs_bloques = [];
 
 	$where = [];
 
