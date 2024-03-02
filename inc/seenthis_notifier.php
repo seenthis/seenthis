@@ -174,6 +174,7 @@ function notifier_me($id_me, $id_parent) {
 	$texte = texte_de_me($id_me);
 	$titre_mail = ($id_parent > 0) ? 'Re: ' . trim(extraire_titre(texte_de_me($id_parent), 100, true)) : trim(extraire_titre($texte, 100, true));
 	$nom_auteur = nom_auteur($id_auteur_me);
+	$nom_auteur_init = '';
 	$notifier_construire_texte = charger_fonction('notifier_construire_texte', '');
 	$texte_mail = $notifier_construire_texte($id_parent, $id_me);
 	$texte_mail .= "\n\n" . url_absolue(generer_objet_url($id_me, 'me', '', '', true));
