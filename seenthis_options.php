@@ -843,7 +843,8 @@ function indexer_me($id_ref) {
 	$query = sql_select('*', 'spip_me', "(id_me=$id_ref OR id_parent=$id_ref) AND statut='publi'");
 
 	$id_billets = false;
-	$ret = '';
+	$ret = $date_ref = $titre_ref = '';
+	$id_me_ref = $id_auteur_ref = 0;
 
 	while ($row = sql_fetch($query)) {
 		$id_me = $row['id_me'];
