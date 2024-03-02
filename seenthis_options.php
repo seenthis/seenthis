@@ -267,6 +267,7 @@ function supprimer_me($id_me) {
 	// Garder le lien vers son auteur, et changer son statut en "supp"
 
 	$query = sql_select('id_auteur, id_parent', 'spip_me', "id_me = $id_me");
+	$id_parent = $id_ref = 0;
 	while ($row = sql_fetch($query)) {
 		$id_parent = $row['id_parent'];
 		$id_auteur = $row['id_auteur'];
