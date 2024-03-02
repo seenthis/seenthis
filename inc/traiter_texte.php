@@ -174,6 +174,7 @@ function _creer_lien_riche($lien) {
 
 	// virer le http/https en début d'url + le slash final
 	$id_syndic = 0;
+	$lang = $titre = '';
 	$lien_flou = preg_replace(',/$,', '', preg_replace(',^(https?://)?,i', '', $lien));
 	$query = sql_query('SELECT id_syndic, lang, titre, url_syndic, md5 FROM spip_syndic WHERE url_site = ' . sql_quote('http://' . $lien_flou) . ' OR url_site = ' . sql_quote('https://' . $lien_flou));
 	if ($row = sql_fetch($query)) {
@@ -220,6 +221,7 @@ function _creer_lien_riche($lien) {
 	include_spip('inc/lien_court');
 	$intitule = sucrer_utm(lien_court($lien, 45));
 
+	$style = '';
 	if (function_exists('recuperer_favicon')) {
 		$favicon_file_path = recuperer_favicon($lien_or);
 		// Si modif, penser à modifier aussi la fonction supprimer_background_favicon
