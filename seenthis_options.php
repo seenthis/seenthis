@@ -1129,6 +1129,7 @@ function inserer_tags_liens($id_me) {
 	$t = sql_fetsel('uuid,date', 'spip_me', 'id_me=' . $id_me);
 	$uuid = $t['uuid'];
 	$date = $t['date'];
+	$deja_vu = [];
 
 	// Extraire les tags
 
