@@ -941,6 +941,8 @@ function instance_me($id_auteur = 0, $texte_message = '', $id_me = 0, $id_parent
 	}
 
 	// creation ?
+	$date_parent = $date_parent_old = $ip = '';
+	$maj = false;
 	if ($id_me == 0) {
 		// message en reponse
 		if ($id_parent > 0) {
