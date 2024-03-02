@@ -317,6 +317,7 @@ function _traiter_block($regs) {
 	$texte = str_replace('~', 'TILDE_SEENTHIS', $texte);
 
 	$lang = detecter_langue($texte);
+	$dir = $inserer = '';
 	if ($lang) {
 		$dir = lang_dir($lang);
 		lang_select($lang);
@@ -433,6 +434,7 @@ function _traiter_texte($texte) {
 	// Supprimer dans une variable temporaire les mentions XXX, de facon a recuperer seulement le texte
 	$texte_racine = preg_replace(',XXX[A-Z]+([0-9]+)[A-Z]+XXX,Uums', '', $texte);
 	$lang = detecter_langue($texte_racine);
+	$dir = $inserer = '';
 
 	$texte = str_replace('~', 'TILDE_SEENTHIS', $texte);
 
