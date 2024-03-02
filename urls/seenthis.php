@@ -60,6 +60,7 @@ function urls_seenthis_dist($i, &$entite, $args = '', $ancre = '') {
 
 	if (is_numeric($i)) {
 		include_spip('base/abstract_sql');
+		$g = '';
 
 		# #URL_ME
 		if ($entite == 'me') {
@@ -114,6 +115,7 @@ function urls_seenthis_dist($i, &$entite, $args = '', $ancre = '') {
 				. $ref;
 		}
 	} elseif (true) {
+		$g = [];
 		# la page d'un tag manuel ou opencalais :
 		if (
 			preg_match(
