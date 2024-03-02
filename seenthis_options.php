@@ -329,6 +329,7 @@ function recuperer_contenu_site($id_syndic, $url) {
 	// D'abord tester le nom du (futur) fichier local
 	// ce qui permet de ne travailler que sur le HTML
 	$local = fichier_copie_locale($url);
+	$titre = $content = $lang = $dir = '';
 
 	if (!preg_match(',html$,', $local)) {
 		$recup = 2;
