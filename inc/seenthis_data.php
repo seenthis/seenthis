@@ -28,7 +28,7 @@ function inc_seenthisaccueil_to_array_dist($u, $page = null) {
 	# On commence par prendre debut+maxpagination premiers partages
 	# pour reinjecter leurs dates de partage à la place des dates de publi
 	$max_pagination = 300;
-	$debut = intval($env['debut_messages']);
+	$debut = intval($env['debut_messages'] ?? 0);
 	$variante = $env['variante']; // '', 'only', 'all', 'follow'
 	$moi = 0;
 	$auteurs_bloques = [];
@@ -241,7 +241,7 @@ function inc_seenthisrecherche_to_array_dist($u) {
 	# valeur maximum de la pagination sur cette boucle DATA
 	$max_pagination = 100;
 
-	$debut = intval($env['debut_messages']);
+	$debut = intval($env['debut_messages'] ?? 0);
 
 	include_spip('inc/session');
 	$moi = intval(session_get('id_auteur'));
@@ -417,7 +417,7 @@ function inc_seenthisfollowtags_to_array_dist($u, $page = null) {
 
 	# page tags/ : les tags que je follow
 	$max_pagination = 300;
-	$debut = intval($env['debut_messages']);
+	$debut = intval($env['debut_messages'] ?? 0);
 
 	$r = [];
 
