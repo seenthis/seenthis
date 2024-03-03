@@ -494,7 +494,7 @@ function sucrer_utm($url) {
  * @return string le texte du message
  */
 function texte_de_me($id_me) {
-	if ($GLOBALS['texte_de_id_me']["$id_me"]) {
+	if (isset($GLOBALS['texte_de_id_me']["$id_me"])) {
 		return $GLOBALS['texte_de_id_me']["$id_me"];
 	}
 
