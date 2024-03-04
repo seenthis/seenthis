@@ -46,7 +46,7 @@ function inc_seenthisaccueil_to_array_dist($u, $page = null) {
 			break;
 	}
 
-	switch ($env['follow']) {
+	switch ($env['follow'] ?? '') {
 		# $nous
 		case '':
 		case 'follow':
