@@ -200,7 +200,7 @@ function urls_seenthis_dist($i, &$entite, $args = '', $ancre = '') {
 				$g = [
 					$args
 				];
-				$feed = $r[5] ? true : false;
+				$feed = isset($r[5]) ? true : false;
 				if ($feed) {
 					$g[1] = 'backend_auteur';
 					$g['0']['twitter'] = $r[6];
@@ -209,19 +209,21 @@ function urls_seenthis_dist($i, &$entite, $args = '', $ancre = '') {
 					$g[1] = 'auteur';
 				}
 
-				switch ($r[3]) {
-					case '/follow':
-						$g['0']['variante'] = 'follow';
-						break;
-					case '/only':
-						$g['0']['variante'] = 'only';
-						break;
-					case '/all':
-						$g['0']['variante'] = 'all';
-						break;
-					case null:
-						$g['0']['variante'] = '';
-						break;
+				if (isset($r[3])) {
+					switch ($r[3]) {
+						case '/follow':
+							$g['0']['variante'] = 'follow';
+							break;
+						case '/only':
+							$g['0']['variante'] = 'only';
+							break;
+						case '/all':
+							$g['0']['variante'] = 'all';
+							break;
+						case null:
+							$g['0']['variante'] = '';
+							break;
+					}
 				}
 			}
 		}
