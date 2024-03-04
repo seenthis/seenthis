@@ -1,18 +1,20 @@
 <?php
 
-if (!defined('_ECRIRE_INC_VERSION')) return;
+if (!defined('_ECRIRE_INC_VERSION')) {
+	return;
+}
 
 include_spip('inc/cextras');
 include_spip('base/seenthis');
 include_spip('inc/meta');
 
-function seenthis_upgrade($nom_meta_base_version,$version_cible){
-	
-	$maj = array();
-	
+function seenthis_upgrade($nom_meta_base_version, $version_cible) {
+
+	$maj = [];
+
 	// installation
-	$maj['create'] = array(
-		array('maj_tables', array(
+	$maj['create'] = [
+		['maj_tables', [
 			'spip_auteurs',
 			'spip_me',
 			'spip_me_texte',
@@ -26,62 +28,62 @@ function seenthis_upgrade($nom_meta_base_version,$version_cible){
 			'spip_syndic',
 			'spip_traductions',
 			'spip_me_tags'
-		))
-	);
-	
+		]]
+	];
+
 	// en 0.9.8, remplir arbitrairement les uuid manquants
-	$maj['0.9.8'] = array(
-		array('seenthis_maj_remplir_uuid'),
-	);
+	$maj['0.9.8'] = [
+		['seenthis_maj_remplir_uuid'],
+	];
 	// en 0.9.9, remplir spip_me_tags & spip_me_follow_tags
-	$maj['0.9.9'] = array(
-		array('seenthis_mots2tags'),
-	);
+	$maj['0.9.9'] = [
+		['seenthis_mots2tags'],
+	];
 	// en 1.0.1, remplir spip_me_recherche.titre
-	$maj['1.0.1'] = array(
-		array('seenthis_maj_recherche_titre'),
-	);
+	$maj['1.0.1'] = [
+		['seenthis_maj_recherche_titre'],
+	];
 	// en 1.0.2, supprimer les tables de mots
-	$maj['1.0.2'] = array(
-		array('sql_drop_table','spip_me_follow_mot'),
-		array('sql_drop_table','spip_me_mot'),
-	);
+	$maj['1.0.2'] = [
+		['sql_drop_table','spip_me_follow_mot'],
+		['sql_drop_table','spip_me_mot'],
+	];
 	// en 1.1.1, ajouter champs rezosocio
-	$maj['1.1.1'] = array(
-		array('sql_alter',"TABLE spip_auteurs ADD twitter varchar(100) DEFAULT '' NOT NULL"),
-		array('sql_alter',"TABLE spip_auteurs ADD facebook varchar(100) DEFAULT '' NOT NULL"),
-		array('sql_alter',"TABLE spip_auteurs ADD gplus varchar(100) DEFAULT '' NOT NULL"),
-	);
+	$maj['1.1.1'] = [
+		['sql_alter',"TABLE spip_auteurs ADD twitter varchar(100) DEFAULT '' NOT NULL"],
+		['sql_alter',"TABLE spip_auteurs ADD facebook varchar(100) DEFAULT '' NOT NULL"],
+		['sql_alter',"TABLE spip_auteurs ADD gplus varchar(100) DEFAULT '' NOT NULL"],
+	];
 	// en 1.1.4, poser mail_partage=0 (c'est nouveau)
 	// et mail_rep_partage = mail_rep_moi (c'était confondu)
 	// cf. https://github.com/seenthis/seenthis/pull/7
-	$maj['1.1.4'] = array(
-		array('sql_update','spip_auteurs',array('mail_partage'=>0,'mail_rep_partage'=>'mail_rep_moi')),
-	);
+	$maj['1.1.4'] = [
+		['sql_update','spip_auteurs',['mail_partage' => 0,'mail_rep_partage' => 'mail_rep_moi']],
+	];
 	// en 1.1.5, ajouter une clé unique sur spip_me_share en supprimant les doublons
-	$maj['1.1.5'] = array(
-		array('sql_query',"ALTER IGNORE TABLE spip_me_share ADD UNIQUE INDEX spip_me_share_unique (id_me, id_auteur)"),
-	);
+	$maj['1.1.5'] = [
+		['sql_query','ALTER IGNORE TABLE spip_me_share ADD UNIQUE INDEX spip_me_share_unique (id_me, id_auteur)'],
+	];
 	// en 1.1.6, ajouter une clé sur spip_me_tags
-	$maj['1.1.6'] = array(
-		array('sql_alter',"TABLE spip_me_tags ADD INDEX spip_me_tags_index_tags (class, tag(255))"),
-	);
+	$maj['1.1.6'] = [
+		['sql_alter','TABLE spip_me_tags ADD INDEX spip_me_tags_index_tags (class, tag(255))'],
+	];
 	// en 1.1.7, ajouter les colonne liens_partage_fb et liens_partage_tw
-	$maj['1.1.7'] = array(
-		array('sql_update','spip_auteurs',array('liens_partage_fb'=>1,'liens_partage_tw'=>1)),
-	);
+	$maj['1.1.7'] = [
+		['sql_update','spip_auteurs',['liens_partage_fb' => 1,'liens_partage_tw' => 1]],
+	];
 	// en 1.1.8, appliquer troll_forcer=0 pour les troll_forcer IS NULL
-	$maj['1.1.8'] = array(
-		array('sql_update','spip_auteurs',array('troll_forcer'=>0),"troll_forcer IS NULL"),
-	);
+	$maj['1.1.8'] = [
+		['sql_update','spip_auteurs',['troll_forcer' => 0],'troll_forcer IS NULL'],
+	];
 	// en 1.1.9, poser mail_tag_suivi=0
-	$maj['1.1.9'] = array(
-		array('maj_tables', array('spip_auteurs')),
-	);
+	$maj['1.1.9'] = [
+		['maj_tables', ['spip_auteurs']],
+	];
 	// en 1.1.11, poser viarss sur spip_me
-	$maj['1.1.11'] = array(
-		array('maj_tables', array('spip_me')),
-	);
+	$maj['1.1.11'] = [
+		['maj_tables', ['spip_me']],
+	];
 
 	include_spip('base/upgrade');
 	maj_plugin($nom_meta_base_version, $version_cible, $maj);
@@ -131,7 +133,7 @@ function seenthis_mots2tags() {
 		INNER JOIN spip_syndic AS m on m.id_syndic = am.id_syndic
 	");
 
-	sql_query("ALTER TABLE spip_me_tags ADD INDEX `tag` (`tag`(60))");
+	sql_query('ALTER TABLE spip_me_tags ADD INDEX `tag` (`tag`(60))');
 
 	# convertir spip_me_follow_mot(id_mot)
 	# => en spip_me_follow_tag("#spip")
@@ -151,7 +153,7 @@ function seenthis_mots2tags() {
 
 	# convertir spip_me_follow_url(id_url)
 	# => en spip_me_follow_tag("url")
-	$s = sql_query($a = "INSERT INTO spip_me_follow_tag (tag, id_follow, date)
+	$s = sql_query($a = 'INSERT INTO spip_me_follow_tag (tag, id_follow, date)
 	SELECT
 		m.url_site as tag,
 		f.id_follow,
@@ -159,36 +161,35 @@ function seenthis_mots2tags() {
 	FROM
 		spip_syndic AS m
 		INNER JOIN spip_me_follow_url AS f ON m.id_syndic=f.id_syndic
-	");
+	');
 
 
-	sql_query("ALTER TABLE spip_me_follow_tag ADD INDEX `tag` (`tag`(60))");
+	sql_query('ALTER TABLE spip_me_follow_tag ADD INDEX `tag` (`tag`(60))');
 
 
 	// ajouter les md5 sur la table spip_syndic
-	sql_query("UPDATE spip_syndic SET `md5`=MD5(url_site) WHERE `md5` IS NULL");
-
+	sql_query('UPDATE spip_syndic SET `md5`=MD5(url_site) WHERE `md5` IS NULL');
 }
 
 function seenthis_maj_recherche_titre() {
 	$s = spip_query('SELECT id_me, texte FROM spip_me_recherche WHERE NOT (titre>"")');
 	while ($t = sql_fetch($s)) {
 		$titre = seenthis_titre_me($t['texte']);
-		sql_updateq('spip_me_recherche', array('titre' => $titre), 'id_me='.$t['id_me']);
+		sql_updateq('spip_me_recherche', ['titre' => $titre], 'id_me=' . $t['id_me']);
 	}
 }
 
 function seenthis_vider_tables($nom_meta_base_version) {
 	cextras_api_vider_tables(seenthis_declarer_champs_extras());
-	sql_drop_table("spip_me");
-	sql_drop_table("spip_me_texte");
-	sql_drop_table("spip_me_recherche");
-	sql_drop_table("spip_me_auteur");
-	sql_drop_table("spip_me_follow");
-	sql_drop_table("spip_me_block");
-	sql_drop_table("spip_me_follow_url");
-	sql_drop_table("spip_me_share");
-	sql_drop_table("spip_me_syndic");
-	sql_drop_table("spip_traductions");
+	sql_drop_table('spip_me');
+	sql_drop_table('spip_me_texte');
+	sql_drop_table('spip_me_recherche');
+	sql_drop_table('spip_me_auteur');
+	sql_drop_table('spip_me_follow');
+	sql_drop_table('spip_me_block');
+	sql_drop_table('spip_me_follow_url');
+	sql_drop_table('spip_me_share');
+	sql_drop_table('spip_me_syndic');
+	sql_drop_table('spip_traductions');
 	effacer_meta($nom_meta_base_version);
 }
