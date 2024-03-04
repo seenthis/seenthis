@@ -284,7 +284,7 @@ function inc_seenthisrecherche_to_array_dist($u) {
 		# c'est la page people/$elle
 		case 'fil':
 		default:
-			if ($elle = sql_allfetsel('id_auteur', 'spip_auteurs', '(login=' . sql_quote($env['follow']) . ' OR id_auteur=' . intval($env['id']) . ") AND statut!='5poubelle'")) {
+			if ($elle = sql_allfetsel('id_auteur', 'spip_auteurs', '(login=' . sql_quote($env['follow'] ?? 0) . ' OR id_auteur=' . intval($env['id'] ?? 0) . ") AND statut!='5poubelle'")) {
 				# $selfollow="(IN(id_auteur,$moi) OR IN(share,$moi)) as ok";
 				$elle = $elle[0]['id_auteur'];
 				$auteurs_bloques = auteurs_bloques($elle);
