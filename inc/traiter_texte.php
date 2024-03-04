@@ -9,7 +9,7 @@ function _traiter_hash($regs) {
 
 	$le_hash = "<span class='lien_tag'>#<a href=\"$url\">$tag</a></span>";
 
-	$GLOBALS['num_hash']++;
+	$GLOBALS['num_hash'] = isset($GLOBALS['num_hash']) ? $GLOBALS['num_hash'] : 0;
 
 	$GLOBALS['les_hashs'][$GLOBALS['num_hash']] = $le_hash;
 
@@ -35,6 +35,7 @@ function _traiter_code($regs) {
 	// dirty pour recuperer un code avec des lignes alternees (pour coloration)
 	$le_hash = str_replace('<br>', '</code></div><div class="spip_code"><code>', $le_hash);
 
+	$GLOBALS['num_hash'] = isset($GLOBALS['num_hash']) ? $GLOBALS['num_hash'] : 0;
 	$GLOBALS['num_hash']++;
 	$GLOBALS['les_hashs'][$GLOBALS['num_hash']] = $le_hash;
 
@@ -56,6 +57,7 @@ function _traiter_people($regs) {
 
 		// echapper pour eviter la typo sur @_cym_
 		// return $res;
+		$GLOBALS['num_lien'] = isset($GLOBALS['num_lien']) ? $GLOBALS['num_lien'] : 0;
 		$GLOBALS['num_lien']++;
 		$GLOBALS['les_liens'][$GLOBALS['num_lien']] = $res;
 		return 'XXXLIEN' . $GLOBALS['num_lien'] . 'LIENXXX';
@@ -268,6 +270,7 @@ function _traiter_lien($regs) {
 
 	$le_lien = _creer_lien_riche($lien);
 
+	$GLOBALS['num_lien'] = isset($GLOBALS['num_lien']) ? $GLOBALS['num_lien'] : 0;
 	$GLOBALS['num_lien']++;
 
 	$GLOBALS['les_liens'][$GLOBALS['num_lien']] = $le_lien;
@@ -337,6 +340,7 @@ function _traiter_block($regs) {
 	}
 
 	$le_bloc = "\n\n<blockquote$inserer><p> $texte </p></blockquote>\n\n";
+	$GLOBALS['num_bloc'] = isset($GLOBALS['num_bloc']) ? $GLOBALS['num_bloc'] : 0;
 	$GLOBALS['num_bloc']++;
 
 	$GLOBALS['les_blocs'][$GLOBALS['num_bloc']] = $le_bloc;
