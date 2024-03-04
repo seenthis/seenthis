@@ -446,7 +446,7 @@ function inc_seenthisfollowtags_to_array_dist($u, $page = null) {
 
 	$r = sql_allfetsel('id_me', 'spip_me', $where . $bloquer, '', 'date DESC', $max_pagination + $debut);
 
-	return array_map('array_pop', array_splice($r, 0, $max_pagination + $debut));
+	return array_column(array_splice($r, 0, $max_pagination + $debut), 'id_me');
 }
 
 
@@ -563,7 +563,7 @@ function liste_pointe_tags($debut, $max_pagination, $moi, $class = null) {
 		$where = " AND NOT (tag LIKE 'http%')";
 	}
 	if ($tags = sql_allfetsel('DISTINCT(tag)', 'spip_me_follow_tag', 'id_follow=' . $moi . $where)) {
-		$tags = array_map('array_pop', $tags);
+		$tags = array_column($tags, 'tag');
 
 		// tags stricts ?
 		# $condition = sql_in('tag', $tags);
@@ -578,7 +578,7 @@ function liste_pointe_tags($debut, $max_pagination, $moi, $class = null) {
 
 		$mentions = sql_allfetsel('id_me', 'spip_me_tags', $condition, null, 'date DESC', '0,' . ($debut + $max_pagination));
 
-		return array_map('array_pop', $mentions);
+		return array_column($mentions, 'id_me');
 	}
 	return [];
 }
@@ -600,5 +600,5 @@ function seenthis_chercher_parents($m = [], $publie = true) {
 
 /* quels sont les auteurs que je bloque */
 function auteurs_bloques($moi) {
-	return array_map('array_pop', sql_allfetsel('id_auteur', 'spip_me_block', 'id_block=' . sql_quote($moi)));
+	return array_column(sql_allfetsel('id_auteur', 'spip_me_block', 'id_block=' . sql_quote($moi)), 'id_auteur');
 }
