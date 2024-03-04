@@ -180,12 +180,12 @@ function cache_mot_fil($id_me) {
 
 function cache_url_fil($id_syndic) {
 	if ($id_syndic > 0) {
-		spip_log("cache_url_fil(${id_syndic})", 'cache');
+		spip_log("cache_url_fil({$id_syndic})", 'cache');
 		// Supprimer le cache des sites liés
 		cache_url($id_syndic);
 
 		// Traiter les enfants
-		$query_enfants = sql_select('id_syndic', 'spip_syndic', "id_parent=${id_syndic}");
+		$query_enfants = sql_select('id_syndic', 'spip_syndic', "id_parent={$id_syndic}");
 		while ($row_enfants = sql_fetch($query_enfants)) {
 			$id_syndic = $row_enfants['id_syndic'];
 			cache_url_fil($id_syndic);
