@@ -8,4 +8,4 @@ parameters:
 			- lang
 	level: 1
 	bootstrapFiles:
-			- phpstan-constants.php
+		- phpstan-constants.php
