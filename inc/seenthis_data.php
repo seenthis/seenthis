@@ -29,7 +29,7 @@ function inc_seenthisaccueil_to_array_dist($u, $page = null) {
 	# pour reinjecter leurs dates de partage à la place des dates de publi
 	$max_pagination = 300;
 	$debut = intval($env['debut_messages'] ?? 0);
-	$variante = $env['variante']; // '', 'only', 'all', 'follow'
+	$variante = $env['variante'] ?? ''; // '', 'only', 'all', 'follow'
 	$moi = 0;
 	$auteurs_bloques = [];
 
