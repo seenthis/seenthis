@@ -628,7 +628,7 @@ function calculer_troll($id_auteur, $reseau = false) {
 			$total -= $troll;
 		}
 
-		$mess = $GLOBALS['nb_messages_6_mois']["$id_auteur"] / $GLOBALS['nb_messages_6_mois_moyenne'];
+		$mess = $GLOBALS['nb_messages_6_mois']["$id_auteur"] ?? 0 / $GLOBALS['nb_messages_6_mois_moyenne'];
 		// limiter entre 0.1 et 1
 		$mess = max(0.1, min(1, $mess));
 
