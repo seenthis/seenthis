@@ -66,10 +66,10 @@ function urls_seenthis_dist($i, &$entite, $args = '', $ancre = '') {
 		if ($entite == 'me') {
 			# s'il y a un parent, c'est #URL_ME{parent}#message$i
 			$k = sql_allfetsel('id_me,id_parent', 'spip_me', 'id_me=' . $i);
-			if (!$k[0]) {
+			if (!isset($k[0])) {
 				$g = '';
 			}
-			if ($k[0]['id_parent']) {
+			if (isset($k[0]['id_parent'])) {
 				$g = urls_seenthis_dist($k[0]['id_parent'], $entite, $args, 'message' . $i);
 			}
 			# sinon c'est messages/$i
