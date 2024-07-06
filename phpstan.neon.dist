@@ -1,11 +1,14 @@
 includes:
 	- phpstan-baseline.neon
+
 parameters:
+	phpVersion: 070400
 	paths:
 		- .
 	excludePaths:
 		analyseAndScan:
 			- lang
+			- vendor
 	level: 1
 	bootstrapFiles:
 		- phpstan-constants.php

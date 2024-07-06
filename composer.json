@@ -1,0 +1,18 @@
+{
+    "name": "seenthis/seenthis",
+    "description": "Configuration de Seenthis",
+    "type": "spip-plugin",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Arno*",
+            "email": "arno@rezo.net"
+        }
+    ],
+    "require": {},
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.0.x-dev"
+        }
+    }
+}
