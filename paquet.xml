@@ -1,9 +1,9 @@
 <paquet
 	prefix="seenthis"
 	categorie="divers"
-	version="2.3.6"
+	version="3.0.0"
 	etat="stable"
-	compatibilite="[3.1.0;["
+	compatibilite="[4.1.0;4.1.*]"
 	schema="1.1.11"
 	logo="prive/logo/logo_seenthis.png"
 >	

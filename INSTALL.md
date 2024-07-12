@@ -17,12 +17,12 @@ Deux tables permettent de savoir qui suit quels tags et quels URLs: spip_follow_
 Une table enregistre les partages : spip_me_share.
 
 
-# Télécharger les composants :
+## Télécharger les composants :
 
-# On commence par installer SPIP en version 3.2
+*On commence par installer SPIP en version 4.1 avec l'outil [checkout](https://git.spip.net/spip-contrib-outils/checkout)*
 ```
 cd www/
-svn co svn://trac.rezo.net/spip/branches/spip-3.2/ seenthis/
+checkout spip -b4.1 seenthis
 ```
 
 *On ajoute ensuite les plugins suivants :*
@@ -76,7 +76,7 @@ Si tout va bien, voici la liste des plugins présents :
 * soundmanager
 * typo_guillemets
 
-# Activation du site
+## Activation du site
 
 On active alors la connexion SQL du site SPIP :
 [http://localhost/seenthis/ecrire/](http://localhost/seenthis/ecrire/) (entrer le mot de passe SQL, créer la base, créer le premier compte utilisateur).
@@ -133,8 +133,8 @@ Aller sur http://localhost/seenthis/?var_mode=recalcul ; vous avez un seenthis u
 
 
 
-# Configuration
-## SPIP
+## Configuration
+### SPIP
 [http://localhost/seenthis/ecrire/?exec=config_fonctions](http://localhost/seenthis/ecrire/?exec=config_fonctions)
 => choisir GD2
 type d'urls: _seenthis_
@@ -142,11 +142,11 @@ type d'urls: _seenthis_
 [http://localhost/seenthis/ecrire/?exec=config_contenu#configurer-redacteurs](http://localhost/seenthis/ecrire/?exec=config_contenu#configurer-redacteurs)
 => choisir "Accepter les inscriptions"
 
-## gravatar:
+### gravatar:
 [http://localhost/seenthis/ecrire/?exec=configurer_gravatar](http://localhost/seenthis/ecrire/?exec=configurer_gravatar)
 => saisir 80 pour la dimension
 
-## moteur de recherche fulltext:
+### moteur de recherche fulltext:
 ```
 ALTER table spip_me_recherche ENGINE=MyISAM;
 ALTER TABLE spip_me_recherche ADD FULLTEXT titre (`titre`);
@@ -157,14 +157,14 @@ ALTER TABLE spip_syndic ADD FULLTEXT tout (`url_site`,`titre`,`texte`);
 ```
 
 
-# Liens "à lire" et pied de page :
+## Liens "à lire" et pied de page :
 `inc/alire.html` affiche les articles de la rubrique 2;
 `inc/footer.html` les articles de la rubrique 3
 
 
-# Ajout des plugins optionnels 
+## Ajout des plugins optionnels 
 
-## seenthis_importer_flux
+### seenthis_importer_flux
 
 Ce plugin ajoute un champ 'rss' dans spip_auteurs, et une tâche cron qui charge ce RSS et le transforme en seens (et en partages si l'URL est déjà mentionnée dans un autre seen).
 ```
@@ -172,24 +172,24 @@ git clone https://github.com/seenthis/seenthis_importer_flux.git
 ```
 
 
-## seenthis_opencalais
+### seenthis_opencalais
 
 Ce plugin s'interface avec l'API OpenCalais (il faut demander une clé d'API), pour thématiser de façon automatique les seens.
 ```
 git clone https://github.com/seenthis/seenthis_opencalais.git
 ````
 
-## champs_extras_core
+### champs_extras_core
 
 permet aux admins d'éditer les préférences des auteurs depuis l'espace privé.
 
-## Palette
+### Palette
 ```
 git clone https://git.spip.net/spip-contrib-extensions/palette.git
 ```
 le configurer pour activation sur les pages publiques permet d'offrir la roue chromatique dans les préférences (http://contrib.spip.net/Palette) ; attention, palette nécessite l'activation de cfg.
 
-## Sphinx
+### Sphinx
 
 Pour avoir le moteur de recherche basé sur sphinx, installer d'abord Sphinx (http://sphinxsearch.com/ - version 2.2.3 minimum!), puis ajouter deux plugins :
 ```
@@ -233,7 +233,7 @@ et réindexer le contenu existant :
 `php cli_indexer.php tout`
 
 
-# Personnalisation
+## Personnalisation
 
 Voilà ; vous pouvez commencer à personnaliser les squelettes en les recopiant dans squelettes/
 

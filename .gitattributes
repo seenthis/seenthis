@@ -1,0 +1,9 @@
+/phpstan.neon.dist export-ignore
+/phpstan-baseline.neon export-ignore
+/phpstan-constants.php export-ignore
+/.gitignore export-ignore
+/.gitattributes export-ignore
+/tests/ export-ignore
+/phpunit.xml.dist export-ignore
+/.php-cs-fixer.dist.php export-ignore
+/.editorconfig export-ignore
